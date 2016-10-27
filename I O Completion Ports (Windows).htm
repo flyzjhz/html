@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)https://msdn.microsoft.com/en-us/library/aa365198(v=vs.85).aspx -->
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="WT.seg_1" content="en-us"><link rel="canonical" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa365198(v=vs.85).aspx">
+    <title>I/O Completion Ports (Windows)</title>
+
+
+
+
+
+
+
+<meta name="DCS.dcsuri" content="/en-us/library/aa365198(d=default,l=en-us,v=vs.85).aspx">
+
+<meta name="NormalizedUrl" content="https://msdn.microsoft.com/en-us/library/aa365198(d=default,l=en-us,v=vs.85).aspx">
+
+<meta name="ms.normalizedurl" content="https://msdn.microsoft.com/en-us/library/aa365198(d=default,l=en-us,v=vs.85).aspx">
+
+<meta name="AmbientContext" content="{&quot;layout.limit_max_width&quot;:false,&quot;AmbientContextId&quot;:&quot;3C7ED37F-B3AF-498C-B2D6-DFECF4DE4220&quot;,&quot;display.use_large_font&quot;:false,&quot;insight.perf_timing&quot;:true,&quot;AmbientContextDownstream&quot;:{&quot;LogTrace&quot;:false},&quot;display.high_contrast&quot;:false,&quot;insight.use_wedcs_vnext&quot;:true}">
+
+<meta name="VotingContextUrl" content="https://msdn.microsoft.com/en-us/library/aa365198(d=default,l=en-us,v=vs.85).aspx">
+
+<meta name="MN" content="61C41DD5-9:17:03 AM">
+
+<meta name="Search.ShortId" content="aa365198">
+
+<meta name="ms.shortidmsdn" content="aa365198">
+
+<meta name="ms.locale" content="en-us">
+
+<meta name="ms.prodver" content="VS.85">
+
+<meta name="ms.contentlang" content="EN">
+
+<meta name="ms.lang" content="EN">
+
+<meta name="ms.loc" content="US">
+
+<meta name="ms.sitever" content="2016.09.29.1">
+
+<meta name="ms.assetid" content="213c48e8-bb21-43ed-9c00-2a5cf8ac25f0">
+
+<meta name="ms.auth" content="0">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+        
+
+
+
+
+
+
+
+
+
+    <script type="text/javascript" src="./I O Completion Ports (Windows)_files/ai.0.js" async=""></script><script type="text/javascript" data-do-not-move="true">
+        //<![CDATA[
+        var AmbientContext = null;
+
+        (function(){
+            var root = (function(){return this;}).call(null);
+
+            var GetCookie = function(name){
+                var cookies = root.document.cookie ? root.document.cookie.split('; ') : [];
+                for (var i = 0; i < cookies.length; i++) {
+                    var pos = cookies[i].indexOf('=');
+                    if (name === root.decodeURIComponent(cookies[i].slice(0, pos)))
+                    {
+                        var cookie = cookies[i].slice(pos + 1).replace(/\+/g, ' ');
+                        cookie = root.decodeURIComponent(cookie);
+                        return cookie;
+                    }
+                }
+            };
+
+            var JsonDeserialize = function(content) {
+                return root.JSON && root.JSON.parse ? root.JSON.parse(content) : (new Function('return (' + content + ')'))();
+            };
+
+            try {
+                AmbientContext = GetCookie('AmbientContext');
+                AmbientContext = AmbientContext && JsonDeserialize(AmbientContext);
+            } catch(ex) {
+            } finally {
+                AmbientContext = AmbientContext || null;
+            }
+        })();
+        //]]>
+    </script>
+
+    <script type="text/javascript" src="./I O Completion Ports (Windows)_files/jquery-1.9.1.min.js" data-do-not-move="true" data-provides="jQuery"></script>
+    
+<link rel="stylesheet" type="text/css" href="./I O Completion Ports (Windows)_files/Combined.css"><script class="mtps-injected">try {
+/**/
+(window.MTPS || (window.MTPS = {})).cdnDomains || (window.MTPS.cdnDomains = { 
+	"image": "https://i-msdn.sec.s-msft.com", 
+	"js": "https://i2-msdn.sec.s-msft.com", 
+	"css": "https://i-msdn.sec.s-msft.com", 
+	"ttf": "https://i-msdn.sec.s-msft.com"
+});
+/**/
+} finally { MTPS._injectNextScript_0 && MTPS._injectNextScript_0(); }</script><script class="mtps-injected">try {
+//
+
+        window.appInsightsId = '5eb1b2eb-c47a-497a-a7ac-a1c230b2882f';
+        //
+} finally { MTPS._injectNextScript_1 && MTPS._injectNextScript_1(); }</script><script class="mtps-injected" src="./I O Completion Ports (Windows)_files/Combined.js"></script><link href="./I O Completion Ports (Windows)_files/PrintView.css" rel="stylesheet" type="text/css" media="print"><meta name="ms.layout_limit_max_width" content="false"><meta name="ms.AmbientContextId" content="3C7ED37F-B3AF-498C-B2D6-DFECF4DE4220"><meta name="ms.display_use_large_font" content="false"><meta name="ms.insight_perf_timing" content="true"><meta name="ms.AmbientContextDownstream" content="%7B%7D"><meta name="ms.display_high_contrast" content="false"><meta name="ms.insight_use_wedcs_vnext" content="true"><meta name="ms.perf.timing" content=",,0,64,856,857,3893,4143,3916,4147,4147,4160,,,"><script type="text/javascript" src="./I O Completion Ports (Windows)_files/ms.js"></script><script type="text/javascript" src="./I O Completion Ports (Windows)_files/jsll-3.2.0.js"></script><script class="mtps-injected" src="./I O Completion Ports (Windows)_files/SearchBox.jss"></script><script class="mtps-injected" src="./I O Completion Ports (Windows)_files/Combined(1).js"></script><script src="./I O Completion Ports (Windows)_files/broker.js"></script><script class="mtps-injected">try {
+$(document).ready(function() {
+        try {
+            var token = $("#globalRequestVerification input[name='__RequestVerificationToken']").clone();
+            $("#siteFeedbackForm").append(token);
+        } catch(err) {
+            
+        }
+    });
+} finally { MTPS._injectNextScript_5 && MTPS._injectNextScript_5(); }</script></head>
+<body class="library Chrome">
+    <div id="page">
+
+        
+
+        
+    
+
+    
+    <link type="text/css" rel="stylesheet">
+    
+        
+        
+    <input type="hidden" id="isHeaderBleeding" value="true">
+    <div id="ux-header" dir="ltr" class="ltr msdn" ms.pgarea="header" data-device-type="desktop">
+        
+
+      <header ms.pgarea="header">
+        <span id="singleCol"></span>
+        <span id="doubleCol"></span>
+        <span id="isMobile"></span>
+        <div>
+          <div class="row topRow" role="banner">
+            <div class="top">
+              <div class="left">
+                <a class="msdnLogoImg" href="https://msdn.microsoft.com/en-us" title="MSDN home" ms.cmpgrp="mslogo">
+                  <div class="clip70x15">
+                    <img alt="Microsoft Logo" id="msft-logo" class="msft-logo" src="./I O Completion Ports (Windows)_files/HeaderFooterSprite.png">
+                  </div>
+                </a>
+                <div class="GrayPipeDiv clip1x18">
+                  <img alt="Gray Pipe" class="GrayPipe" src="./I O Completion Ports (Windows)_files/HeaderFooterSprite.png">
+                </div>
+                  <a class="DevCenterFullNameNonMegaBlade" href="https://msdn.microsoft.com/en-us">Developer Network</a>
+                <a class="DevCenterFullName" href="https://msdn.microsoft.com/en-us">Developer Network</a>
+                <a class="DevCenterShortName" href="https://msdn.microsoft.com/en-us">Developer</a>
+              </div>
+              <div class="right" ms.cmpgrp="aux nav">
+                <div id="signIn" tabindex="0" aria-label="Profile button">
+
+  <div class="profileImage"></div>
+
+
+
+<a class="scarabLink" href="https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=13&ct=1477585023&rver=6.7.6640.0&wp=mcmbi&wlcxt=msdn%24msdn%24msdn&wreply=https%3a%2f%2fmsdn.microsoft.com%2fen-us%2flibrary%2faa365198%2528v%3dvs.85%2529.aspx&lc=1033&id=254354&mkt=en-us">Sign in</a></div>
+
+
+
+
+                <div class="auxNav">
+                  <div>
+                    <div data-fragmentname="Subscriptions" id="Fragment_Subscriptions" xmlns="http://www.w3.org/1999/xhtml">
+  <a href="https://msdn.microsoft.com/subscriptions/manage/hh442900" id="Subscriptions_2153_1" xmlns="http://www.w3.org/1999/xhtml">MSDN subscriptions</a>
+</div>
+                    <div data-fragmentname="GetTools" id="Fragment_GetTools" xmlns="http://www.w3.org/1999/xhtml">
+  <a href="http://go.microsoft.com/fwlink/?LinkId=309297&clcid=0x409&slcid=0x409&campaign=o~msft~msdn~gettools-header~dn308572" id="GetTools_2153_3" xmlns="http://www.w3.org/1999/xhtml">Get tools</a>
+</div>
+                  </div>
+                        <div>
+                            
+                        </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="row middleRow">
+            <div class="expandTop" style="display: none;">
+              <div class="left"></div>
+              <div class="right"></div>
+            </div>
+          </div>
+        </div>
+        <div id="buttomRowWrapper" class="bg_default">
+          <div class="row buttomRow bg_default">
+            <div class="bottom">
+              <div class="left" role="navigation" aria-label="header toc" ms.cmpgrp="main nav">
+                <a id="grip" class="menu-icon" href="javascript:void(0)"></a>
+                
+                <div id="drawer">
+                  <div class="toc">
+                    
+        <nav>
+            <ul class="navL1" ms.cmpgrp="main nav">
+                        <li class="inactive toggle">
+                                <a href="javascript:void(0)" role="button" aria-expanded="false">Downloads</a>
+                                <ul class="navL2" style="display: none;">
+                                        <li class="inactive">
+
+                                                <a href="https://www.visualstudio.com/downloads/download-visual-studio-vs" role="link" title="Visual Studio">Visual Studio</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://msdn.microsoft.com/subscriptions" role="link" title="MSDN subscription access">MSDN subscription access</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://msdn.microsoft.com/microsoft-sdks-msdn" role="link" title="SDKs">SDKs</a>
+                                        </li>
+                                        <li class="inactive toggle">
+
+                                                <a href="javascript:void(0)" title="Trial software" role="button" aria-expanded="false">Trial software</a>
+                                                <ul class="navL3" style="display: none;">
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/evalcenter" title="Free downloads" role="link">Free downloads</a>
+                                                        </li>
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/officeevaluationresources" title="Office resources" role="link">Office resources</a>
+                                                        </li>
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/sharepoint2013resources" title="SharePoint Server 2013 resources" role="link">SharePoint Server 2013 resources</a>
+                                                        </li>
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/sqlserver2014expressresources" title="SQL Server 2014 Express resources" role="link">SQL Server 2014 Express resources</a>
+                                                        </li>
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/windowsserver2012r2resources" title="Windows Server 2012 resources" role="link">Windows Server 2012 resources</a>
+                                                        </li>
+                                                </ul>
+                                        </li>
+                                </ul>
+                        </li>
+                        <li class="inactive toggle">
+                                <a href="javascript:void(0)" role="button" aria-expanded="false">Programs</a>
+                                <ul class="navL2" style="display: none;">
+                                        <li class="inactive toggle">
+
+                                                <a href="javascript:void(0)" title="MSDN subscriptions" role="button" aria-expanded="false">MSDN subscriptions</a>
+                                                <ul class="navL3" style="display: none;">
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/msdn-subscriptions-overview" title="Overview" role="link">Overview</a>
+                                                        </li>
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/benefits-overview" title="Benefits" role="link">Benefits</a>
+                                                        </li>
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/msdn-subscriptions-administration" title="Administrators" role="link">Administrators</a>
+                                                        </li>
+                                                </ul>
+                                        </li>
+                                        <li class="inactive toggle">
+
+                                                <a href="javascript:void(0)" title="Students" role="button" aria-expanded="false">Students</a>
+                                                <ul class="navL3" style="display: none;">
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/imagine/imagine-home" title="Microsoft Imagine" role="link">Microsoft Imagine</a>
+                                                        </li>
+                                                        <li class="inactive">
+                                                            <a href="https://msdn.microsoft.com/microsoftstudentpartners" title="Microsoft Student Partners" role="link">Microsoft Student Partners</a>
+                                                        </li>
+                                                </ul>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://msdn.microsoft.com/applicationbuilder" role="link" title="ISV">ISV</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://www.microsoft.com/bizspark" role="link" title="Startups">Startups</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://rewards.msdn.microsoft.com/" role="link" title="TechRewards">TechRewards</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="http://events.msdn.microsoft.com/" role="link" title="Events">Events</a>
+                                        </li>
+                                </ul>
+                        </li>
+                        <li class="inactive toggle">
+                                <a href="javascript:void(0)" role="button" aria-expanded="false">Community</a>
+                                <ul class="navL2" style="display: none;">
+                                        <li class="inactive">
+
+                                                <a href="https://msdn.microsoft.com/magazine/dd767791" role="link" title="Magazine">Magazine</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://social.msdn.microsoft.com/forums/" role="link" title="Forums">Forums</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://blogs.msdn.microsoft.com/" role="link" title="Blogs">Blogs</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="http://channel9.msdn.com/" role="link" title="Channel 9">Channel 9</a>
+                                        </li>
+                                </ul>
+                        </li>
+                        <li class="inactive current toggle">
+                                <a href="javascript:void(0)" role="button" aria-expanded="false">Documentation</a>
+                                <ul class="navL2" style="display: none;">
+                                        <li class="inactive current">
+
+                                                <a href="https://msdn.microsoft.com/library" role="link" title="APIs and reference">APIs and reference</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://msdn.microsoft.com/developer-centers-msdn" role="link" title="Dev centers">Dev centers</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://code.msdn.microsoft.com/" role="link" title="Samples">Samples</a>
+                                        </li>
+                                        <li class="inactive">
+
+                                                <a href="https://msdn.microsoft.com/retiredcontent" role="link" title="Retired content">Retired content</a>
+                                        </li>
+                                </ul>
+                        </li>
+            </ul>
+        </nav>
+
+                  </div>
+                </div>
+              </div>
+              <div class="right" ms.title="search" role="search">
+                <div data-fragmentname="SearchBox" id="Fragment_SearchBox" xmlns="http://www.w3.org/1999/xhtml">
+  <div class="SearchBox">
+    <form id="HeaderSearchForm" name="HeaderSearchForm" method="get">
+      <button id="FakeHeaderSearchButton" value="Search" type="submit" class="header-search-button" role="button" aria-label="search finder" ms.interactiontype="2" ms.title="search" ms.pgarea="header" ms.searchtype="icon">
+        <div id="search-finder-div" class="clip16x20">
+          <img alt="search finder" id="search-finder" class="search-finder" src="./I O Completion Ports (Windows)_files/HeaderFooterSprite.png">
+        </div>
+      </button>
+      <button id="HeaderSearchButton" style="display:none" data-searchtype="icon" data-pgarea="header" title="Search MSDN" ms.interactiontype="2" ms.title="search" ms.pgarea="header" ms.searchtype="icon"></button>
+      <div id="searchSplitter"></div>
+      <div id="searchCloseIconDiv" class="clip16x20" tabindex="0">
+        <img alt="search clear" id="searchCloseIcon" class="search-clear-x" src="./I O Completion Ports (Windows)_files/HeaderFooterSprite.png">
+      </div>
+      <div id="searchTextContainer" style="width: 0px; display: none;">
+        <input id="HeaderSearchTextBox" name="query" type="text" aria-label="search edit textbox" maxlength="200" onfocus="Epx.Controls.SearchBox.watermarkFocus(event, this.title)" onblur="Epx.Controls.SearchBox.watermarkBlur(event, this.title)" autocomplete="off" data-searchtype="searchbox" data-pgarea="header" ms.interactiontype="2" ms.title="search" ms.pgarea="header" ms.searchtype="enter-key">
+      <div id="SearchFlyoutContainer" style="display: none; text-align: left; border: 1px solid buttonshadow; position: absolute; z-index: 1000; padding: 2px; color: rgb(255, 255, 255); font-family: Arial; font-size: 16px; background-color: rgb(255, 255, 255);"><div id="SuggestionContainer"><ul data-pgarea="header" data-searchtype="search dropdown" style="list-style: none; padding: 4px 2px 0px 1px; cursor: pointer; margin: 1px; white-space: nowrap;" ms.interactiontype="2" ms.title="search" ms.pgarea="header" ms.searchtype="suggested keyword"></ul></div></div></div>
+    </form>
+    
+    
+  </div>
+</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </header>
+
+    <div id="overlayMaskHeader"></div></div>
+
+    
+    
+    
+    <div id="jumpInfo" style="display: none">We’re sorry. The content you requested has been removed. You’ll be auto redirected in 1 second.</div>
+
+
+
+
+
+<link type="text/css" rel="stylesheet">
+<link type="text/css" rel="stylesheet">
+
+
+    <div id="breadcrumbs" ms.pgarea="body" ms.cmpgrp="breadcrumbs">
+        <div id="breadcrumbDesktop" class="breadCrumb">
+                        <span class="breadcrumbEllipsis"><a href="https://msdn.microsoft.com/en-us/library/aa364229(v=vs.85).aspx" title="File Management"></a></span>
+                        <span><a href="https://msdn.microsoft.com/en-us/library/bb540531(v=vs.85).aspx" title="About File Management"><span>About File Management</span></a></span>
+                        <span><a href="https://msdn.microsoft.com/en-us/library/aa365149(v=vs.85).aspx" title="Input and Output (I/O)"><span>Input and Output (I/O)</span></a></span>
+                        <span class="breadcrumbDropSmall">
+                            <a id="breadcrumbDropDownButton" href="https://msdn.microsoft.com/en-us/library/aa365198(v=vs.85).aspx#" targethref="https://msdn.microsoft.com/en-us/library/aa365149(v=vs.85).aspx" title="I/O Concepts" role="button" aria-expanded="false"><span>I/O Concepts</span></a>
+                        </span>
+        </div>
+        <div id="breadcrumbDropDownMenu" style="display: none;"></div>
+
+        <div id="breadcrumbTablet" class="breadCrumb">
+                        <span class="breadcrumbEllipsis"><a href="https://msdn.microsoft.com/en-us/library/aa365149(v=vs.85).aspx" title="Input and Output (I/O)"></a></span>
+                    <span><a href="https://msdn.microsoft.com/en-us/library/aa365199(v=vs.85).aspx" title="I/O Concepts"><span>I/O Concepts</span></a></span>
+                <span class="breadcrumbDropSmall"><a id="tocDropDownButton" href="https://msdn.microsoft.com/en-us/library/aa365198(v=vs.85).aspx#" title="I/O Completion Ports" role="button" aria-expanded="false"><span>I/O Completion Ports</span></a></span>
+        <div id="navigationButtons">
+            <a id="isd_print" href="https://msdn.microsoft.com/en-us/library/aa365198(d=printer,v=vs.85).aspx" rel="nofollow"><ins class="print"></ins>Print </a>
+            <a id="isd_printABook" href="https://msdn.microsoft.com/en-us/library/export/help/?returnurl=%2fen-us%2flibrary%2faa365198(v%3dvs.85).aspx">
+                <ins class="export"></ins>Export (<span class="count">0</span>)
+            </a>
+        </div></div>
+        <div id="tocDropDownMenu" style="display: none;"></div>
+        <div id="breadcrumbMobile" class="breadCrumb">
+                <span class="breadcrumbEllipsis"><a href="https://msdn.microsoft.com/en-us/library/aa365199(v=vs.85).aspx" title="I/O Concepts"></a></span>
+            <span class="breadcrumbDropSmall"><a id="tocPopupButton" href="https://msdn.microsoft.com/en-us/library/aa365198(v=vs.85).aspx#" title="I/O Completion Ports" role="button" aria-expanded="false"><span>I/O Completion Ports</span></a></span>
+        <div id="navigationButtons">
+            <a id="isd_print" href="https://msdn.microsoft.com/en-us/library/aa365198(d=printer,v=vs.85).aspx" rel="nofollow"><ins class="print"></ins>Print </a>
+            <a id="isd_printABook" href="https://msdn.microsoft.com/en-us/library/export/help/?returnurl=%2fen-us%2flibrary%2faa365198(v%3dvs.85).aspx">
+                <ins class="export"></ins>Export (<span class="count">0</span>)
+            </a>
+        </div></div>
+    </div>
+    <div id="tocPopupMenu" style="display: none;">
+        <div id="tocPopMenuClose" class="tocCloseLarge" role="button" aria-label="Close Popup Menu" tabindex="0"></div>
+        <div id="tocTitle">I/O Completion Ports</div>        
+    </div>
+
+    
+
+
+        <div id="body" ms.pgarea="body" class="">
+            <span id="tabletView_large"></span>
+            <span id="tabletView_small"></span>
+            <span id="mobileView"></span>
+            
+
+
+
+
+
+
+
+
+
+    <div id="leftNav" ms.cmpgrp="left toc" role="navigation" aria-label="left toc" style="height: auto;">
+
+    
+
+
+<div id="tocnav" class="ArchiveV2" style="">
+    <div class="tocunselected">
+        <div id="tocExpandArea" style="display: block;">
+            <span class="toc_empty"></span>
+            <span id="tocExpandButton"><a href="https://msdn.microsoft.com/en-us/library/aa365198(v=vs.85).aspx#"></a></span>
+        </div>
+        <div id="tocExpand"><div class="toclevel " data-toclevel="1">
+<span class="toc_empty"></span><a href="https://msdn.microsoft.com/en-us/library/cc644950(v=vs.85).aspx" mtpsaliasid="" mtpsassetid="" mtpsshortid="" title="File Buffering">File Buffering</a>                </div><div class="toclevel " data-toclevel="1">
+<span class="toc_empty"></span><a href="https://msdn.microsoft.com/en-us/library/aa364218(v=vs.85).aspx" mtpsaliasid="" mtpsassetid="" mtpsshortid="" title="File Caching">File Caching</a>                </div></div>
+    <div class="toclevel " data-toclevel="1">
+<span class="toc_empty"></span><a href="https://msdn.microsoft.com/en-us/library/aa365683(v=vs.85).aspx" mtpsaliasid="" mtpsassetid="" mtpsshortid="" title="Synchronous and Asynchronous I/O">Synchronous and Asynchronous I/O</a>                </div><div class="toclevel " data-toclevel="1">
+<span class="toc_empty"></span><a href="https://msdn.microsoft.com/en-us/library/aa363789(v=vs.85).aspx" mtpsaliasid="" mtpsassetid="" mtpsshortid="" title="Canceling Pending I/O Operations">Canceling Pending I/O Operations</a>                </div><div class="toclevel " data-toclevel="1">
+<span class="toc_empty"></span><a href="https://msdn.microsoft.com/en-us/library/aa363772(v=vs.85).aspx" mtpsaliasid="" mtpsassetid="" mtpsshortid="" title="Alertable I/O">Alertable I/O</a>                </div></div>
+    <div class="tocselected"><div class="toclevel current" data-toclevel="1">
+<span class="toc_empty"></span><a href="./I O Completion Ports (Windows)_files/I O Completion Ports (Windows).htm" mtpsaliasid="" mtpsassetid="" mtpsshortid="" title="I/O Completion Ports">I/O Completion Ports</a>                </div><div class="tocPadding"></div></div>
+    <div class="tocunselected">
+                
+                
+                
+                
+                
+                
+    </div>
+    <a id="tocMenuToggler" href="javascript:void(0)" role="button">
+        <span id="tocMenuTogglerIcon" class="tocMenuCollapse"></span>
+        <div id="tocMenuTogglerLabel">TOC</div>
+    </a>
+</div>            <div style="display:none">
+                <div id="CollapseLocalizeString">Collapse the table of content</div>
+                <div id="ExpandLocalizeString">Expand the table of content</div>
+            </div>
+        <div>
+            <a id="isd_archiveControlResponsive" style="display:none;" href="javascript:void(0)" role="button" aria-label="Hide Archived Versions" data-include-archive="Show Archived Versions" data-exclude-archive="Hide Archived Versions">
+            </a>
+            <div id="isd_archiveInstrument" style="display:none">This documentation is archived and is not being maintained.</div>
+        </div>
+    </div>
+     <div id="content" class="content" ms.cmpgrp="content body" role="main">
+
+
+
+
+
+
+
+
+    <div id="archiveDisclaimerText" style="display:none">This documentation is archived and is not being maintained.</div>
+
+
+
+
+<div class="topic" xmlns="http://www.w3.org/1999/xhtml">
+  <h1 class="title">I/O Completion Ports</h1>
+  
+  <div id="mainSection">
+<div class="clsServerSDKContent">
+
+</div>
+<p>I/O completion ports provide an efficient threading model for processing multiple asynchronous I/O requests on a 
+    multiprocessor system. When a process creates an I/O completion port, the system creates an associated queue 
+    object for requests whose sole purpose is to service these requests. Processes that handle many concurrent 
+    asynchronous I/O requests can do so more quickly and efficiently by using I/O completion ports in conjunction with 
+    a pre-allocated thread pool than by creating threads at the time they receive an I/O request.</p>
+<h2><a id="How_I_O_Completion_Ports_Work"></a><a id="how_i_o_completion_ports_work"></a><a id="HOW_I_O_COMPLETION_PORTS_WORK"></a>How I/O Completion Ports Work</h2>
+<p>The <a href="https://msdn.microsoft.com/en-us/library/aa363862(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">CreateIoCompletionPort</strong></a> function creates an 
+     I/O completion port and associates one or more file handles with that port. When an asynchronous I/O operation on 
+     one of these file handles completes, an I/O completion packet is queued in first-in-first-out (FIFO) order to the 
+     associated I/O completion port. One powerful use for this mechanism is to combine the synchronization point for 
+     multiple file handles into a single object, although there are also other useful applications. Please note that 
+     while the packets are queued in FIFO order they may be dequeued in a different order.</p>
+<div class="alert"><strong>Note</strong>&nbsp;&nbsp;<p class="note">The term <em>file handle</em> as used here refers to a system abstraction representing an 
+      overlapped I/O endpoint, not only a file on disk. For example, it can be a network endpoint, TCP socket, named 
+      pipe, or mail slot. Any system object that supports overlapped I/O can be used. For a list of related I/O 
+      functions, see the end of this topic.</p>
+</div>
+<div>&nbsp;</div>
+<p>When a file handle is associated with a completion port, the status block passed in will not be updated until 
+     the packet is removed from the completion port. The only exception is if the original operation returns 
+     synchronously with an error. A thread (either one created by the main thread or the main thread itself) uses the 
+     <a href="https://msdn.microsoft.com/en-us/library/aa364986(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">GetQueuedCompletionStatus</strong></a> function to wait 
+     for a completion packet to be queued to the I/O completion port, rather than waiting directly for the 
+     asynchronous I/O to complete. Threads that block their execution on an I/O completion port are released in 
+     last-in-first-out (LIFO) order, and the next completion packet is pulled from the I/O completion port's FIFO 
+     queue for that thread. This means that, when a completion packet is released to a thread, the system releases the 
+     last (most recent) thread associated with that port, passing it the completion information for the oldest I/O 
+     completion.</p>
+<p>Although any number of threads can call 
+     <a href="https://msdn.microsoft.com/en-us/library/aa364986(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">GetQueuedCompletionStatus</strong></a> for a specified I/O 
+     completion port, when a specified thread calls 
+     <strong>GetQueuedCompletionStatus</strong> the first time, it 
+     becomes associated with the specified I/O completion port until one of three things occurs: The thread exits, 
+     specifies a different I/O completion port, or closes the I/O completion port. In other words, a single thread can 
+     be associated with, at most, one I/O completion port.</p>
+<p>When a completion packet is queued to an I/O completion port, the system first checks how many threads 
+     associated with that port are running. If the number of threads running is less than the concurrency value 
+     (discussed in the next section), one of the waiting threads (the most recent one) is allowed to process the 
+     completion packet. When a running thread completes its processing, it typically calls 
+     <a href="https://msdn.microsoft.com/en-us/library/aa364986(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">GetQueuedCompletionStatus</strong></a> again, at which 
+     point it either returns with the next completion packet or waits if the queue is empty.</p>
+<p>Threads can use the 
+     <a href="https://msdn.microsoft.com/en-us/library/aa365458(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">PostQueuedCompletionStatus</strong></a> function to place 
+     completion packets in an I/O completion port's queue. By doing so, the completion port can be used to receive 
+     communications from other threads of the process, in addition to receiving I/O completion packets from the I/O 
+     system. The <strong>PostQueuedCompletionStatus</strong> 
+     function allows an application to queue its own special-purpose completion packets to the I/O completion port 
+     without starting an asynchronous I/O operation. This is useful for notifying worker threads of external events, 
+     for example.</p>
+<p>The I/O completion port handle and every file handle associated with that particular I/O completion port are 
+     known as <em>references to the I/O completion port</em>. The I/O completion port is released when 
+     there are no more references to it. Therefore, all of these handles must be properly closed to release the I/O 
+     completion port and its associated system resources. After these conditions are satisfied, an application should 
+     close the I/O completion port handle by calling the 
+     <a href="https://msdn.microsoft.com/en-us/library/ms724211(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">CloseHandle</strong></a> function.</p>
+<div class="alert"><strong>Note</strong>&nbsp;&nbsp;<p class="note">An I/O completion port is associated with the process that created it and is not sharable between processes. 
+      However, a single handle is sharable between threads in the same process.</p>
+</div>
+<div>&nbsp;</div>
+<h2><a id="Threads_and_Concurrency"></a><a id="threads_and_concurrency"></a><a id="THREADS_AND_CONCURRENCY"></a>Threads and Concurrency</h2>
+<p>The most important property of an I/O completion port to consider carefully is the concurrency value. The 
+     concurrency value of a completion port is specified when it is created with 
+     <a href="https://msdn.microsoft.com/en-us/library/aa363862(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">CreateIoCompletionPort</strong></a> via the 
+     <em>NumberOfConcurrentThreads</em> parameter. This value limits the number of runnable threads 
+     associated with the completion port. When the total number of runnable threads associated with the completion 
+     port reaches the concurrency value, the system blocks the execution of any subsequent threads associated with 
+     that completion port until the number of runnable threads drops below the concurrency value.</p>
+<p>The most efficient scenario occurs when there are completion packets waiting in the queue, but no waits can be 
+     satisfied because the port has reached its concurrency limit. Consider what happens with a concurrency value of 
+     one and multiple threads waiting in the 
+     <a href="https://msdn.microsoft.com/en-us/library/aa364986(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">GetQueuedCompletionStatus</strong></a> function call. In 
+     this case, if the queue always has completion packets waiting, when the running thread calls 
+     <strong>GetQueuedCompletionStatus</strong>, it will not block 
+     execution because, as mentioned earlier, the thread queue is LIFO. Instead, this thread will immediately pick up 
+     the next queued completion packet. No thread context switches will occur, because the running thread is 
+     continually picking up completion packets and the other threads are unable to run.</p>
+<div class="alert"><strong>Note</strong>&nbsp;&nbsp;<p class="note">In the previous example, the extra threads appear to be useless and never run, but that assumes that the 
+      running thread never gets put in a wait state by some other mechanism, terminates, or otherwise closes its 
+      associated I/O completion port. Consider all such thread execution ramifications when designing the 
+      application.</p>
+</div>
+<div>&nbsp;</div>
+<p>The best overall maximum value to pick for the concurrency value is the number of CPUs on the computer. If your 
+     transaction required a lengthy computation, a larger concurrency value will allow more threads to run. Each 
+     completion packet may take longer to finish, but more completion packets will be processed at the same time. You 
+     can experiment with the concurrency value in conjunction with profiling tools to achieve the best effect for your 
+     application.</p>
+<p>The system also allows a thread waiting in 
+     <a href="https://msdn.microsoft.com/en-us/library/aa364986(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">GetQueuedCompletionStatus</strong></a> to process a 
+     completion packet if another running thread associated with the same I/O completion port enters a wait state for 
+     other reasons, for example the <a href="https://msdn.microsoft.com/en-us/library/ms686345(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">SuspendThread</strong></a> function. 
+     When the thread in the wait state begins running again, there may be a brief period when the number of active 
+     threads exceeds the concurrency value. However, the system quickly reduces this number by not allowing any new 
+     active threads until the number of active threads falls below the concurrency value. This is one reason to have 
+     your application create more threads in its thread pool than the concurrency value. Thread pool management is 
+     beyond the scope of this topic, but a good rule of thumb is to have a minimum of twice as many threads in the 
+     thread pool as there are processors on the system. For additional information about thread pooling, see 
+     <a href="https://msdn.microsoft.com/en-us/library/ms686760(v=vs.85).aspx">Thread Pools</a>.</p>
+<h2><a id="Supported_I_O_Functions"></a><a id="supported_i_o_functions"></a><a id="SUPPORTED_I_O_FUNCTIONS"></a>Supported I/O Functions</h2>
+<p>The following functions can be used to start I/O operations that complete by using I/O completion ports. You 
+     must pass the function an instance of the <a href="https://msdn.microsoft.com/en-us/library/ms684342(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">OVERLAPPED</strong></a> 
+     structure and a file handle previously associated with an I/O completion port (by a call to 
+     <a href="https://msdn.microsoft.com/en-us/library/aa363862(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">CreateIoCompletionPort</strong></a>) to enable 
+     the I/O completion port mechanism:</p>
+<ul>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/aa365146(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">ConnectNamedPipe</strong></a>
+</li>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/aa363216(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">DeviceIoControl</strong></a>
+</li>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/aa365203(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">LockFileEx</strong></a>
+</li>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/aa365465(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">ReadDirectoryChangesW</strong></a>
+</li>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/aa365467(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">ReadFile</strong></a>
+</li>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/aa365790(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">TransactNamedPipe</strong></a>
+</li>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/aa363479(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">WaitCommEvent</strong></a>
+</li>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/aa365747(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">WriteFile</strong></a>
+</li>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/ms741692(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">WSASendMsg</strong></a>
+</li>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/ms741693(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">WSASendTo</strong></a>
+</li>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/ms742203(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">WSASend</strong></a>
+</li>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/ms741686(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">WSARecvFrom</strong></a>
+</li>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/ms741687(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">WSARecvMsg</strong></a>
+</li>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/ms741688(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">WSARecv</strong></a>
+</li>
+</ul>
+<h2><a id="related_topics"></a>Related topics</h2>
+<dl>
+<dt><strong></strong></dt>
+<dt>
+<a href="https://msdn.microsoft.com/en-us/library/ms681917(v=vs.85).aspx">About Processes and Threads</a>
+</dt>
+<dt>
+<a href="https://msdn.microsoft.com/en-us/library/aa363484(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">BindIoCompletionCallback</strong></a>
+</dt>
+<dt>
+<a href="https://msdn.microsoft.com/en-us/library/aa363862(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">CreateIoCompletionPort</strong></a>
+</dt>
+<dt>
+<a href="https://msdn.microsoft.com/en-us/library/aa364986(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">GetQueuedCompletionStatus</strong></a>
+</dt>
+<dt>
+<a href="https://msdn.microsoft.com/en-us/library/aa364988(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">GetQueuedCompletionStatusEx</strong></a>
+</dt>
+<dt>
+<a href="https://msdn.microsoft.com/en-us/library/aa365458(v=vs.85).aspx"><strong xmlns="http://www.w3.org/1999/xhtml">PostQueuedCompletionStatus</strong></a>
+</dt>
+</dl>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</div>
+</div>
+
+
+
+
+
+
+<div class="libraryMemberFilter">
+    <div class="filterContainer">
+        <span>Show:</span>
+        <label>
+            <input type="checkbox" class="libraryFilterInherited" checked="checked" value="Inherit">Inherited
+        </label>
+        <label>
+            <input type="checkbox" class="libraryFilterProtected" checked="checked" value="Protected">Protected
+        </label>
+    </div>
+</div>
+    
+<input type="hidden" id="libraryMemberFilterEmptyWarning" value="There are no members available with your current filter settings.">
+
+
+
+    </div>
+<div id="rightNavigationMenu" ms.cmpgrp="right nav" style="">
+    <div id="mobileButtons">
+        
+    </div>
+    <div id="navMain">
+        <div id="closeNavigation">
+            <a class="tocCloseSmall" id="closeButton"></a>
+        </div>
+        <div id="navigationButtons">
+            <a id="isd_print" href="https://msdn.microsoft.com/en-us/library/aa365198(d=printer,v=vs.85).aspx" rel="nofollow"><ins class="print"></ins>Print </a>
+            <a id="isd_printABook2" href="https://msdn.microsoft.com/en-us/library/export/help/?returnurl=%2fen-us%2flibrary%2faa365198(v%3dvs.85).aspx">
+                <ins class="export"></ins>Export (<span class="count">0</span>)
+            </a>
+            <a id="isdShare" href="https://msdn.microsoft.com/en-us/library/aa365198(v=vs.85).aspx#" role="button" aria-expanded="false">
+                <ins class="share"></ins>Share
+            </a>
+            <div id="socials" style="display: none;">
+                <a class="isdFacebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fmsdn.microsoft.com%2Fen-us%2Flibrary%2Fwindows%2Fdesktop%2Faa365198(v%3Dvs.85).aspx" aria-label="Share on Facebook">
+                    <ins class="facebook"></ins>
+                </a>
+                <a class="isdTwitter" href="https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fmsdn.microsoft.com%2Fen-us%2Flibrary%2Fwindows%2Fdesktop%2Faa365198(v%3Dvs.85).aspx&text=I%2FO%20Completion%20Ports%20(Windows)&tw_p=tweetbutton&url=https%3A%2F%2Fmsdn.microsoft.com%2Fen-us%2Flibrary%2Fwindows%2Fdesktop%2Faa365198(v%3Dvs.85).aspx" aria-label="Share on Twitter">
+                    <ins class="twitter"></ins>
+                </a>
+                <a class="isdGooglePlus" href="https://plus.google.com/share?url=https%3A%2F%2Fmsdn.microsoft.com%2Fen-us%2Flibrary%2Fwindows%2Fdesktop%2Faa365198(v%3Dvs.85).aspx" aria-label="Share on Google+">
+                    <ins class="googlePlus"></ins>
+                </a>
+            </div>
+        </div>
+        <div id="indoc_toc" style="display: none" ms.cmpgrp="indoc toc">
+            <div id="indoc_title">IN THIS ARTICLE</div>
+            <ul id="indoc_toclist"></ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+        </div>
+        <div class="clear"></div>
+
+        
+
+<input name="__RequestVerificationToken" type="hidden" value="CXHJlmUwfp2tH2FX4U5aZE8C-Sm7OloyJ5HcVmTemz1rssHXiW3rXYHU23cTrjY3CgVn66nG-XmQa3rfEDzqTALmjhw1">
+<input id="ratingValueSubmitUrl" type="hidden" value="https://msdn.microsoft.com/en-us/library/feedback/rate/aa365198(v=vs.85).aspx">
+<input id="ratingAdditionalSubmitUrl" type="hidden" value="https://msdn.microsoft.com/en-us/library/feedback/additional/aa365198(v=vs.85).aspx">
+<input id="isTopicRated" type="hidden" value="false">
+
+
+
+
+    <div id="lib-footer">
+        
+
+    
+    <link type="text/css" rel="stylesheet">
+    
+        
+    <div id="ux-footer" class="" style="" dir="ltr" ms.pgarea="footer">
+
+
+    <div id="standardRatingBefore" class="clear stdr-container-before"></div>
+    <div id="standardRating" class="stdr-container" ms.pgarea="body" style="width: 1730px; margin-left: 0px; display: block;">
+        <div class="stdr-close" style="display: none;"></div>
+        <div class="stdr-vote stdr-content">
+            <div class="stdr-content">
+                <span class="stdr-votetitle">Is this page helpful?</span>
+                <button class="stdr-yes" aria-label="Yes, this page was helpful">Yes</button>
+                <button class="stdr-no" aria-label="No, this page was not helpful">No</button>
+                <input id="s_ratingValue" type="hidden" value="">
+            </div>
+        </div>
+        <div class="stdr-feedback" style="display: none">
+            <div class="stdr-form">
+                <div class="stdr-fieldtitle">Additional feedback?</div>
+                <textarea class="stdr-detail" rows="6" maxlength="1500"></textarea>
+                <div>
+                    <span class="stdr-count"><span class="stdr-charcnt">1500</span> characters remaining</span>
+                    <div class="stdr-buttons">
+                        <button class="stdr-provide" aria-label="Submit my additional feedback">Submit</button>
+                        <button class="stdr-skip" aria-label="Skip additional feedback">Skip this</button>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="stdr-thanks" style="display: none">
+            <div class="stdr-content">
+                <span class="stdr-thankyou">Thank you!</span>
+                <span class="stdr-appreciate">We appreciate your feedback.</span>
+            </div>
+        </div>
+
+        
+        <div id="contentFeedbackQAContainer" style="display: none;"></div>
+    </div>
+    <div id="standardRatingPlaceholder" style="display: none;"></div>
+    
+
+        <footer class="top" role="navigation" aria-label="footer">
+            <div data-fragmentname="LeftLinks" id="Fragment_LeftLinks" xmlns="http://www.w3.org/1999/xhtml">
+  
+  <div class="linkList">
+    <div class="linkListTitle" aria-label="heading of link list">Dev centers</div>
+    <ul class="links">
+      <li>
+        <a href="https://dev.windows.com/" id="LeftLinks_2148_1" class="windowsBlue" xmlns="http://www.w3.org/1999/xhtml">Windows</a>
+      </li>
+      <li>
+        <a href="http://dev.office.com/" id="LeftLinks_2148_3" class="office" xmlns="http://www.w3.org/1999/xhtml">Office</a>
+      </li>
+      <li>
+        <a href="https://msdn.microsoft.com/vstudio" id="LeftLinks_2148_4" class="visualStudio" xmlns="http://www.w3.org/1999/xhtml">Visual Studio</a>
+      </li>
+      <li>
+        <a href="http://azure.microsoft.com/en-us/documentation/" target="_blank" id="LeftLinks_2148_12" xmlns="http://www.w3.org/1999/xhtml">Microsoft Azure</a>
+      </li>
+      <li>
+        <a href="https://msdn.microsoft.com/developer-centers-msdn" id="LeftLinks_2148_5" xmlns="http://www.w3.org/1999/xhtml">More...</a>
+      </li>
+    </ul>
+  </div>
+</div>
+            <div id="rightLinks">
+                <div data-fragmentname="CenterLinks1" id="Fragment_CenterLinks1" xmlns="http://www.w3.org/1999/xhtml">
+  
+  <div class="linkList">
+    <div class="linkListTitle" aria-label="heading of link list">Learning resources</div>
+    <ul class="links">
+      <li>
+        <a href="http://www.microsoftvirtualacademy.com/" id="CenterLinks1_2151_4" xmlns="http://www.w3.org/1999/xhtml">Microsoft Virtual Academy</a>
+      </li>
+      <li>
+        <a href="http://channel9.msdn.com/" id="CenterLinks1_2151_5" xmlns="http://www.w3.org/1999/xhtml">Channel 9</a>
+      </li>
+      <li>
+        <a href="https://msdn.microsoft.com/magazine/" id="CenterLinks1_2151_7" xmlns="http://www.w3.org/1999/xhtml">MSDN Magazine</a>
+      </li>
+    </ul>
+  </div>
+</div>
+                <div data-fragmentname="CenterLinks2" id="Fragment_CenterLinks2" xmlns="http://www.w3.org/1999/xhtml">
+  
+  <div class="linkList">
+    <div class="linkListTitle" aria-label="heading of link list">Community</div>
+    <ul class="links">
+      <li>
+        <a href="https://social.msdn.microsoft.com/forums/en-us/home" id="CenterLinks2_2151_8" xmlns="http://www.w3.org/1999/xhtml">Forums</a>
+      </li>
+      <li>
+        <a href="http://blogs.msdn.com/b/developer-tools/" id="CenterLinks2_2151_9" xmlns="http://www.w3.org/1999/xhtml">Blogs</a>
+      </li>
+      <li>
+        <a href="http://www.codeplex.com/" id="CenterLinks2_2151_10" xmlns="http://www.w3.org/1999/xhtml">Codeplex</a>
+      </li>
+    </ul>
+  </div>
+</div>
+                <div data-fragmentname="CenterLinks3" id="Fragment_CenterLinks3" xmlns="http://www.w3.org/1999/xhtml">
+  
+  <div class="linkList">
+    <div class="linkListTitle" aria-label="heading of link list">Support</div>
+    <ul class="links">
+      <li>
+        <a href="https://msdn.microsoft.com/hh361695" id="CenterLinks3_2151_11" xmlns="http://www.w3.org/1999/xhtml">Self support</a>
+      </li>
+    </ul>
+  </div>
+</div>
+                <div data-fragmentname="CenterLinks4" id="Fragment_CenterLinks4" xmlns="http://www.w3.org/1999/xhtml" class="nth-child-4n">
+  
+  <div class="linkList">
+    <div class="linkListTitle" aria-label="heading of link list">Programs</div>
+    <ul class="links">
+      <li>
+        <a href="https://www.microsoft.com/bizspark/" id="CenterLinks4_2151_13" xmlns="http://www.w3.org/1999/xhtml">BizSpark (for startups)</a>
+      </li>
+      <li>
+        <a href="https://imagine.microsoft.com/en-us" id="CenterLinks4_2151_22" xmlns="http://www.w3.org/1999/xhtml">Microsoft Imagine (for students)</a>
+      </li>
+    </ul>
+  </div>
+</div>
+            </div>
+        </footer>
+
+        <footer class="bottom" role="contentinfo">
+            <span class="localeContainer">
+                
+    <form class="selectLocale" id="selectLocaleForm" action="https://msdn.microsoft.com/en-us/selectlocale-dmc">
+        <input type="hidden" name="fromPage" value="https%3a%2f%2fmsdn.microsoft.com%2fen-us%2flibrary%2faa365198(v%3dvs.85).aspx">
+        <a href="https://msdn.microsoft.com/en-us/library/aa365198(v=vs.85).aspx#" onclick="$(&#39;#selectLocaleForm&#39;).submit();return false;" title="Change your language">United States (English)</a>
+    </form>
+
+
+            </span>
+
+            <div data-fragmentname="BottomLinks" id="Fragment_BottomLinks" xmlns="http://www.w3.org/1999/xhtml">
+  
+  <div class="linkList">
+    <ul class="links horizontal">
+      <li>
+        <a href="https://msdn.microsoft.com/newsletter.aspx" id="BottomLinks_2148_7" xmlns="http://www.w3.org/1999/xhtml">Newsletter</a>
+      </li>
+      <li>
+        <a href="https://msdn.microsoft.com/dn529288" id="BottomLinks_2148_8" xmlns="http://www.w3.org/1999/xhtml">Privacy &amp; cookies</a>
+      </li>
+      <li>
+        <a href="https://msdn.microsoft.com/cc300389" id="BottomLinks_2148_9" xmlns="http://www.w3.org/1999/xhtml">Terms of use</a>
+      </li>
+      <li>
+        <a href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/" id="BottomLinks_2148_10" xmlns="http://www.w3.org/1999/xhtml">Trademarks</a>
+      </li>
+    </ul>
+  </div>
+</div>
+            <span class="logoLegal">
+                <span class="logoSpan clip67x13" role="img" tabindex="0" aria-label="microsoft logo">
+                    <img alt="logo" class="logo" src="./I O Completion Ports (Windows)_files/HeaderFooterSprite.png">
+                </span>
+                <span class="copyright">© 2016 Microsoft</span>
+            </span>
+        </footer>
+    </div>
+    
+
+    </div>
+
+
+        <div class="footerPrintView">
+            <div class="footerCopyrightPrintView">© 2016 Microsoft</div>
+        </div>
+
+        
+        
+
+        
+        
+        
+
+    <input id="tocPaddingPerLevel" type="hidden" value="17">
+
+
+
+        <input id="MtpsDevice" type="hidden" value="Default">
+
+
+<!--[CDATA[ Third party scripts and code linked to or referenced from this website are licensed to you by the parties that own such code, not by Microsoft.  See ASP.NET Ajax CDN Terms of Use – http://www.asp.net/ajaxlibrary/CDN.ashx. ]]-->
+
+        
+        
+        
+            
+        
+
+<!--[CDATA[ WebTrends view model not available or IncludeLegacyWebTrendsScriptInGlobal feature flag is off]]-->
+
+
+
+
+<div id="globalRequestVerification">
+    <input name="__RequestVerificationToken" type="hidden" value="zC4OHhXPMQnT88TXQrlY2hJUG2ISSlmmt-HzToy3nu7MwVKWs0-4o7cbmc8QCvXB6YM2kstSv38nVWRdnHw5TD1Y57A1">
+</div>
+
+
+    </div>
+
+    
+    
+
+    
+
+    
+<script type="text/javascript" class="mtps-injected">
+/*<![CDATA[*/
+(function(window,document){"use strict";function preload(scripts){for(var result=[],script,e,i=0;i<scripts.length;i++)script=scripts[i],script.hasOwnProperty("url")&&(e=document.createElement("script"),e.src=script.url,script.throwaway=e),result.push(script);return result}function inject(scripts,index){var script,elem;if(index>=scripts.length){delete mtps.injectScripts;return}script=scripts[index];elem=document.createElement("script");elem.className="mtps-injected";elem.async=!1;var isLoaded=!1,timeoutId=0,injectNextFnName="",injectNext=elem.onerror=function(){isLoaded||(isLoaded=!0,inject(scripts,index+1),window.clearTimeout(timeoutId),elem.onload=elem.onerror=elem.onreadystatechange=null,injectNextFnName&&delete mtps[injectNextFnName],elem.removeEventListener&&elem.removeEventListener("load",injectNext,!1))};elem.addEventListener?elem.addEventListener("load",injectNext,!1):elem.readyState==="uninitialized"?elem.onreadystatechange=function(){(this.readyState==="loaded"||this.readyState==="complete")&&injectNext()}:elem.onload=injectNext;script.hasOwnProperty("url")?(timeoutId=window.setTimeout(injectNext,12e4),elem.src=script.url):(injectNextFnName="_injectNextScript_"+index,mtps[injectNextFnName]=injectNext,timeoutId=window.setTimeout(injectNext,2e3),elem.text="try {\n"+script.txt+"\n} finally { MTPS."+injectNextFnName+" && MTPS."+injectNextFnName+"(); }");parent.appendChild(elem)}var mtps=window.MTPS||(window.MTPS={}),parent=document.getElementsByTagName("head")[0];mtps.injectScripts=function(scripts){inject(preload(scripts),0)}})(window,document);
+MTPS.injectScripts([
+	{ txt: "/**/\r\n(window.MTPS || (window.MTPS = {})).cdnDomains || (window.MTPS.cdnDomains = { \r\n\t\"image\": \"https://i-msdn.sec.s-msft.com\", \r\n\t\"js\": \"https://i2-msdn.sec.s-msft.com\", \r\n\t\"css\": \"https://i-msdn.sec.s-msft.com\", \r\n\t\"ttf\": \"https://i-msdn.sec.s-msft.com\"\r\n});\r\n/**/" },
+	{ txt: "//\n\n        window.appInsightsId = \u00275eb1b2eb-c47a-497a-a7ac-a1c230b2882f\u0027;\n        //" },
+	{ url: "https://i2-msdn.sec.s-msft.com/Combined.js?resources=0:Utilities,1:Layout,2:Header,3:Breadcrumbs,4:LibraryRightNavigationMenu,4:PrintExportButton,5:StandardRating,2:Footer,0:Topic,3:ResponsiveSupport,0:AppInsightsPerf,3:ResponsiveToc,0:ABTestControl,4:WEDCS,3:CmpgrpForHeader,1:SearchBox;/Areas/Epx/Content/Scripts:0,/Areas/Epx/Themes/Base/Content:1,/Areas/Centers/Themes/StandardDevCenter/Content:2,/Areas/Library/Content:3,/Areas/Library/Themes/Base/Content:4,/Areas/Global/Content:5\u0026amp;hashKey=9EA4C5099B7E4381672D12F8F835CBFE\u0026amp;v=B207AF2448A1E91C22F5D7E8A0481255" },
+	{ url: "https://i1.services.social.microsoft.com/search/Widgets/SearchBox.jss?boxid=HeaderSearchTextBox\u0026btnid=HeaderSearchButton\u0026minimumTermLength=2\u0026pgArea=header\u0026brand=Msdn\u0026loc=en-us\u0026focusOnInit=false\u0026emptyWatermark=true\u0026searchButtonTooltip=Search MSDN" },
+	{ url: "https://i2-msdn.sec.s-msft.com/Combined.js?resources=0:JumpRedirect,1:LibraryMemberFilter,2:Toc_Fixed,2:CodeSnippet,2:TopicNotInScope,2:VersionSelector,2:SurveyBroker;/Areas/Epx/Themes/Base/Content:0,/Areas/Library/Content:1,/Areas/Epx/Content/Scripts:2\u0026amp;hashKey=8B88EB517137869CDE8F8A6DFD775854\u0026amp;v=B207AF2448A1E91C22F5D7E8A0481255" },
+	{ txt: "$(document).ready(function() {\n        try {\n            var token = $(\"#globalRequestVerification input[name=\u0027__RequestVerificationToken\u0027]\").clone();\n            $(\"#siteFeedbackForm\").append(token);\n        } catch(err) {\n            \n        }\n    });" }
+]);
+
+/*]]>*/
+</script>
+
+<div id="overlayMask"></div><script src="./I O Completion Ports (Windows)_files/broker-config.js"></script></body></html>
