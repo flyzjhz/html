@@ -1,0 +1,434 @@
+//Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "wal.h"
+#include <ver.h>
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+IDWALICON               ICON    DISCARDABLE     "IDWALICO.ICO"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDWALMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New Log...",                 IDM_NEWLOG
+        MENUITEM "&Close Log...",               IDM_CLOSELOG
+        MENUITEM SEPARATOR
+        MENUITEM "&Exit",                       IDM_EXIT
+    END
+    MENUITEM "&Start...",                   IDM_APPOPTIONS
+    POPUP "&Control"
+    BEGIN
+        MENUITEM "&Open Socket...",             IDM_OPENSOCK
+        MENUITEM "&Close Socket",               IDM_CLOSESOCK
+        MENUITEM "&Abort Socket",               IDM_ABORTSOCK
+    END
+    POPUP "&Options"
+    BEGIN
+        MENUITEM "&Application...",             IDM_APPOPTIONS
+        MENUITEM "&I/O...",                     IDM_IOOPTIONS
+        MENUITEM "&OOB...",                     IDM_OOBOPTIONS
+        MENUITEM "Socket...",                   IDM_SOCKOPTIONS
+    END
+    POPUP "S&tatistics"
+    BEGIN
+        MENUITEM "&Update",                     IDM_SHOWSTATS
+        MENUITEM "&Reset",                      IDM_RESETSTATS
+        MENUITEM "&Details",                    IDM_DETAILSTATS
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About WAL...",               IDM_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
+ FILEFLAGSMASK 0x3L
+#ifdef _DEBUG
+ FILEFLAGS VS_FF_DEBUG
+#else
+ FILEFLAGS 0
+#endif
+#ifdef WIN32
+ FILEOS 0x4L
+#else
+ FILEOS 0x1L
+#endif
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "Windows Sockets Network Programming\0"
+            VALUE "FileDescription", "WinSock Application Launcher\0"
+            VALUE "FileVersion", "1.00\0"
+#ifdef WIN32
+            VALUE "InternalName", "WAL32\0"
+#else
+            VALUE "InternalName", "WAL\0"
+#endif
+            VALUE "LegalCopyright", "(c) Bob Quinn, 1995\0"
+            VALUE "OriginalFilename", "\0"
+            VALUE "ProductName", "Windows Sockets Network Programming\0"
+            VALUE "ProductVersion", "1.00\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""wal.h""\r\n"
+    "#include <ver.h>\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUT DIALOG DISCARDABLE  75, 50, 215, 154
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "About WAL"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,152,10,50,14
+    CTEXT           "WinSock Application Launcher      ------ WAL v1.00 ------         Bob Quinn (c) 1995   ",
+                    IDC_STATIC,36,15,104,25
+    ICON            IDWALICON,IDC_STATIC,6,9,18,20
+    LTEXT           "< Date and Time Compiled >",IDC_COMPILEDATE,40,45,144,
+                    11
+    GROUPBOX        "WinSock DLL information",IDC_STATIC,8,60,196,85
+    LTEXT           "wVersion:",IDS_DLLVER,16,75,72,7
+    LTEXT           "HiVersion:",IDS_DLLHIVER,124,75,68,8
+    LTEXT           "MaxSockets:",IDS_MAXSOCKS,16,130,67,9
+    LTEXT           "MaxDatagram:",IDS_MAXUDP,124,130,72,9
+    LTEXT           "Description:",IDS_DESCRIP,16,90,180,15
+    LTEXT           "Status:",IDS_STATUS,16,110,180,15
+END
+
+APPOPTIONDLG DIALOG DISCARDABLE  19, 25, 225, 179
+STYLE DS_MODALFRAME | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "WinSock Application Options"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "&Start!",IDOK,20,160,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,90,160,47,14
+    PUSHBUTTON      "Options...",IDOPTIONS,160,160,50,14
+    GROUPBOX        "Protocol",IDC_PROTOCOL,15,9,81,42
+    CONTROL         "DataStream (TCP)",IDC_DATASTREAM,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,21,23,71,9
+    CONTROL         "DataGram   (UDP)",IDC_DATAGRAM,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,21,35,70,8
+    GROUPBOX        "Role",IDC_ROLE,15,55,81,40
+    CONTROL         "Client Application",IDC_CLIENTAPP,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,21,67,71,10
+    CONTROL         "Server Application",IDC_SERVERAPP,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,21,81,71,8
+    GROUPBOX        "Operation Mode",IDC_OPMODES,119,16,89,60
+    CONTROL         "Blocking",IDC_BLOCKING,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP | WS_TABSTOP,126,30,81,13
+    CONTROL         "Non-Blocking",IDC_NONBLOCKING,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,126,44,81,13
+    CONTROL         "Asynchronous",IDC_ASYNCH,"Button",BS_AUTORADIOBUTTON | 
+                    WS_TABSTOP,126,57,59,13
+    RTEXT           "Hostname or Address",IDC_STATIC,13,107,72,10
+    EDITTEXT        IDC_HOSTID,90,105,119,12,ES_AUTOHSCROLL
+    RTEXT           "Service Name",IDC_STATIC,34,122,51,9
+    EDITTEXT        IDC_SERVICENAME,90,121,83,12,ES_AUTOHSCROLL
+    RTEXT           "Port Number",IDC_STATIC,44,138,41,10
+    EDITTEXT        IDC_PORTNUMBER,90,137,24,12,ES_AUTOHSCROLL
+END
+
+IOOPTIONDLG DIALOG DISCARDABLE  52, 50, 215, 108
+STYLE DS_MODALFRAME | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Application I/O Options"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,16,90,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,80,90,50,14
+    GROUPBOX        "I/O Parameters",IDC_STATIC,8,5,92,65
+    CONTROL         "Read",IDC_READ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,
+                    20,30,8
+    CONTROL         "Write",IDC_WRITE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    64,20,30,10
+    LTEXT           "Bytes per I/O",IDC_STATIC,12,35,45,10
+    LTEXT           "I/Os per Loop",IDC_STATIC,128,20,48,8
+    LTEXT           "Loop interval (ms)",IDC_STATIC,116,50,59,8
+    EDITTEXT        IDC_BYTES_PER_IO,60,35,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_IO_PER_LOOP,180,20,24,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_LOOP_INTERVAL,180,50,24,12,ES_AUTOHSCROLL
+    LTEXT           "Total Bytes",IDC_STATIC,16,50,40,10
+    EDITTEXT        IDC_MAXBYTES,60,50,36,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Advanced...",IDB_IOADVANCED,148,90,49,14
+    LTEXT           "Max I/Os per Loop",IDC_STATIC,112,35,64,8
+    EDITTEXT        IDC_MAX_IO_PER_LOOP,180,35,24,12,ES_AUTOHSCROLL
+    GROUPBOX        "Loop Parameters",IDC_STATIC,108,5,100,65
+    CONTROL         "I/O Sound",IDC_SOUND,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,16,75,54,8
+END
+
+OOBOPTIONDLG DIALOG DISCARDABLE  52, 50, 162, 97
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Out-of-band Data Options"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,22,78,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,90,78,50,14
+    LTEXT           "bytes",IDC_STATIC,126,3,20,8
+    CONTROL         "Send Oob",IDC_OOBSEND,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,13,49,11
+    LTEXT           "Send amount",IDC_STATIC,70,15,43,10
+    EDITTEXT        IDC_OOBSENDAMNT,119,12,37,12,ES_AUTOHSCROLL
+    CONTROL         "Poll for Oob",IDC_OOBPOLL,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,27,53,11
+    LTEXT           "Send Interval",IDC_STATIC,70,28,46,8
+    EDITTEXT        IDC_OOBSENDINTRVL,119,26,37,12,ES_AUTOHSCROLL
+    CONTROL         "Oob In Line",IDC_OOBINLINE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,42,56,9
+    LTEXT           "Recv amount",IDC_STATIC,70,43,45,8
+    EDITTEXT        IDC_OOBRECVAMNT,119,42,37,12,ES_AUTOHSCROLL
+    LTEXT           "Sound:",IDC_STATIC,11,62,23,10
+    CONTROL         "Oob Send",IDC_OOBOUTSOUND,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,42,60,44,12
+    CONTROL         "Oob Receive",IDC_OOBINSOUND,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,93,60,60,11
+END
+
+SOCKOPTIONDLG DIALOG DISCARDABLE  0, 0, 287, 168
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Socket Options"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,30,145,50,14
+    PUSHBUTTON      "getsockopt()*",IDB_GETSOCKOPT,116,145,50,14
+    CONTROL         "SO_ACCEPTCONN*",IDC_ACCEPTCONN,"Button",
+                    BS_AUTORADIOBUTTON,15,20,75,10
+    CONTROL         "SO_BROADCAST",IDC_BROADCAST,"Button",BS_AUTORADIOBUTTON,
+                    15,35,75,10
+    CONTROL         "SO_DEBUG",IDC_DEBUG,"Button",BS_AUTORADIOBUTTON,15,50,
+                    70,9
+    CONTROL         "SO_DONTLINGER",IDC_DONTLINGER,"Button",
+                    BS_AUTORADIOBUTTON,15,65,70,10
+    CONTROL         "SO_DONTROUTE",IDC_DONTROUTE,"Button",BS_AUTORADIOBUTTON,
+                    15,80,70,8
+    CONTROL         "SO_ERROR*",IDC_ERROR,"Button",BS_AUTORADIOBUTTON,15,95,
+                    70,8
+    CONTROL         "SO_KEEPALIVE",IDC_KEEPALIVE,"Button",BS_AUTORADIOBUTTON,
+                    15,110,69,8
+    CONTROL         "SO_LINGER",IDC_LINGER,"Button",BS_AUTORADIOBUTTON,96,50,
+                    72,10
+    CONTROL         "SO_OOBINLINE",IDC_OOBINLINE,"Button",BS_AUTORADIOBUTTON,
+                    96,20,70,10
+    CONTROL         "SO_RCVBUF",IDC_RCVBUF,"Button",BS_AUTORADIOBUTTON,96,35,
+                    73,8
+    CONTROL         "SO_REUSEADDR",IDC_REUSEADDR,"Button",BS_AUTORADIOBUTTON,
+                    96,65,71,8
+    CONTROL         "SO_SNDBUF",IDC_SNDBUF,"Button",BS_AUTORADIOBUTTON,96,80,
+                    68,9
+    CONTROL         "SO_TYPE*",IDC_TYPE,"Button",BS_AUTORADIOBUTTON,96,95,68,
+                    8
+    CONTROL         "TCP_NODELAY",IDC_TCPNODELAY,"Button",BS_AUTORADIOBUTTON,
+                    96,110,68,8
+    LTEXT           "socket:",IDC_STATIC,180,20,25,8
+    EDITTEXT        IDC_SOCKIN,215,20,38,12,ES_AUTOHSCROLL
+    LTEXT           "level:",IDC_STATIC,180,35,20,8
+    EDITTEXT        IDC_LEVELIN,215,35,55,12,ES_AUTOHSCROLL
+    LTEXT           "optval:",IDC_STATIC,180,50,25,8
+    EDITTEXT        IDC_OPTVAL,215,50,40,12,ES_AUTOHSCROLL
+    LTEXT           "optlen:",IDC_STATIC,180,65,24,8
+    EDITTEXT        IDC_OPTLEN,215,65,40,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "setsockopt()",IDB_SETSOCKOPT,208,145,50,15
+    LTEXT           "on/off:",IDC_STATIC,185,99,24,10
+    LTEXT           "linger:",IDC_STATIC,185,114,21,8
+    EDITTEXT        IDC_LINGERFLAG,215,99,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_LINGERSECS,215,114,40,12,ES_AUTOHSCROLL
+    GROUPBOX        "Linger",IDC_STATIC,176,86,100,46
+    GROUPBOX        "Other Parameter Values",IDC_STATIC,176,6,100,77
+    GROUPBOX        "Option Name",IDC_STATIC,9,7,161,125
+END
+
+SOCKETDLG DIALOG DISCARDABLE  0, 0, 146, 98
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "socket()"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,15,80,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,80,80,50,14
+    CONTROL         "Datastream (SOCK_STREAM)",IDC_SOCKDS,"Button",
+                    BS_AUTORADIOBUTTON,20,31,109,8
+    CONTROL         "Datagram (SOCK_DGRAM)",IDC_SOCKDG,"Button",
+                    BS_AUTORADIOBUTTON,20,41,105,10
+    GROUPBOX        "Type",IDC_STATIC,15,20,120,35
+    LTEXT           "Address Family: PF_INET",IDC_STATIC,15,10,85,10
+    LTEXT           "Protocol: 0 (not specified)",IDC_STATIC,15,63,85,8
+END
+
+IOADVANCEDDLG DIALOG DISCARDABLE  0, 0, 127, 63
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Loop Adjustment Parameters"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,8,45,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,68,45,50,14
+    LTEXT           "Loop up threshold:",IDC_STATIC,24,10,64,10
+    LTEXT           "Loop down threshold:",IDC_STATIC,16,25,72,8
+    EDITTEXT        IDC_LOOPUP,92,10,21,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_LOOPDN,92,25,20,12,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    CHARGEN_SEQ             " !""#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[^_`abcdefghijklmnopqrstuvwxyz{|}~"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    10000                   "[0] No Error"
+    10004                   "WSAEINTR: Interrupted system call"
+    10009                   "WSAEBADF: Bad file number"
+    10013                   "WSACCESS: Permission denied"
+    10014                   "WSAEFAULT: Bad address"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    10022                   "WSAEINVAL: Invalid argument"
+    10024                   "WSAEMFILE: Too many open files"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    10035                   "WSAEWOULDBLOCK: Operation would block"
+    10036                   "WSAEINPROGRESS: Operation now in progress"
+    10037                   "WSAEALREADY: Operation already in progress"
+    10038                   "WSAENOTSOCK: Socket operation on non-socket"
+    10039                   "WSAEDESTADDRREQ: Destination address required"
+    10040                   "WSAEMSGSIZE: Message too long"
+    10041                   "WSAEPROTOTYPE: Protocol wrong type for socket"
+    10042                   "WSAENOPROTOOPT: Bad protocol option"
+    10043                   "WSAEPROTONOSUPPORT: Protocol not supported"
+    10044                   "WSAESOCKTNOSUPPORT: Socket type not supported"
+    10045                   "WSAEOPNOTSUPP: Operation not supported on socket"
+    10046                   "WSAEPFNNOSUPPORT: Protocol family not supported"
+    10047                   "WSAEAFNNOSUPPORT: Address family not supported by protocol family"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    10048                   "WSAEADDRINUSE: Address already in use"
+    10049                   "WSAEADDRNOTAVAIL: Can't assign requested address"
+    10050                   "WSAENETDOWN: Network is down"
+    10051                   "WSAENETUNREACH: Network is unreachable"
+    10052                   "WSAENETRESET: Net dropped connection or reset"
+    10053                   "WSAECONNABORTED: Software caused connection abort"
+    10054                   "WSAECONNRESET: Connection reset by peer"
+    10055                   "WSAENOBUFS: No buffer space available"
+    10056                   "WSAEISCONN: Socket is already connected"
+    10057                   "WSAENOTCONN: Socket is not connected"
+    10058                   "WSAESHUTDOWN: Can't send after socket shutdown"
+    10059                   "WSAETOOMANYREFS: Too many references, can't splice"
+    10060                   "WSAETIMEDOUT: Connection timed out"
+    10061                   "WSAECONNREFUSED: Connection refused"
+    10062                   "WSAELOOP: Too many levels of symbolic links"
+    10063                   "WSAENAMETOOLONG: File name too long"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    10064                   "WSAEHOSTDOWN: Host is down"
+    10065                   "WSAEHOSTUNREACH: No Route to Host"
+    10066                   "WSAENOTEMPTY: Directory not empty"
+    10067                   "WSAEPROCLIM: Too many processes"
+    10068                   "WSAEUSERS: Too many users"
+    10069                   "WSAEDQUOT: Disc Quota Exceeded"
+    10070                   "WSAESTALE: Stale NFS file handle"
+    10071                   "WSAEREMOTE: Too many levels of remote in path"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    10091                   "WSASYSNOTREADY: Network SubSystem is unavailable"
+    10092                   "WSAVERNOTSUPPORTED: WINSOCK DLL Version out of range"
+    10093                   "WSANOTINITIALISED: Successful WSASTARTUP not yet performed"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    11001                   "WSAHOST_NOT_FOUND: Host not found"
+    11002                   "WSATRY_AGAIN: Non-Authoritative Host not found"
+    11003                   "WSANO_RECOVERY: Non-Recoverable errors: FORMERR, REFUSED, NOTIMP"
+    11004                   "WSANO_DATA: Valid name, no data record of requested type"
+END
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

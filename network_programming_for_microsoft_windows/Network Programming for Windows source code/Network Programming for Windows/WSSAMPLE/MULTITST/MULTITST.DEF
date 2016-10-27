@@ -1,0 +1,17 @@
+;------------------------
+; Filename: MULTITST.DEF 
+;------------------------
+
+NAME         MULTITST
+                     
+DESCRIPTION  'WinSock optional features demo (c) Bob Quinn 1995'
+CODE         PRELOAD DISCARDABLE
+DATA         PRELOAD MOVEABLE MULTIPLE
+
+HEAPSIZE     8192
+
+
+
+
+
+

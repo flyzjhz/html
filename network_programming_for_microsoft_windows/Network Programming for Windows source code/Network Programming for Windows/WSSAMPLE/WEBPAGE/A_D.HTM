@@ -1,0 +1,282 @@
+<HTML>
+
+<HEAD>
+<TITLE>Windows Sockets Network Programming</TITLE>
+</HEAD>
+
+<BODY>
+
+<H1><IMG SRC="winsock.gif" ALIGN="BOTTOM"> Appendix D: What You
+Need</H1>
+
+<P>
+This is a hypertext version of Appendix D in the text _Windows
+Sockets Network Programming_, by Bob Quinn and Dave Shute 
+<UL>
+<LI><A HREF="#EssentialFiles">Essential Files</A>
+<LI><A HREF="#CompileAndLinkMechanics">Compile and Link Mechanics</A>
+<LI><A HREF="#UsingDifferentWinSocks">Using Different Winsocks</A>
+<LI><A HREF="#UsingDifferentLanguages">Using Other Languages</A>
+</UL>
+
+<P>
+This appendix summarizes what you need to create a WinSock application
+and maintain a test environment. We tell you what files you need,
+where to get them, or how to create them yourself. We consider
+the mechanics of application creation and execution. We describe
+how to switch between different WinSock implementations, and we
+mention the use of languages other than C.<HR>
+
+<H2><A NAME="EssentialFiles">Essential Files</A></H2>
+
+<UL>
+<LI><A HREF="#WhereToGetThem">Where to Get Them</A>
+</UL>
+
+<P>
+The most essential file of all is a copy of the Windows Sockets
+version 1.1 specification itself (dated 20 January 1993). This
+is the definitive reference for WinSock by Martin Hall, Mark Towfiq,
+Geoff Arnold, David Treadwell, and Henry Sanders. The original
+work is in Microsoft Word version 2.0 format (<B>winsock.doc</B>),
+although it is also available in straight text (winsock.txt),
+postscript (winsock.ps), Windows help (winsock.hlp), and hypertext
+markup language (winsock.htm) formats.
+<P>
+The essential file for WinSock development is the <B>winsock.h</B>
+header file. This contains all the structure definitions, macro
+definitions, and function prototypes for the WinSock API. You
+need to <TT>#include</TT> this file in your WinSock source code
+files.
+<P>
+In most cases you'll also need a <B>winsock.lib</B> import library
+file for the 16-bit WinSock API, or <B>wsock32.lib</B> for the
+32-bit WinSock API. You can link with either library in order
+to load the WinSock dynamic link library--winsock.dll or wsock32.dll,
+respectively--at run time.
+<P>
+Of course, you'll also need a <B>winsock.dll</B> in order to run
+your 16-bit WinSock applications (or <B>wsock32.dll</B> for 32-bit
+applications). And these dynamic link libraries require a properly
+installed TCP/IP protocol stack and a network interface (Ethernet,
+SLIP, PPP, etc.).
+<P>
+Section A.2.1 (Appendix A) of the version 1.1 WinSock specification
+lists a number of other header files and indicates that any WinSock
+development kit must provide them. However, there is no need for
+them. The other header files are listed for backward compatibility
+with Berkeley source code. They are superfluous for a number of
+reasons: Their essential contents are already included in the
+WinSock.h file; you need to make some changes to most Berkeley
+Sockets source code to port them to WinSock anyway; and it's easy
+enough to <TT>#ifdef</TT> out the files if they are unavailable.
+<H3><A NAME="WhereToGetThem">Where to Get Them</A></H3>
+
+<P>
+The Windows Sockets specification (<B>winsock.doc)</B> and standard
+<B>winsock.h</B> and 16-bit <B>winsock.lib</B> files are available
+at many FTP sites on the Internet, including
+<P>
+ftp://ftp.sockets.com/winsock
+<P>
+ftp://sunsite.unc.edu/pub/micro/pc-stuff/ms-windows/winsock
+<P>
+ftp://ftp.microsoft.com/busys/winsock
+<P>
+If you already have a winsock.dll file, you can create your own
+copy of the 16-bit import library (winsock.lib) with the <I>implib.exe</I>
+utility that ships with Microsoft C, and Borland C. Just type
+<P>
+<TT><B>implib winsock.lib winsock.dll</B></TT> 
+<P>
+Many TCP/IP stack vendors can provide a winsock.dll, including
+the shareware Trumpet WinSock version available from Peter Tattam.
+It's important to remember that you must have a winsock.dll from
+the same vendor that provided your TCP/IP stack.
+<P>
+The 32-bit wsock32.dll ships with Windows NT and Windows 95 and
+runs over the Microsoft TCP/IP stack. These 32-bit environments
+also have a winsock.dll file that acts as a &quot;thunk-layer&quot;
+to allow 16-bit WinSock applications to run over the 32-bit wsock32.dll.
+Conversely, Microsoft's Win32s installs a 32-bit wsock32.dll thunk
+layer in 16-bit Windows environments (Windows version 3.1 and
+Windows for Workgroups 3.11) over any vendor's WinSock DLL currently
+in use. We describe this architecture in Chapter 15, &quot;Platforms.&quot;
+<P>
+The 32-bit<B> wsock32.lib</B> Microsoft ships with Microsoft Visual
+C++ version 2.0 (there's also a non-standard version of winsock.h
+that contains Microsoft's own extensions).<HR>
+
+<H2><A NAME="CompileAndLinkMechanics">Compile and Link Mechanics</A>
+</H2>
+
+<P>
+You do not need to do anything special to compile WinSock source
+code. The only important consideration is that you #include the
+winsock.h file in any source module that uses WinSock functions,
+macros, or structures.
+<P>
+Most applications link <I>implicitly</I> with a WinSock DLL (winsock.dll
+or wsock32.dll) at run time. Implicit linking is easy, since no
+extra code is needed. Implicit linking occurs automatically if
+you link with either the <B>winsock.lib</B> or <B>wsock32.lib</B>
+import libraries when you create your executable. The disadvantage
+is that your application will not run at all if the Windows subsystem
+cannot find the WinSock DLL at run time.
+<P>
+Not being able to run the application when the winsock.dll file
+is unavailable is okay for most WinSock applications, since you
+can't do much without a WinSock DLL anyway. However, there are
+times when you'd like your application to run whether or not the
+winsock.dll file is available. For example, your application may
+not require network access to be useful, or perhaps you want to
+provide your own explanation to your application user about the
+missing winsock.dll file.
+<P>
+To allow your application to run without a winsock.dll file available,
+you need to link with the winsock.dll <I>explicitly</I>. To do
+this, you use the Win API function <TT>LoadLibrary()</TT>, followed
+by <TT>GetProcAddress(),</TT> to initialize a pointer to each
+function your application uses. You also want to check for the
+existence of the DLL before you call <TT>LoadLibrary()</TT> since
+Windows automatically displays a message box indicating the DLL
+cannot be found if <TT>LoadLibrary()</TT> fails. The following
+code example shows how to do this:
+<PRE>
+#include <winsock.h>
+. . .
+
+  int (PASCAL FAR * lpfn_recv)(SOCKET, char FAR *, int, int);
+  int (PASCAL FAR * lpfn_send)(SOCKET, char FAR *, int, int);
+  int (PASCAL FAR * lpfn_WSAStartup)(WORD, LPWSADATA);
+  int (PASCAL FAR * lpfn_WSACleanup)(void); 
+  int (PASCAL FAR * lpfn_WSAGetLastError)(void); 
+
+  OFSTRUCT stFile; 
+  HFILE hFile; 
+  HINSTANCE hWinSockDLL = 0; 
+. . . 
+
+#ifdef WIN32 
+  /* Load 32-bit WinSock DLL */
+  hFile = OpenFile("wsock32.dll", (OFSTRUCT FAR*)&stFile,OF_EXIST); 
+  if (hFile != HFILE_ERROR) 
+    hWinSockDLL = LoadLibrary ("wsock32.dll");
+#else
+  /* Load 16-bit WinSock DLL */
+  hFile = OpenFile("winsock.dll", (OFSTRUCT FAR*)&stFile,OF_EXIST); 
+  if (hFile != HFILE_ERROR) 
+    hWinSockDLL = LoadLibrary ("winsock.dll");
+#endif 
+
+  if (hWinsockDLL &gt;= 32) { 
+    (FARPROC)lpfn_recv = GetProcAddress (hWinsockDLL,"recv");
+    (FARPROC)lpfn_send = GetProcAddress (hWinsockDLL,"send");
+    (FARPROC)lpfn_WSAStartup = GetProcAddress(hWinSockDLL,"WSAStartup");
+    (FARPROC)lpfn_WSACleanup = GetProcAddress(hWinSockDLL,"WSACleanup"); 
+    (FARPROC)lpfn_WSAGetLastError = GetProcAddress(hWinsockDLL,"WSAGetLastError");
+
+    /* Check for any null pointers in case GetProcAddress failed */ 
+    if (!lpfn_recv | !lpfn_send | !lpfn_WSAStartup | 
+        !lpfn_WSACleanup | !lpfn_WSAGetLastError) { 
+      FreeLibrary (hWinSockDLL); 
+      hWinSockDLL = 0; 
+    } 
+  } 
+
+  if (!hWinSockDLL) { 
+    MessageBox (hwnd, "Unable to load winsock.dll","Error"); 
+  } 
+</PRE>
+
+Also, don't forget to call FreeLibrary(hWinSockDLL) after
+you call WSACleanup() to free the instance resource and
+unload the DLL from memory.<HR>
+
+<H2><A NAME="UsingDifferentWinSocks">Using Different WinSocks</A>
+</H2>
+
+<P>
+One of the limitations of WinSock version 1.1 is that you can
+only have one active winsock.dll on your system at a time. This
+would be fine if all WinSock implementations were created equal,
+but as we have described, they are not. Part of the process of
+WinSock application development involves testing an application
+over different WinSock implementations. As a result, it is not
+unusual for an application developer to need to switch between
+various vendors' WinSocks and TCP/IP protocol stacks. This is
+tricky but not too difficult.
+<P>
+A significant variety of WinSock and TCP/IP stack architectures
+are available for Windows, and each one has its own requirements
+when you want to switch between them. There are differences in
+the network interface drivers they use, in whether they have a
+terminate and stay resident (TSR) portion that must be loaded
+before running Windows, or load as a virtual device drivers (VxD)
+when Windows loads.
+<P>
+It's not difficult to create a batch file for each protocol stack
+you have, which will allow you to switch quickly to that stack
+for testing. In the best case, it's simply a matter of exiting
+from Windows and running the batch file. In the worst case, you'll
+need to execute the batch file and reboot the PC before you run
+Windows again.
+<P>
+To create a batch file for a vendor's stack, do the following:
+<OL>
+<LI>Before you install the vendor's stack, make a copy of your
+existing <B>autoexec.bat, config.sys, </B>and <B>system.ini</B>
+files.
+<LI>Install the vendor's protocol stack using its installation
+program, and allow it to modify any files it requests.
+<LI>Note whether any of the files listed in step 1 have been modified,
+and copy them into the directory where you installed the new stack
+vendor's software. The simplest thing to look for is the path
+where you installed the WinSock software.
+<LI>Create a batch file that copies these key configuration files
+to their respective locations.
+</OL>
+
+<P>
+Here are the types of changes you can expect most WinSock protocol
+stack installation applications make to these configuration files:
+<P>
+<B>autoexec.bat</B>: It will have changes to the path, and possibly
+a terminate-and-stay-resident (TSR) program load that may be related
+to the network driver in use. If the stack uses an NDIS driver,
+it runs netbind.
+<P>
+<B>config.sys</B>: It will have device drivers, including protman.dos
+if the stack uses an NDIS driver.
+<P>
+<B>system.ini</B>: It will have virtual device drivers lines added
+(file names with .386 extensions).<HR>
+
+<H2><A NAME="UsingDifferentLanguages">Using Other Languages</A>
+</H2>
+
+<P>
+The WinSock specification was originally designed with the C programming
+language in mind, so its constructs are very C-centric. However,
+since the API is provided in a dynamic link library, it is possible
+to access WinSock from any language capable of utilizing a DLL.
+This includes most languages, including PASCAL, C++, and even
+Visual Basic.
+<P>
+The WinSock programming community has produced a number of public
+domain and shareware files available at many Internet sites that
+address the needs of other languages. This includes a Pascal-compatible
+version of the winsock.h file, Visual Basic versions of the winsock.h
+file, Visual Basic Custom Controls for WinSock and C++ WinSock
+class libraries. Numerous commercial products are also available,
+many of which implement application protocols and provide high-level
+APIs to simplify application development. The main reason to purchase
+a commercial development kit is to get support as you develop
+applications.
+<P>
+For up-to-date links to many network sites that contain this type
+of WinSock programming information, you can refer to http://www.sockets.com.
+
+</BODY>
+
+</HTML>

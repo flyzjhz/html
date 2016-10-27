@@ -1,0 +1,12 @@
+;------------------------
+; Filename: MULTI_32.DEF 
+;------------------------
+
+NAME         MULTI_32
+                     
+DESCRIPTION  'WinSock optional features demo (c) Bob Quinn 1995'
+CODE         LOADONCALL DISCARDABLE
+DATA         PRELOAD MOVEABLE MULTIPLE
+
+HEAPSIZE     8192
+

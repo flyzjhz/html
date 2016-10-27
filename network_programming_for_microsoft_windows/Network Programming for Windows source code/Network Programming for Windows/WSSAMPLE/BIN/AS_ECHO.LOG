@@ -1,0 +1,21 @@
+-------------------------------------------------------------
+ filename: as_echo.log
+
+ The as_echo.log file is recreated by the as_echo.exe 
+ sample TCP echo server in the directory where as_echo.exe
+ is located each time it runs.  The logfile contains a log 
+ of the data throughput statistics of each client that 
+ connects to the server.  A sample of typical logfile
+ contents created by as_echo.exe is shown below (this log
+ shows 3 simultaneous connections)  
+-------------------------------------------------------------
+>>> socket: 84 connected from 128.127.50.5
+>>> socket: 192 connected from 128.127.50.77
+>>> socket: 176 connected from 128.127.50.121
+<<< socket: 176 disconnected from 128.127.50.121
+224840 bytes in 9.434 seconds (22.472 Kbytes/sec)
+<<< socket: 192 disconnected from 128.127.50.77
+6606408 bytes in 40.759 seconds (158.208 Kbytes/sec)
+<<< socket: 84 disconnected from 128.127.50.5
+8176000 bytes in 91.632 seconds (86.936 Kbytes/sec)
+Final Totals: Bytes Received: 15007248, Connections: 3

@@ -1,0 +1,11 @@
+;-----------------------
+; filename: UA_TIME.DEF
+;-----------------------
+
+NAME         UA_TIME
+
+DESCRIPTION  'UDP Time Client and Server (c) Bob Quinn 1995'
+CODE         PRELOAD MOVEABLE DISCARDABLE
+DATA         PRELOAD MOVEABLE MULTIPLE
+
+HEAPSIZE     4096

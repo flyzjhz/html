@@ -1,0 +1,11 @@
+;------------------------
+; filename: SMPTST32.DEF
+;------------------------
+
+NAME      SMPTST32
+
+DESCRIPTION 'Simple TCP echo client test for WSASMP32.DLL'
+CODE      PRELOAD MOVEABLE DISCARDABLE
+DATA      PRELOAD MOVEABLE MULTIPLE
+
+HEAPSIZE  8192

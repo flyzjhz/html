@@ -1,0 +1,256 @@
+//Microsoft App Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "..\winsockx.h"
+#include <ver.h>
+
+/////////////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEFLAGSMASK 0x3L
+#ifdef _DEBUG
+ FILEFLAGS VS_FF_DEBUG
+#else
+ FILEFLAGS 0
+#endif
+#ifdef WIN32
+ FILEOS 0x4L
+#else
+ FILEOS 0x1L
+#endif
+FILETYPE 0x1L
+FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName", "Windows Sockets Network Programming\0"
+            VALUE "FileDescription", "Simple Test Application for WSASIMPL.DLL\0"
+            VALUE "FileVersion", "1.00\0"
+#ifdef WIN32
+            VALUE "InternalName", "SIMPLT32\0"
+#else
+            VALUE "InternalName", "SIMPLTST\0"
+#endif
+            VALUE "LegalCopyright", "(c) Bob Quinn, 1995\0"
+            VALUE "ProductName", "Windows Sockets Network Programming\0"
+            VALUE "ProductVersion", "1.00\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252 
+    END
+END
+
+#ifdef APSTUDIO_INVOKED
+//////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""..\\winsockx.h""\r\n"
+    "#include <ver.h>\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+/////////////////////////////////////////////////////////////////////////////////////
+#endif    // APSTUDIO_INVOKED
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+SIMPLTST MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Exit",                       IDM_EXIT
+    END
+    MENUITEM "&Connect",                    IDM_CONNECT
+    MENUITEM "&Start Sending",              IDM_START
+    MENUITEM "&Close",                      IDM_CLOSE
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About",                      IDM_ABOUT
+    END
+END
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+SIMPLTST                ICON    DISCARDABLE     "SIMPLTST.ICO"
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUT DIALOG DISCARDABLE  75, 50, 207, 62
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "About SIMPLTST"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,152,10,50,14
+    LTEXT           "----- Simple Echo Client ------  ----- SIMPLTST v1.00 -----       Bob Quinn (c) 1995   ",
+                    -1,48,15,92,25
+    ICON            SIMPLTST,-1,6,9,18,20
+    LTEXT           "< Date and Time Compiled >",IDC_COMPILEDATE,40,45,144,
+                    11
+END
+
+IDD_HOST DIALOG DISCARDABLE  0, 0, 147, 46
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Destination Host"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CTEXT           "Host:",IDC_STATIC,3,10,30,10
+    EDITTEXT        IDC_HOST,36,8,104,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Cancel",IDCANCEL,12,28,50,14
+    DEFPUSHBUTTON   "OK",IDOK,79,28,50,14
+END
+
+IDD_DIALOG1 DIALOG DISCARDABLE  0, 0, 185, 92
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,129,6,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,23,50,14
+END
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    11001                   "WSAHOST_NOT_FOUND: Host not found"
+    11002                   "WSATRY_AGAIN: Non-Authoritative Host not found"
+    11003                   "WSANO_RECOVERY: Non-Recoverable errors: FORMERR, REFUSED, NOTIMP"
+    11004                   "WSANO_DATA: Valid name, no data record of requested type"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    10091                   "WSASYSNOTREADY: Network SubSystem is unavailable"
+    10092                   "WSAVERNOTSUPPORTED: WINSOCK DLL Version out of range"
+    10093                   "WSANOTINITIALISED: Successful WSASTARTUP not yet performed"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    10064                   "WSAEHOSTDOWN: Host is down"
+    10065                   "WSAEHOSTUNREACH: No Route to Host"
+    10066                   "WSAENOTEMPTY: Directory not empty"
+    10067                   "WSAEPROCLIM: Too many processes"
+    10068                   "WSAEUSERS: Too many users"
+    10069                   "WSAEDQUOT: Disc Quota Exceeded"
+    10070                   "WSAESTALE: Stale NFS file handle"
+    10071                   "WSAEREMOTE: Too many levels of remote in path"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    10048                   "WSAEADDRINUSE: Address already in use"
+    10049                   "WSAEADDRNOTAVAIL: Can't assign requested address"
+    10050                   "WSAENETDOWN: Network is down"
+    10051                   "WSAENETUNREACH: Network is unreachable"
+    10052                   "WSAENETRESET: Net dropped connection or reset"
+    10053                   "WSAECONNABORTED: Software caused connection abort"
+    10054                   "WSAECONNRESET: Connection reset by peer"
+    10055                   "WSAENOBUFS: No buffer space available"
+    10056                   "WSAEISCONN: Socket is already connected"
+    10057                   "WSAENOTCONN: Socket is not connected"
+    10058                   "WSAESHUTDOWN: Can't send after socket shutdown"
+    10059                   "WSAETOOMANYREFS: Too many references, can't splice"
+    10060                   "WSAETIMEDOUT: Connection timed out"
+    10061                   "WSAECONNREFUSED: Connection refused"
+    10062                   "WSAELOOP: Too many levels of symbolic links"
+    10063                   "WSAENAMETOOLONG: File name too long"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    10035                   "WSAEWOULDBLOCK: Operation would block"
+    10036                   "WSAEINPROGRESS: Operation now in progress"
+    10037                   "WSAEALREADY: Operation already in progress"
+    10038                   "WSAENOTSOCK: Socket operation on non-socket"
+    10039                   "WSAEDESTADDRREQ: Destination address required"
+    10040                   "WSAEMSGSIZE: Message too long"
+    10041                   "WSAEPROTOTYPE: Protocol wrong type for socket"
+    10042                   "WSAENOPROTOOPT: Bad protocol option"
+    10043                   "WSAEPROTONOSUPPORT: Protocol not supported"
+    10044                   "WSAESOCKTNOSUPPORT: Socket type not supported"
+    10045                   "WSAEOPNOTSUPP: Operation not supported on socket"
+    10046                   "WSAEPFNNOSUPPORT: Protocol family not supported"
+    10047                   "WSAEAFNNOSUPPORT: Address family not supported by protocol family"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    10022                   "WSAEINVAL: Invalid argument"
+    10024                   "WSAEMFILE: Too many open files"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    10000                   "[0] No Error"
+    10004                   "WSAEINTR: Interrupted system call"
+    10009                   "WSAEBADF: Bad file number"
+    10013                   "WSACCESS: Permission denied"
+    10014                   "WSAEFAULT: Bad address"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    CHARGEN_SEQ             " !""#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[^_`abcdefghijklmnopqrstuvwxyz{|}~"
+END
+
+
+#ifndef APSTUDIO_INVOKED
+////////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

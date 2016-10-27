@@ -1,0 +1,1992 @@
+<HTML>
+
+<HEAD>
+<TITLE>Windows Sockets Network Programming: Appendix C</TITLE>
+</HEAD>
+
+<BODY>
+
+<H1><A NAME="Top"><IMG SRC="winsock.gif" ALIGN="BOTTOM"> Appendix C: Error Reference</A></H1>
+
+<P>
+This is a hypertext version of Appendix C in the text _Windows
+Sockets Network Programming_, by Bob Quinn and Dave Shute.
+<UL>
+<LI><A HREF="#WhereToGetErrors">Where to Get Error Values</A>
+
+<LI><A HREF="#WhatErrorsToExpect">What Errors to Expect</A> 
+<LI><A HREF="#UserFixableErrors">User-fixable Errors</A> 
+<LI><A HREF="#DetailedErrorDescriptions">Detailed Error Descriptions</A>
+
+<LI><A HREF="#ErrorsInNumericOrder">Errors in Numerical Order</A>
+
+</UL>
+
+<P>
+The WinSock &quot;WSA&quot; error values are a significant part
+of the Windows Sockets API. Although there are a few exceptions,
+most WinSock functions can fail at times. A robust application
+will always verify the return value from a function call to check
+for failure. When a WinSock function fails, the resulting error
+value is the key to why it failed. And knowing why it failed is
+the key to finding a remedy or work-around.
+<P>
+In Chapter 14, &quot;Do's and Don'ts,&quot; we describe when to
+expect errors (anytime), which errors to expect (any error) and
+how an application should handle them (tell the application user
+as much as you know). In Chapter 10, &quot;Support Routines&quot;
+we tell you how to retrieve and report errors using <TT><A HREF="winsock.htm#GetLastError">WSAGetLastError()</A></TT>.
+We also show you one way to display error strings with our own
+<TT>WSAperror() the sample WinSockx library in Chapter 7</TT>.
+In this appendix we tell you everything there is to know about
+the errors themselves.
+<P>
+After a quick review of where to get errors and which errors to
+expect--we list user-fixable errors (the only ones a user should
+ever see). The bulk of this appendix provides a detailed description
+of each WinSock error: what each error means, what causes them,
+and how to an application should deal with them. We wrap-up with
+a cross-reference list to use in case you have only the numeric
+value, not the text name.
+[<A HREF="#Top">Go to Top</A>]
+<HR>
+<H2><A NAME="WhereToGetErrors">Where to Get Error Values</A></H2>
+
+<P>
+There are two kinds of errors in Windows Sockets: task-based (or
+thread-based) and socket-based. An application can retrieve the
+task-based error by calling <TT><A HREF="winsock.htm#GetLastError">WSAGetLastError()</A></TT> immediately
+after a WinSock function fails (see Chapter 10, &quot;Support
+Routines,&quot; for more information). The socket-based error
+is:
+<UL>
+<LI>reported in a <TT><A HREF="winsock.htm#AsyncSelect">WSAAsyncSelect()</A></TT> asynchronous FD_ event
+notification message (which you can extract with the platform
+independent &quot;message cracker&quot; macro <B>WSAGETSELECTERROR(lParam)</B>).
+See Chapter 6, &quot;Socket States,&quot; for more information.
+<LI>retrieved by a call to <B><A HREF="winsock.htm#GetSockOpt">getsockopt()</A> SO_ERROR</B> (which
+also resets the error value to zero). See Chapter 9, &quot;Socket
+Information and Control,&quot; for more information.
+</UL>
+
+<P>
+<TT><A HREF="winsock.htm#Startup">WSAStartup()</A></TT> is the only function that returns an actual
+error value, rather than simply indicating an error condition
+(function failure). This makes sense, since you can't call <TT><A HREF="winsock.htm#GetLastError">WSAGetLastError()</A></TT>
+to retrieve the error value until <TT><A HREF="winsock.htm#Startup">WSAStartup()</A></TT> succeeds
+since it will fail with <A HREF="#WSANOTINITIALISED">WSANOTINITIALISED</A>
+(see Chapter 10, &quot;Support Routines,&quot; for more information).
+<P>
+Windows Sockets does not support the Berkeley Sockets error variables
+<I>errno</I> or <I>h_errno</I>, because these per-process global
+variables don't allow for per-thread error information. The WINSOCK.H
+header file provides a macro for <B>h_errno</B> for Berkeley source
+code compatibility (it simply calls <TT><A HREF="winsock.htm#GetLastError">WSAGetLastError()</A></TT>).
+The equivalent macro for errno wasn't included since some applications
+use errno for non-socket (e.g. file handle) errors.
+<P>
+Most of the error values and their manifest constants (macros)
+are derived from Berkeley Sockets. The WinSock error values are
+the BSD error values with a &quot;WinSock API base&quot; error
+(<A HREF="#WSABASEERR">WSABASEERR</A>) value added to each of
+them. The macro for each WinSock API error is the equivalent BSD
+error's macro, with the three letter &quot;WSA&quot; prepended
+to it. So, for instance, the BSD manifest constant for the &quot;would
+block&quot; error was defined in the Berkeley Sockets ERRNO.H
+header file as:
+<PRE>
+	#define  EWOULDBLOCK  35
+</PRE>
+
+<P>
+and WINSOCK.H redefines it as:
+<PRE>
+	#define  <A HREF="#WSAEWOULDBLOCK">WSAEWOULDBLOCK</A>  (WSABASEERR+35)
+</PRE>
+
+<P>
+A few (lower value) WinSock error macro definitions refer to Microsoft
+C constants. In some cases, these redefine file access errors
+since Windows NT can treat a socket like a file handle. A few
+other (higher value) macros are entirely new to Windows Sockets.
+They refer to error conditions unique to Windows Sockets, such
+as invalid WinSock version requests, uninitialized WinSock DLL
+access, or failed hostname resolution attempts.
+<P>
+All of the Windows Sockets error values have macros defined for
+them in the WINSOCK.H header file. They all have a &quot;WSA&quot;
+prefix and their values are all biased by the WinSock API base
+error WSABASEERR (10000) value. The value for WSABASEERR is fairly
+arbitrary. It's high simply because error values in the Windows
+API are high values by convention. There is a benefit, though:
+the unique bias creates identifiable WinSock error values.
+[<A HREF="#Top">Go to Top</A>]
+<HR>
+
+<H2><A NAME="WhatErrorsToExpect">What Errors to Expect</A></H2>
+
+<P>
+Don't assume the only errors you'll encounter are the ones listed
+with each function in the WinSock specification. Section 3.3.4
+&quot;Error Handling&quot; in the v1.1 Windows Sockets specification
+warns against this:
+<P>
+&quot;Note that this specification defines a recommended set of
+error codes, and lists the possible errors which may be returned
+as a result of each function. It may be the case in some implementations
+that other Windows Sockets error codes will be returned in addition
+to those listed, and applications should be prepared to handle
+errors other than those enumerated under each API description.&quot;
+<P>
+The specification is a common denominator among WinSock implementations.
+The errors it lists don't provide &quot;fine resolution&quot;
+in all cases, which means it doesn't account for some conditions
+that some network systems can detect. Finer resolution in error
+reporting is a double edged sword: with more accurate error values
+it's easier to diagnose problems when they occur, but it's also
+more difficult to write an application that can handle all contingencies.
+The better prepared your application is for any error, the more
+gracefully you'll handle it, and the easier you'll make your job
+and the job of your support staff.
+[<A HREF="#Top">Go to Top</A>]
+<HR>
+
+<H2><A NAME="UserFixableErrors">User-Fixable Errors</A></H2>
+
+<P>
+There are two basic types of errors: those an application user
+can remedy, and those he cannot. As we describe in Chapter 14,
+&quot;Do's and Don'ts,&quot; a user should never see an error
+that is not user-fixable. If they do, then you need to fix your
+application to handle the error gracefully. Here is a list of
+user-fixable errors:
+<P>
+<A HREF="#WSAEADDRINUSE">WSAEADDRINUSE</A> (10048) Address already
+in use
+<P>
+<A HREF="#WSAECONNABORTED">WSAECONNABORTED</A> (10053) Software
+caused connection abort
+<P>
+<A HREF="#WSAECONNREFUSED">WSAECONNREFUSED</A> (10061) Connection
+refused
+<P>
+<A HREF="#WSAECONNRESET">WSAECONNRESET</A> (10054) Connection
+reset by peer
+<P>
+<A HREF="#WSAEDESTADDRREQ">WSAEDESTADDRREQ</A> (10039) Destination
+address required
+<P>
+<A HREF="#WSAEHOSTUNREACH">WSAEHOSTUNREACH</A> (10065) No route
+to host
+<P>
+<A HREF="#WSAEMFILE">WSAEMFILE </A>(10024) Too many open files
+<P>
+<A HREF="#WSAENETDOWN">WSAENETDOWN</A> (10050) Network is down
+<P>
+<A HREF="#WSAENETRESET">WSAENETRESET</A> (10052) Network dropped
+connection
+<P>
+<A HREF="#WSAENOBUFS">WSAENOBUFS</A> (10055) No buffer space available
+<P>
+<A HREF="#WSAENETUNREACH">WSAENETUNREACH</A> (10051) Network is
+unreachable
+<P>
+<A HREF="#WSAETIMEDOUT">WSAETIMEDOUT</A> (10060) Connection timed
+out
+<P>
+<A HREF="#WSAHOST_NOT_FOUND">WSAHOST_NOT_FOUND </A>(11001) Host
+not found
+<P>
+<A HREF="#WSASYSNOTREADY">WSASYSNOTREADY</A> (10091) Network sub-system
+is unavailable
+<P>
+<A HREF="#WSANOTINITIALISED">WSANOTINITIALISED</A> (10093) <A HREF="winsock.htm#Startup">WSAStartup()</A>
+not performed
+<P>
+<A HREF="#WSANO_DATA">WSANO_DATA </A>(11004) Valid name, no data
+of that type
+<P>
+<A HREF="#WSANO_RECOVERY">WSANO_RECOVERY </A>(11003) Non-recoverable
+query error
+<P>
+<A HREF="#WSATRY_AGAIN">WSATRY_AGAIN </A>(11002) Non-authoritative
+host found
+<P>
+<A HREF="#WSAVERNOTSUPPORTED">WSAVERNOTSUPPORTED </A>(10092) Wrong
+WinSock DLL version
+<P>
+Each of these &quot;user-fixable&quot; errors have <I>User suggestions</I>
+in the detailed error list below. If you want to help your user
+to help himself as much as possible, then you should pass on some
+of these suggestions in your error messages. This will avoid support
+calls. To help yourself when you do get a support call, be sure
+to include the context of the error in every error message, along
+with the error value and description (i.e. include the name of
+the function that caused the error).
+[<A HREF="#Top">Go to Top</A>]
+<HR>
+
+<H2><A NAME="DetailedErrorDescriptions">Detailed Error Descriptions</A></H2>
+
+<UL>
+<LI><A HREF="#ErrorlessFunctions">Errorless Functions</A> 
+<LI><A HREF="#FunctionlessErrors">Functionless Errors</A> 
+<LI><A HREF="#ErrorDescriptionList">Error Description List</A>
+
+</UL>
+
+<P>
+The Windows Sockets specification describes error definitions
+for each function, but it does not provide any short error text
+for an application to use at runtime to describe a problem to
+a user. The Windows Sockets API does not have analogs for the
+Berkeley <TT>perror()</TT> and<TT> herror()</TT> functions that
+take the error value as input, and output the (short) text of
+each error value (we show the code for an alternative in Chapter
+10, &quot;Support Routines&quot;). Since Windows Sockets is practically
+a clone of Berkeley Sockets, and the rule of thumb is &quot;<I>when
+in doubt, defer to Berkeley</I>&quot;, we can adopt the Berkeley
+Software Distribution error text as our own.
+<P>
+Among other things, that is exactly what we've done here. We took
+the text of the <I>errno</I> manual page in BSD 4.3, filled in
+gaps and embellished, completing the information. The Windows
+Sockets errors are listed in alphabetical order below (they're
+cross-referenced in a list in numerical order further below).
+Every error description contains at least:
+<UL>
+<LI><I>Summary Info</I>:
+<UL>
+<LI>Error macro: manifest constant, as defined in WINSOCK.H
+<LI>Error value: as defined in v1.1 WINSOCK.H
+<LI>Short description
+</UL>
+
+<LI><I>Berkeley description</I>: text describing the equivalent
+BSD 4.3 error value (with some input from other Unix errno values
+as well). Most of the text comes from the output from the &quot;man
+errno&quot; command on Unix.
+<LI><I>WinSock description:</I> a quick comparison to the Berkeley
+counterpart, and a long description of WinSock error.
+<LI><I>WinSock functions:</I> the list of functions that explicitly
+list this error in the v1.1 Windows Sockets specification.
+</UL>
+
+<P>
+Other information varies between different errors. Some of the
+types of things you will find under some errors are:
+<UL>
+<LI><I>Microsoft C description</I>: the first few WinSock errors
+are carry-overs from the standard 'C' runtime library. Typically
+their descriptions are similar.
+<LI><I>Detailed descriptions</I>: the specific meanings that some
+WinSock functions have for some errors.
+<LI><I>TCP/IP scenario:</I> description of the TCP/IP protocol
+suite network traffic (i.e. TCP, UDP, ICMP, ARP, DNS) that typically
+causes the error.
+<LI><I>Developer suggestions</I>: Things an application developer
+can do to avoid the error.
+<LI><I>User suggestions</I>: Things an application user can do
+to diagnose the error condition further, and/or remedy it.
+<LI><I>Additional functions:</I> a generic description of the
+type of functions that can return this error, which may include
+functions other than those listed by the WinSock specification.
+It may also make explicit mention of other functions that can
+fail with this error.
+<LI><I>See also</I>: These point to other errors that are similar.
+Developers should consider handling the referenced errors similarly.
+</UL>
+
+<P>
+Although most of this appendix is for application developers,
+the <I>User suggestions</I> contain information that end-users
+and application support personnel might also find useful when
+an application fails. We suggest local configuration changes that
+might remedy the problem, and network and server conditions that
+might be the cause. The errors that have <I>User suggestions</I>
+are all the same ones in the &quot;User-fixable errors&quot; list
+above.
+<P>
+The <I>WinSock description</I> and <I>TCP/IP scenario</I> contain
+detailed descriptions of the errors, which also describe possible
+cause and imply a possible remedy. For more information on debugging
+problems, see Chapter 13, &quot;Debugging.&quot;
+<H3><A NAME="ErrorlessFunctions">Errorless Functions</A></H3>
+
+<P>
+Eight of the forty-six functions in the Windows Sockets API are
+not referenced in any of the &quot;WinSock function&quot; lists
+in the following detailed descriptions. The v1.1 WinSock specification
+doesn't list any errors for these functions. Specifically, these
+error-less functions are the byte order functions (<TT><A HREF="winsock.htm#HtoNL">htonl()</A>,
+<A HREF="winsock.htm#HtoNS">htons()</A>, <A HREF="winsock.htm#NtoHL">ntohl()</A></TT>, and <TT><A HREF="winsock.htm#NtoHS">ntohs()</A></TT>), the address manipulation
+functions (<TT><A HREF="winsock.htm#InetAddr">inet_addr()</A></TT>, and <TT>inet_ntoa</TT>), <TT><A HREF="winsock.htm#GetLastError">WSAGetLastError()</A></TT>
+and <TT><A HREF="winsock.htm#IsBlocking">WSAIsBlocking()</A></TT>.
+<P>
+Some of these functions cannot fail, which explains their absence
+from the error list below. Of the two that can fail, neither of
+them set an error value you can retrieve from <TT><A HREF="winsock.htm#GetLastError">WSAGetLastError()</A></TT>
+(refer to Chapter 10, &quot;Support Routines&quot; for more information
+on any of these error-less functions).
+<UL>
+<LI>the byte-order functions, <TT><A HREF="winsock.htm#HtoNL">htonl()</A>, <A HREF="winsock.htm#HtoNS">htons()</A>, ntohl</TT>
+and <TT><A HREF="winsock.htm#NtoHL">ntohl()</A></TT>, cannot fail.
+<LI><TT><A HREF="winsock.htm#GetLastError">WSAGetLastError()</A></TT> and <TT><A HREF="winsock.htm#IsBlocking">WSAIsBlocking()</A></TT> cannot
+fail.
+<LI>The address manipulation functions, <TT><A HREF="winsock.htm#InetNtoA">inet_ntoa()</A></TT> and<TT>
+<A HREF="winsock.htm#InetAddr">inet_addr()</A></TT>, <I>can</I> fail. However, they don't need to
+set the WinSock error value, because there's only one reason for
+their failure: the input parameter was invalid. For <TT><A HREF="winsock.htm#InetAddr">inet_addr()</A>,
+this could mean the content of the buffer passed or the buffer
+itself is invalid.</TT> 
+</UL>
+
+<H3><A NAME="FunctionlessErrors">Functionless Errors</A></H3>
+
+<P>
+There are a total of fifty unique WinSock error values. The values
+for <A HREF="#WSANO_DATA">WSANO_DATA </A>and <A HREF="#WSANO_DATA">WSANO_ADDRESS </A>(11004)
+are duplicates, so we don't count one of them.
+<P>
+The v1.1 WinSock specification only ascribes thirty-three of the
+fifty errors to any of the WinSock functions in the v1.1 for Windows
+Sockets specification. Thirteen errors have &quot;&lt;none&gt;&quot;
+next to the list of WinSock functions that can produce them. That's
+about one-quarter of the error values that aren't even used!
+<P>
+Some of these neglected error values are among those mentioned
+earlier that provide &quot;finer resolution&quot; on different
+WinSock implementations. In some cases these errors are platform
+dependent. For instance, you might get <A HREF="#WSAEBADF">WSAEBADF</A>
+in place of <A HREF="#WSAENOTSOCK">WSAENOTSOCK</A> on a system
+that provides some socket and file handle equivalency. But most
+of these function-less errors are simply out of place; they are
+inappropriate to the Windows Sockets API as it exists in the v1.1
+specification. You are unlikely to encounter them. But that's
+<I>not</I> to say you shouldn't still be prepared.
+<P>
+As we pointed out earlier, your application should be ready to
+encounter any error at any time. Although the specification doesn't
+list an error for a function, it does allow for it. In fact, on
+occasion you can benefit if the WinSock implementation returns
+these other errors. The occurrence of an unlisted error can provide
+extra detail. This can help you (or your support staff) to zero-in
+on what's wrong when your application runs into a problem.
+<P>
+Some WinSock implementation use these errors inappropriately,
+but they have a particular meaning. They signal unusual error
+conditions for which there's no WinSock error equivalent. Unfortunately,
+to find out what these errors mean you need to contact that WinSock
+provider.
+<H3><A NAME="ErrorDescriptionList">Error Description List</A>
+</H3>
+
+<P>
+<B>&lt;no macro available&gt; (0) </B><I>No error</I> <HR>
+
+<P>
+<B><A NAME="WSABASEERR">WSABASEERR</A> (10000)</B><I> No error</I>
+
+<P>
+<I>Berkeley Description:</I> no equivalent.
+<P>
+<I>WinSock description:</I> No error.
+<P>
+<I>Detailed description:</I> There's at least one WinSock implementation
+that will occasionally fail a function and report this as the
+error value, even though the function <I>succeeded.</I> You should
+simply ignore this error when it occurs.
+<P>
+<I>WinSock functions:</I> &lt;none&gt;<HR>
+
+<P>
+<B><A NAME="WSAEACCES">WSAEACCES</A> (10013)</B><I> Permission
+denied</I>.
+<P>
+<I>Berkeley description</I>: An attempt was made to access a file
+in a way forbidden by its file access permissions.
+<P>
+<I>Microsoft C description:</I> Permission denied. The file's
+permission setting does not allow the specified access. This error
+signifies that an attempt was made to access a file (or, in some
+cases, a directory) in a way that is incompatible with the file's
+attributes. For example, the error can occur when an attempt is
+made to read from a file that is not open, to open an existing
+read-only file for writing, or to open a directory instead of
+a file. Under MS-DOS versions 3.0 and later, EACCES may also indicate
+a locking or sharing violation. The error can also occur in an
+attempt to rename a file or directory or to remove an existing
+directory.
+<P>
+<I>WinSock description</I>: Same as Berkeley.
+<P>
+<I>Detailed description</I>:
+<P>
+<I><A HREF="winsock.htm#Send">send()</A> &amp; <A HREF="winsock.htm#SendTo">sendto()</A>:</I> the requested address is a broadcast
+address, but the appropriate
+<P>
+flag was not set (i.e. you didn't call setsockopt(SO_BROADCAST)).
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>
+<P>
+<I>Additional functions</I>: <A HREF="winsock.htm#SetSockOpt">setsockopt()</A> and any function that
+takes a socket (or file handle) as an input parameter.<HR>
+
+<P>
+<B><A NAME="WSAEADDRINUSE">WSAEADDRINUSE</A> (10048)</B> <I>Address
+already in use</I>.
+<P>
+<I>Berkeley description</I>: Only one usage of each address is
+normally permitted.
+<P>
+<I>WinSock description</I>: Same as Berkeley. The &quot;address&quot;
+they refer to, typically refers to the local &quot;socket name&quot;,
+which is made up of the 3-tuple: protocol, port-number and IP
+address.
+<P>
+<I>Developer suggestions:</I> Don't call <A HREF="winsock.htm#Bind">bind()</A> in a client application.
+Instead, let the network system assign the local port (very few
+application protocols require a client to bind to a specific port
+number or port number range). Alternately, you could call setsockopt(SO_REUSEADDR)
+to allow duplicate local addresses in a single application, but
+this is a kludgy approach (i.e. we don't recommend it).
+<P>
+<I>User suggestions: </I>Don't try running two of the same types
+of server applications on the same machine. For instance, this
+error will occur if you try to run two applications that have
+FTP servers. In this case, the 2nd application will fail with
+WSAEADDRINUSE.
+<P>
+<I>Winsock functions: </I><A HREF="winsock.htm#Bind">bind()</A>, <A HREF="winsock.htm#Connect">connect()</A>, <A HREF="winsock.htm#Listen">listen()</A>, <A HREF="winsock.htm#AsyncSelect">FD_CONNECT</A>
+<HR>
+
+<P>
+<B><A NAME="WSAEADDRNOTAVAIL">WSAEADDRNOTAVAIL</A> (10049)</B>
+<I>Cannot assign requested address</I>.
+<P>
+<I>Berkeley description</I>: Normally results from an attempt
+to create a socket with an address not on this machine.
+<P>
+<I>WinSock description</I>: Partly the same as Berkeley. The &quot;address&quot;
+it refers to is the remote socket name (protocol, port and address).
+This error occurs when the sin_port value is zero in a sockaddr_in
+structure for <A HREF="winsock.htm#Connect">connect()</A> or <A HREF="winsock.htm#SendTo">sendto()</A>.
+<P>
+In Berkeley, this error also occurs when you are trying to name
+the local socket (assign local address and port number) with <A HREF="winsock.htm#Bind">bind()</A>,
+but Windows Sockets doesn't ascribe this error to <A HREF="winsock.htm#Bind">bind()</A>, for
+some unknown reason.
+<P>
+<I>Developer suggestions</I>: Assume <A HREF="winsock.htm#Bind">bind()</A> will fail with this
+error. Let the network system assign the default local IP address
+by referencing INADDR_ANY in the sin_addr field of a sockaddr_in
+structure input to <A HREF="winsock.htm#Bind">bind()</A>. Alternately, you can get the local
+IP address by calling <A HREF="winsock.htm#GetHostName">gethostname()</A> followed by <A HREF="winsock.htm#GetHostByName">gethostbyname()</A>.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Connect">connect()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>, <A HREF="winsock.htm#AsyncSelect">FD_CONNECT</A>
+<P>
+<I>Additional functions</I>: It seems odd that the v1.1 specification
+doesn't ascribe this error to the function <A HREF="winsock.htm#Bind">bind()</A>.<HR>
+
+<P>
+<B><A NAME="WSAEAFNOSUPPORT">WSAEAFNOSUPPORT</A> (10047)</B> <I>Address
+family not supported by protocol family</I>.
+<P>
+<I>Berkeley description</I>: An address incompatible with the
+requested protocol was used. For example, you shouldn't necessarily
+expect to be able to use NS addresses with ARPA Internet protocols.
+<P>
+<I>WinSock description</I>: Same as Berkeley, and then some. The
+error occurs with the <A HREF="winsock.htm#Socket">socket()</A> function, which takes the socket
+type (protocol) and address family as input parameters.
+<P>
+It also occurs with functions that take a socket handle and a
+sockaddr structure as input parameters. A socket already has a
+type (a protocol), and each sockaddr structure has an address
+family field to define its format. A function fails with WSAEAFNOSUPPORT
+if the address family referenced in sockaddr is not compatible
+with the referenced socket's protocol.
+<P>
+This error apparently also takes the place of WSAEPFNOSUPPORT
+(which means &quot;protocol family not supported&quot;), since
+that error is not listed for <A HREF="winsock.htm#Socket">socket()</A> in the v1.1 WinSock specification.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Bind">bind()</A>, <A HREF="winsock.htm#Connect">connect()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>, <A HREF="winsock.htm#Socket">socket()</A>,
+<A HREF="winsock.htm#AsyncSelect">FD_CONNECT</A>
+<P>
+<I>See also:</I> <A HREF="#WSAEPROTOTYPE">WSAEPROTOTYPE</A><HR>
+
+<P>
+<B><A NAME="WSAEALREADY">WSAEALREADY</A> (10037)</B> <I>Operation
+already in progress</I>.
+<P>
+<I>Berkeley description</I>: An operation was attempted on a non-blocking
+object that already had an operation in progress.
+<P>
+<I>WinSock description</I>: Unlike Berkeley Sockets, in WinSock
+WSAEALREADY means that the asynchronous operation you attempted
+to cancel has already been canceled. However, there's little distinction
+between WSAEALREADY and WSAEINVAL since a WinSock DLL cannot tell
+the difference between an asynchronous operation that has been
+cancelled and one that was never valid.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#CancelAsyncRequest">WSACancelAsyncRequest()</A>
+<P>
+<I>Additional functions: </I>Berkeley sockets <A HREF="winsock.htm#Connect">connect()</A> returns
+this error on subsequent calls, after an initial call on a non-blocking
+socket. However, some WinSocks fail with WSAEINVAL you call <A HREF="winsock.htm#Connect">connect()</A>
+a second time (or subsequent) on a non-blocking socket.<HR>
+
+<P>
+<B><A NAME="WSAEBADF">WSAEBADF</A> (10009) </B><I>Bad file descriptor</I>.
+<P>
+<I>Berkeley description:</I> A file descriptor argument was out
+of range, referred to no open file, or a read (write) request
+was made to a file that was only open for writing (reading).
+<P>
+<I>Microsoft C description</I>: Bad file number. The specified
+file handle is not a valid file-handle value or does not refer
+to an open file; or an attempt was made to write to a file or
+device opened for read-only access (or vice versa).
+<P>
+<I>WinSock description</I>: No equivalent in WinSock. However,
+because a BSD socket is equivalent to a file handle, some Windows
+Sockets platforms provide some file handle and socket equivalency.
+In this case, the WSAEBADF error might mean the same as a WSAENOTSOCK
+error.
+<P>
+<I>WinSock functions:</I> &lt;none&gt;
+<P>
+<I>Additional functions</I>: any function that takes a socket
+(or file handle) as an input parameter
+<P>
+<I>See also: <A HREF="#WSAENOTSOCK">WSAENOTSOCK</A></I><HR>
+
+<P>
+<B><A NAME="WSAECONNABORTED">WSAECONNABORTED </A>(10053)</B> <I>Software
+caused connection abort</I>.
+<P>
+<I>Berkeley description</I>: A connection abort was caused internal
+to your host machine. The software caused a connection abort because
+there is no space on the socket's queue and the socket cannot
+receive further connections.
+<P>
+<I>WinSock description</I>: Partly the same as Berkeley. The error
+can occur when the local network system aborts a connection. This
+would occur if WinSock aborts an established connection after
+data retransmission fails (receiver never acknowledges data sent
+on a datastream socket).
+<P>
+<I>TCP/IP scenario</I>: A connection will timeout if the local
+system doesn't receive an (ACK)nowledgement for data sent. It
+would also timeout if a (FIN)ish TCP packet is not ACK'd (and
+even if the FIN is ACK'd, it will eventually timeout if a FIN
+is not returned).
+<P>
+<I>User suggestions:</I> There are a number of things to check,
+that might help to identify why the failure occurred. Basically,
+you want to identify where the problem occurred.
+<UL>
+<LI>Ping the remote host you were connected to. If it doesn't
+respond, it might be off-line or there may be a network problem
+along the way. If it does respond, then this problem might have
+been a transient one (so you can reconnect now), or the server
+application you were connected to might have terminated (so you
+might not be able to connect again).
+<LI>Ping a local host to verify that your local network is still
+functioning (if on a serial connection, see next step)
+<LI>Ping your local router address. If you're on a serial connection,
+your local router is the IP address of the host you initially
+logged onto with SLIP or PPP.
+<LI>Ping a host on the same subnet as the host you were connected
+to (if you know one). This will verify that the destination network
+is functioning.
+<LI>Try a &quot;traceroute&quot; to the host you were connected
+to. This won't reveal too much unless you know the router addresses
+at the remote end, but it might help to identify if the problem
+is somewhere along the way.
+</UL>
+
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Recv">recv()</A>, <A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>, <A HREF="winsock.htm#AsyncSelect">FD_CLOSE</A>
+<P>
+<I>Additional functions:</I> <A HREF="winsock.htm#Send">send()</A> can also fail with WSAECONNABORTED.
+Any function that takes a socket as an input parameter--except
+<A HREF="winsock.htm#CloseSocket">close<A HREF="winsock.htm#Socket">socket()</A></a>--could potentially fail with this error.
+<P>
+<I>See also</I>: <A HREF="#WSAECONNRESET">WSAECONNRESET</A>, <A HREF="#WSAENETRESET">WSAENETRESET</A>,
+<A HREF="#WSAETIMEDOUT">WSAETIMEDOUT</A><HR>
+
+<P>
+<B><A NAME="WSAECONNREFUSED">WSAECONNREFUSED</A> (10061)</B> <I>Connection
+refused</I>.
+<P>
+<I>Berkeley description</I>: No connection could be made because
+the target machine actively refused it. This usually results from
+trying to connect to a service that is inactive on the foreign
+host.
+<P>
+<I>WinSock description</I>: Same as Berkeley
+<P>
+<I>TCP/IP scenario</I>: In TCP terms (datastream sockets), it
+means an attempt to connect (by sending a TCP SYN packet) caused
+the destination host to respond to the host by returning a reset
+(a TCP RST packet). If an application sends a UDP packet to a
+host/port that does not have a datagram socket &quot;listening,&quot;
+the network system may respond by sending back an ICMP Port Unreachable
+packet
+<P>
+<I>User suggestions</I>: Either you went to the wrong host, or
+the server application you're trying to contact isn't executing.
+Check the destination address you are using. If you used a hostname,
+did it resolve to the correct address? If the hostname resolution
+uses a local hosttable, it's possible you resolved to an old obsolete
+address. It's also possible that the local services file has an
+incorrect port number (although it's unlikely).
+<P>
+You can verify that the remote system is rejecting your connection
+attempt by checking the network statistics locally. Check that
+your network system (WinSock implementation) has a utility that
+shows network statistics. You could use this to verify that you're
+receiving TCP resets or ICMP Port Unreachable packets each time
+you attempt to connect.
+<P>
+<I>Developer suggestions</I>: If you have a network analyzer available,
+you can quickly check if the destination port number and host
+address are what you expect. On the server end, you could use
+a network system utility similar to BSD's &quot;netstat -a&quot;
+command to check that your server is running, and listening on
+the right port number.
+<P>
+This is one of the most frequent errors and one of the best to
+encounter, since it's one of the least ambiguous. There are only
+a few possible causes for this error:
+<UL>
+<LI><I>you tried to connect to the wrong port</I>. This is a common
+problem. You need to call <A HREF="winsock.htm#HtoNS">htons()</A> to translate a constant value
+to network byte order before assigning it to the sin_port field
+in the sockaddr structure.
+<LI><I>you tried to connect to the wrong destination host address</I>
+
+<LI><I>the server application isn't running on the destination
+host</I> 
+<LI><I>the server application isn't listening on the right port</I>.
+The server application might need to call <A HREF="winsock.htm#HtoNS">htons()</A> to translate
+the port to network byte order in the sockaddr structure.
+</UL>
+
+<P>
+<I>WinSock functions</I>: With a datastream socket: <A HREF="winsock.htm#Connect">connect()</A>
+and <A HREF="winsock.htm#AsyncSelect">FD_CONNECT</A> <A HREF="winsock.htm#AsyncSelect">WSAAsyncelect()</A> notification message.
+<P>
+<I>Additional functions: </I>With a datagram socket: <A HREF="winsock.htm#Send">send()</A> or
+<A HREF="winsock.htm#SendTo">sendto()</A>, or <A HREF="winsock.htm#AsyncSelect">FD_READ</A>.<HR>
+
+<P>
+<B><A NAME="WSAECONNRESET">WSAECONNRESET </A>(10054)</B> <I>Connection
+reset by peer</I>.
+<P>
+<I>Berkeley description</I>: A connection was forcibly closed
+by a peer. This normally results from a loss of the connection
+on the remote socket due to a timeout or a reboot.
+<P>
+<I>WinSock description</I>: Same as Berkeley. On a datastream
+socket, the connection was reset. This reset could be generated
+locally by the network system when it detects a connection failure,
+or it might be received from the remote host (in TCP terms, the
+remote host sent a RST packet). This error is also possible on
+a datagram socket; for instance, this error could result if your
+application sends a UDP datagram to a host, which rejects it by
+responding with an ICMP Port Unreachable.
+<P>
+<I>User suggestions</I>: Some network systems have commands to
+report statistics. In this case, it might be possible to check
+the count of TCP RST packets received, or ICMP Port Unreachable
+packets. See other suggestions under WSAECONNABORTED.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Recv">recv()</A>, <A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>,
+<A HREF="winsock.htm#AsyncSelect">FD_CLOSE</A>
+<P>
+<I>Additional functions:</I> Any function that does I/O on the
+network could generate this error. Two functions that are conspicuously
+absent from the current function list above are <A HREF="winsock.htm#ShutDown">shutdown()</A> and
+<A HREF="winsock.htm#CloseSocket">close<A HREF="winsock.htm#Socket">socket()</A></a>.
+<P>
+<I>See also:</I> <A HREF="#WSAECONNABORTED">WSAECONNABORTED</A>,
+<A HREF="#WSAENETRESET">WSAENETRESET</A>, <A HREF="#WSAETIMEDOUT">WSAETIMEDOUT</A>
+<HR>
+
+<P>
+<B><A NAME="WSAEDESTADDRREQ">WSAEDESTADDRREQ </A>(10039)</B> <I>Destination
+address required</I>.
+<P>
+<I>Berkeley description</I>: A required address was omitted from
+an operation on a socket.
+<P>
+<I>WinSock description</I>: Same as Berkeley. The explanation
+is simple and obvious: in order to connect to or send to a destination
+address, you need to provide the destination address. This error
+occurs if the sin_addr is INADDR_ANY (i.e. a long zero) in the
+sockaddr_in structure passed to <A HREF="winsock.htm#SendTo">sendto()</A>. Note: Although <A HREF="winsock.htm#Connect">connect()</A>
+and <A HREF="winsock.htm#AsyncSelect">FD_CONNECT</A> also have this error listed, the documentation
+specifically states that WSAEADDRNOTAVAIL is appropriate if INADDR_ANY
+is passed as a destination address.
+<P>
+<I>User suggestions:</I> Did you enter a destination hostname?
+If so, then the application might have had a problem resolving
+the name (see suggestions at WSATRY_AGAIN for more information).
+<P>
+<I>Developer suggestions:</I> If you don't detect it beforehand
+(e.g. after failed calls to <A HREF="winsock.htm#InetAddr">inet_addr()</A> or <A HREF="winsock.htm#GetHostByName">gethostbyname()</A>), then
+simply test your address value for zero before you pass it to
+<A HREF="winsock.htm#SendTo">sendto()</A>.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Connect">connect()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>, <A HREF="winsock.htm#AsyncSelect">FD_CONNECT</A><HR>
+
+<P>
+<B><A NAME="WSAEDQUOT">WSAEDQUOT</A> (10069)</B> <I>Disc quota
+exceeded</I>.
+<P>
+<I>Berkeley description</I>: A write to an ordinary file, the
+creation of a directory or symbolic link, or the creation of a
+directory entry failed because the user's quota of disk blocks
+was exhausted, or the allocation of an inode for a newly created
+file failed because the user's quota of inodes was exhausted.
+<P>
+<I>WinSock description</I>: No equivalent. This has no network-relevant
+analog (although the &quot;inode&quot; reference could refer to
+a network file system entry).
+<P>
+<I>WinSock functions</I>: &lt;none&gt;<HR>
+
+<P>
+<B><A NAME="WSAEFAULT">WSAEFAULT</A> (10014)</B> <I>Bad address</I>.
+<P>
+<I>Berkeley description</I>: The system detected an invalid address
+in attempting to use an argument of a call.
+<P>
+<I>WinSock description</I>: Same as Berkeley, and then some. Specifically,
+v1.1 WinSock spec notes that this error occurs if the length of
+the buffer is too small. For instance, if the length of a struct
+sockaddr is not equivalent to the sizeof(struct sockaddr). However,
+it also occurs when an application passes an invalid pointer value.
+<P>
+<I>Developer suggestions:</I> Always check the return value from
+a memory allocation to be sure it succeeded. Always be sure to
+allocate enough space.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Accept">accept()</A>, <A HREF="winsock.htm#Bind">bind()</A>, <A HREF="winsock.htm#Connect">connect()</A>, <A HREF="winsock.htm#GetHostName">gethostname()</A>,
+<A HREF="winsock.htm#GetPeerName">getpeername()</A>, <A HREF="winsock.htm#GetSockName">getsockname()</A>, <A HREF="winsock.htm#GetSockOpt">getsockopt()</A>, <A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#Send">send()</A>,
+<A HREF="winsock.htm#SendTo">sendto()</A>, <A HREF="winsock.htm#SetSockOpt">setsockopt()</A> if buffer length is too small.
+<P>
+<I>Additional functions:</I> Any functions that takes a pointer
+as an input parameter: <A HREF="winsock.htm#InetAddr">inet_addr()</A>, <A HREF="winsock.htm#InetNtoA">inet_ntoa()</A>, <A HREF="winsock.htm#IOCTLSocket">ioctl<A HREF="winsock.htm#Socket">socket()</A></A>,
+<A HREF="winsock.htm#GetHostByAddr">gethostbyaddr()</A>, <A HREF="winsock.htm#GetHostByName">gethostbyname()</A>, <A HREF="winsock.htm#GetServByName">getservbyname()</A>, <A HREF="winsock.htm#GetServByPort">getservbyport()</A>,
+<A HREF="winsock.htm#AsyncGetHostByName">WSAAsyncGetHostByName()</A>, <A HREF="winsock.htm#AsyncGetHostByAddr">WSAAsyncGetHostByAddr()</A>, <A HREF="winsock.htm#AsyncGetProtoByName">WSAAsyncGetProtoByName()</A>,
+WSAAsyncGetProtoByNumber, <A HREF="winsock.htm#AsyncGetServByName">WSAAsyncGetServByName()</A>, <A HREF="winsock.htm#AsyncGetServByPort">WSAAsyncGetServByPort()</A>,
+<A HREF="winsock.htm#SetBlockingHook">WSASetBlockingHook()</A><HR>
+
+<P>
+<B><A NAME="WSAEHOSTDOWN">WSAEHOSTDOWN</A> (10064)</B> <I>Host
+is down</I>.
+<P>
+<I>Berkeley description</I>: A socket operation failed because
+the destination host was down. A socket operation encountered
+a dead host. Networking activity on the local host has not been
+initiated.
+<P>
+<I>WinSock description</I>: No equivalent. The only time a WinSock
+might use this error--at least with a TCP/IP implementation of
+WinSock--it fails a function with other errors (for example, WSAETIMEDOUT).
+<P>
+<I>WinSock functions</I>: &lt;none&gt;
+<P>
+<I>See also</I>: WSAECONNABORTED, WSAECONNRESET, WSAENETRESET,
+WSAETIMEDOUT<HR>
+
+<P>
+<B><A NAME="WSAEHOSTUNREACH">WSAEHOSTUNREACH</A> (10065)</B> <I>No
+route to host</I>.
+<P>
+<I>Berkeley description</I>: A socket operation was attempted
+to an unreachable host.
+<P>
+<I>WinSock description</I>: Same as Berkeley. Unlike Berkeley,
+however, WinSock v1.1 doesn't ascribe this error to any functions.
+In it's place, WinSock uses the error WSAENETUNREACH, exclusively.
+<P>
+<I>TCP/IP scenario</I>: In BSD-compatible implementations, the
+local network system generates this error if there isn't a default
+route configured. Typically, though, WinSock generates WSAENETUNREACH
+when it receives a &quot;host unreachable&quot; ICMP message from
+a router instead of WSAEHOSTUNREACH. The ICMP message means that
+the router can't forward the IP datagram, possibly because it
+didn't get a response to the ARP request (which might mean the
+destination host is down).
+<P>
+<I>User suggestions:</I> see WSAENETUNREACH for details
+<P>
+<I>WinSock functions</I>: &lt;none&gt;
+<P>
+<I>Additional functions</I>: Any function that does network I/O.
+<P>
+<I>See also</I>: <A HREF="#WSAENETUNREACH">WSAENETUNREACH</A>
+<HR>
+
+<P>
+<B><A NAME="WSAEINPROGRESS">WSAEINPROGRESS</A> (10036) </B><I>Operation
+now in progress</I>.
+<P>
+<I>Berkeley description</I>: An operation that takes a long time
+to complete (such as a <A HREF="winsock.htm#Connect">connect()</A>) was attempted on a non-blocking
+socket. (see ioctl()).
+<P>
+<I>WinSock description</I>: The Windows Sockets definition of
+this error is <I>very different</I> from Berkeley. WinSock only
+allows a single blocking operation to be outstanding per task
+(or thread), and if you make any other function call (whether
+or not it references that or any other socket) the function fails
+with the WSAEINPROGRESS error. It means that there is a blocking
+operation outstanding.
+<P>
+It is also possible that WinSock might return this error after
+an application calls <A HREF="winsock.htm#Connect">connect()</A> a second time on a non-blocking
+socket while the connection is pending (i.e. after the first failed
+with WSAEWOULDBLOCK). This is what occurs in Berkeley Sockets.
+<P>
+<I>Developer suggestions:</I> Handle this as a non-fatal error.
+Any application that uses a blocking socket or calls any blocking
+functions must handle this error. You can attempt to avoid the
+error by calling <A HREF="winsock.htm#IsBlocking">WSAIsBlocking()</A> before making any WinSock function
+calls.
+<P>
+<I>WinSock functions:</I> <A HREF="winsock.htm#Accept">accept()</A>, <A HREF="winsock.htm#Bind">bind()</A>, <A HREF="winsock.htm#CloseSocket">close<A HREF="winsock.htm#Socket">socket()</A></a>, <A HREF="winsock.htm#Connect">connect()</A>,
+<A HREF="winsock.htm#GetHostByAddr">gethostbyaddr()</A>, <A HREF="winsock.htm#GetHostByName">gethostbyname()</A>, <A HREF="winsock.htm#GetHostName">gethostname()</A>, <A HREF="winsock.htm#GetPeerName">getpeername()</A>,
+<A HREF="winsock.htm#GetProtoByName">getprotobyname()</A>, <A HREF="winsock.htm#GetProtoByNumber">getprotobynumber()</A>, <A HREF="winsock.htm#GetServByName">getservbyname()</A>, <A HREF="winsock.htm#GetServByPort">getservbyport()</A>,
+<A HREF="winsock.htm#GetSockName">getsockname()</A>, <A HREF="winsock.htm#GetSockOpt">getsockopt()</A>, <A HREF="winsock.htm#IOCTLSocket">ioctl<A HREF="winsock.htm#Socket">socket()</A></A>, <A HREF="winsock.htm#Listen">listen()</A>, <A HREF="winsock.htm#Recv">recv()</A>,
+<A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#Select">select()</A>, <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>, <A HREF="winsock.htm#SetSockOpt">setsockopt()</A>, <A HREF="winsock.htm#ShutDown">shutdown()</A>,
+<A HREF="winsock.htm#Socket">socket()</A>, <A HREF="winsock.htm#AsyncGetHostByAddr">WSAAsyncGetHostByAddr()</A>, <A HREF="winsock.htm#AsyncGetHostByName">WSAAsyncGetHostByName()</A>, <A HREF="winsock.htm#AsyncGetProtoByName">WSAAsyncGetProtoByName()</A>,
+<A HREF="winsock.htm#AsyncGetProtoByNumber">WSAAsyncGetProtoByNumber()</A>, <A HREF="winsock.htm#AsyncGetServByName">WSAAsyncGetServByName()</A>, <A HREF="winsock.htm#AsyncGetServByPort">WSAAsyncGetServByPort()</A>,
+<A HREF="winsock.htm#AsyncSelect">WSAAsyncSelect()</A>, <A HREF="winsock.htm#CancelAsyncRequest">WSACancelAsyncRequest()</A>, <A HREF="winsock.htm#Cleanup">WSACleanup()</A>, <A HREF="winsock.htm#SetBlockingHook">WSASetBlockingHook()</A>,
+<P>
+<I>Additional functions</I>: Any WinSock function except <A HREF="winsock.htm#CancelBlockingCall">WSACancelBlockingCall</A>
+(in particular, <A HREF="winsock.htm#Startup">WSAStartup()</A> and <A HREF="winsock.htm#UnhookBlockingHook">WSAUnhookBlockingHook()</A>).<HR>
+
+<P>
+<B><A NAME="WSAEINTR">WSAEINTR</A> (10004) </B><I>Interrupted
+function call</I>.
+<P>
+<I>Berkeley description:</I> An asynchronous signal (such as SIGINTor
+SIGQUIT) was caught by the process during the execution of an
+interruptible function. If the signal handler performs a normal
+return, the interrupted function call will seem to have returned
+the error condition.
+<P>
+<I>WinSock description:</I> NOT same as Berkeley, but analogous.
+In WinSock it means a blocking operation was interrupted by a
+call to <A HREF="winsock.htm#CancelBlockingCall">WSACancelBlockingCall</A>.
+<P>
+<I>Developer suggestions:</I> You need to be prepared to handle
+this error on any functions that reference blocking sockets, or
+any calls to blocking functions, if you allow the user to cancel
+a blocking call. Whether to handle it as a fatal error or non-fatal
+error depends on the application and the context, so it's entirely
+up to you to decide.
+<P>
+<I>WinSock functions:</I> Any function capable of a blocking operation
+can return this error: <A HREF="winsock.htm#Accept">accept()</A>, <A HREF="winsock.htm#CloseSocket">close<A HREF="winsock.htm#Socket">socket()</A></a>, <A HREF="winsock.htm#Connect">connect()</A>,<A HREF="winsock.htm#GetHostByName">gethostbyname()</A>,
+<A HREF="winsock.htm#GetHostByAddr">gethostbyaddr()</A>, <A HREF="winsock.htm#GetProtoByName">getprotobyname()</A>, <A HREF="winsock.htm#GetProtoByNumber">getprotobynumber()</A>, <A HREF="winsock.htm#GetServByName">getservbyname()</A>,
+<A HREF="winsock.htm#GetServByPort">getservbyport()</A>, <A HREF="winsock.htm#Recv">recv()</A>, <A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#Select">select()</A>, <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>
+<P>
+<I>Additional functions:</I> Any of the WSAAsyncGetXByY() database
+functions may return this error in the asynchronous notification
+message to indicate that the previous call was cancelled with
+a call to <A HREF="winsock.htm#CancelAsyncRequest">WSACancelAsyncRequest()</A>.<HR>
+
+<P>
+<B><A NAME="WSAEINVAL">WSAEINVAL</A> (10022)</B> <I>Invalid argument.</I>
+
+<P>
+<I>Berkeley description:</I> Some invalid argument was supplied
+(for example, specifying an invalid level to the <A HREF="winsock.htm#SetSockOpt">setsockopt()</A>
+function).
+<P>
+<I>Microsoft C description</I>: Invalid argument. An invalid value
+was given for one of the arguments to a function. For example,
+the value given for the origin when positioning a file pointer
+(by means of a call to fseek) is before the beginning of the file.
+<P>
+<I>WinSock description</I>: Similar to Berkeley &amp; Microsoft
+C, the generic meaning is that an application passed invalid input
+parameter in a function call. The error refers to content as well
+as value (e.g. it may occur when a pointer to a structures is
+invalid or when a value in structure field is invalid). In some
+instances, it also refers to the current state of the socket input
+parameter.
+<P>
+<I>Detailed descriptions (relevant to socket states)</I>:
+<P>
+<I><A HREF="winsock.htm#Accept">accept()</A></I>: <A HREF="winsock.htm#Listen">listen()</A> was not invoked prior to <A HREF="winsock.htm#Accept">accept()</A>
+<P>
+<I><A HREF="winsock.htm#Bind">bind()</A>:</I> socket already bound to an address
+<P>
+<I><A HREF="winsock.htm#GetSockName">getsockname()</A></I>: socket not bound with <A HREF="winsock.htm#Bind">bind()</A>
+<P>
+<I><A HREF="winsock.htm#Listen">listen()</A>:</I> socket not bound with <A HREF="winsock.htm#Bind">bind()</A> <I>or</I> already
+connected.
+<P>
+<I><A HREF="winsock.htm#Recv">recv()</A> &amp; <A HREF="winsock.htm#RecvFrom">recvfrom()</A>: </I>socket not bound (for Dgram) <I>or</I>
+not yet connected (for Stream), or the requested length is zero
+(whether a length &gt;32K
+<P>
+is acceptable as a non-negative value is unclear, so don't use
+them).
+<P>
+<I><A HREF="winsock.htm#Send">send()</A> &amp; <A HREF="winsock.htm#SendTo">sendto()</A>: </I>socket not bound (for Dgram) <I>or</I>
+not yet connected (for Stream)
+<P>
+The v1.1 specification also has a detailed description for the
+<I><A HREF="winsock.htm#Connect">connect()</A></I> function which says: &quot;socket not already
+bound to an address.&quot; This text is a typo which makes no
+sense. Ignore it. The standard meaning for WSAEINVAL applies to
+<A HREF="winsock.htm#Connect">connect()</A> (invalid argument).
+<P>
+<I>WinSock functions: </I><A HREF="winsock.htm#Accept">accept()</A>, <A HREF="winsock.htm#Bind">bind()</A>, <A HREF="winsock.htm#GetSockName">getsockname()</A>, <A HREF="winsock.htm#IOCTLSocket">ioctl<A HREF="winsock.htm#Socket">socket()</A></A>,
+<A HREF="winsock.htm#Listen">listen()</A>, <A HREF="winsock.htm#Recv">recv()</A>, <A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#Select">select()</A>, <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SetSockOpt">setsockopt()</A>,
+<A HREF="winsock.htm#ShutDown">shutdown()</A>, <A HREF="winsock.htm#Startup">WSAStartup()</A>, <A HREF="winsock.htm#AsyncSelect">WSAAsyncSelect()</A>, <A HREF="winsock.htm#CancelAsyncRequest">WSACancelAsyncRequest()</A>,
+<A HREF="winsock.htm#CancelBlockingCall">WSACancelBlockingCall</A>, <A HREF="winsock.htm#AsyncSelect">FD_CONNECT</A>
+<P>
+<I>Additional functions</I>: Any WinSock function that takes input
+parameters that could be invalid (i.e. have bounds, or specific
+values) might return this error.<HR>
+
+<P>
+<B><A NAME="WSAEISCONN">WSAEISCONN </A>(10056)</B> <I>Socket is
+already connected</I>.
+<P>
+<I>Berkeley description</I>: A connect request was made on an
+already connected socket; or, a <A HREF="winsock.htm#SendTo">sendto()</A> or sendmsg() request
+on a connected socket specified a destination when already connected.
+<P>
+<I>WinSock description</I>: Same as Berkeley, except WinSock doesn't
+support the sendmsg() function, and some WinSock implementations
+are not so strict as to require an application with a datagram
+socket to &quot;disconnect&quot;--by calling <A HREF="winsock.htm#Connect">connect()</A> with a
+AF_INET NULL destination address: INADDR_ANY (0.0.0.0), and port
+0--before redirecting datagrams with <A HREF="winsock.htm#SendTo">sendto()</A> or <A HREF="winsock.htm#Connect">connect()</A>. On
+a datastream socket, some applications use this error with a non-blocking
+socket calling <A HREF="winsock.htm#Connect">connect()</A> to detect when a connection attempt has
+completed, although this is not recommended since some WinSocks
+fail with WSAEINVAL on subsequent <A HREF="winsock.htm#Connect">connect()</A> calls.
+<P>
+<I>Developer suggestions</I>: to make your application more portable:
+with datagram sockets don't use <A HREF="winsock.htm#Connect">connect()</A> and <A HREF="winsock.htm#SendTo">sendto()</A> on the
+same datagram socket in an application, and always &quot;disconnect&quot;
+before calling <A HREF="winsock.htm#Connect">connect()</A> more than once. With datastream sockets,
+don't call <A HREF="winsock.htm#Connect">connect()</A> more than once (use <A HREF="winsock.htm#Select">select()</A> or <A HREF="winsock.htm#AsyncSelect">WSAAsyncSelect()</A>
+to detect connection completion).
+<P>
+<I>WinSock functions:</I> <A HREF="winsock.htm#Listen">listen()</A>, <A HREF="winsock.htm#AsyncSelect">FD_CONNECT</A>
+<P>
+<I>Additional functions</I>: <A HREF="winsock.htm#Connect">connect()</A>, <A HREF="winsock.htm#SendTo">sendto()</A><HR>
+
+<P>
+<B><A NAME="WSAELOOP">WSAELOOP</A> (10062)</B> <I>Too many levels
+of symbolic links</I>.
+<P>
+<I>Berkeley description</I>: A pathname lookup involved more than
+8 symbolic links. Too many links were encountered in translating
+a pathname.
+<P>
+<I>WinSock description</I>: No equivalent
+<P>
+<I>WinSock functions</I>: &lt;none&gt;<HR>
+
+<P>
+<B><A NAME="WSAEMFILE">WSAEMFILE</A> (10024)</B> <I>Too many open
+files</I>.
+<P>
+<I>Berkeley description</I>: Too many open files. No process may
+have more than a system-defined number of file descriptors open
+at a time.
+<P>
+<I>Microsoft C description</I>: Too many open files. No more file
+handles are available, so no more files can be opened.
+<P>
+<I>WinSock description</I>: Similar to Berkeley &amp; Microsoft
+C, but in reference to sockets rather than file handles (although
+the descriptions in the v1.1 specification say &quot;no more file
+descriptors available&quot;). Generically, the error means the
+network system has run out of socket handles.
+<P>
+<I>User suggestions:</I> It may indicate that there are too many
+WinSock applications running simultaneously, but this is unlikely
+since most network systems have many socket handles available.
+It could also occur if an application opens and closes sockets
+often, but doesn't properly close the sockets (so it leaves them
+open, as &quot;orphans&quot;). To recover the orphaned sockets,
+you can try closing the application and restarting it to recover
+the open sockets; you may have to end all WinSock applications
+(to force an unload of the WinSock DLL).
+<P>
+<I>WinSock functions</I>: Any function which allocates a new descriptor:
+<A HREF="winsock.htm#Accept">accept()</A>, <A HREF="winsock.htm#Listen">listen()</A>, &amp; <A HREF="winsock.htm#Socket">socket()</A>. The v1.1 specification also
+lists <A HREF="winsock.htm#Connect">connect()</A>, although it does not allocate a descriptor.<HR>
+
+<P>
+<B><A NAME="WSAEMSGSIZE">WSAEMSGSIZE </A>(10040) </B><I>Message
+too long</I>.
+<P>
+<I>Berkeley description</I>: A message sent on a socket was larger
+than the internal message buffer or some other network limit.
+<P>
+<I>WinSock description</I>: Similar to Berkeley.
+<P>
+<I>Detailed description:</I> 
+<P>
+<I><A HREF="winsock.htm#Recv">recv()</A> and <A HREF="winsock.htm#RecvFrom">recvfrom()</A></I>: if the datagram you read is larger
+than the buffer you supplied, then WinSock truncates the datagram
+(i.e. copies what it can into your buffer) and fails the function.
+<P>
+<I><A HREF="winsock.htm#Send">send()</A> and <A HREF="winsock.htm#SendTo">sendto()</A></I>: you cannot send a datagram as large
+as you've requested. Note that the v1.1 WinSock specification
+does <I>not </I>explicitly state that this error occurs if the
+value you request is larger than the WSAData.iMaxUdpDg returned
+from <A HREF="winsock.htm#Startup">WSAStartup()</A>. Since the buffering requirements for sending
+are less than for receiving datagrams, it's conceivable that you
+can send a datagram larger than you can receive.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Recv">recv()</A>, <A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>
+<HR>
+
+<P>
+<B><A NAME="WSAENAMETOOLONG">WSAENAMETOOLONG</A> (10063) </B><I>File
+name too long</I>.
+<P>
+<I>Berkeley description</I>: A component of a path name exceeded
+255 (MAXNAMELEN) characters, or an entire path name exceeded 1023
+(MAXPATHLEN-1) characters.
+<P>
+<I>WinSock description</I>: No equivalent.
+<P>
+<I>WinSock functions</I>: &lt;none&gt;<HR>
+
+<P>
+<B><A NAME="WSAENETDOWN">WSAENETDOWN</A> (10050)</B> <I>Network
+is down</I>.
+<P>
+<I>Berkeley description</I>: A socket operation encountered a
+dead network.
+<P>
+<I>WinSock description</I>: Same as Berkeley. As you can see from
+the comprehensive list of WinSock functions, this error is the
+catch-all. When it occurs, it could indicate a serious failure
+of your network system (i.e. the protocol stack that the WinSock
+DLL runs over).
+<P>
+<I>User suggestions:</I> Check your WinSock, protocol stack, network
+driver and network interface card configuration. Note that this
+error occurs rarely since a WinSock implementation cannot reliably
+detect hardware problems.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Accept">accept()</A>, <A HREF="winsock.htm#Bind">bind()</A>, <A HREF="winsock.htm#CloseSocket">close<A HREF="winsock.htm#Socket">socket()</A></a>, <A HREF="winsock.htm#Connect">connect()</A>,
+<A HREF="winsock.htm#GetHostByAddr">gethostbyaddr()</A>, <A HREF="winsock.htm#GetHostByName">gethostbyname()</A>, <A HREF="winsock.htm#GetHostName">gethostname()</A>, <A HREF="winsock.htm#GetPeerName">getpeername()</A>,
+<A HREF="winsock.htm#GetProtoByName">getprotobyname()</A>, <A HREF="winsock.htm#GetProtoByNumber">getprotobynumber()</A>, <A HREF="winsock.htm#GetServByName">getservbyname()</A>, <A HREF="winsock.htm#GetServByPort">getservbyport()</A>,
+<A HREF="winsock.htm#GetSockName">getsockname()</A>, <A HREF="winsock.htm#GetSockOpt">getsockopt()</A>, <A HREF="winsock.htm#IOCTLSocket">ioctl<A HREF="winsock.htm#Socket">socket()</A></A>, <A HREF="winsock.htm#Listen">listen()</A>, <A HREF="winsock.htm#Recv">recv()</A>,
+<A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#Select">select()</A>, <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>, <A HREF="winsock.htm#SetSockOpt">setsockopt()</A>, <A HREF="winsock.htm#ShutDown">shutdown()</A>,
+<A HREF="winsock.htm#Socket">socket()</A>, <A HREF="winsock.htm#AsyncGetHostByAddr">WSAAsyncGetHostByAddr()</A>, <A HREF="winsock.htm#AsyncGetHostByName">WSAAsyncGetHostByName()</A>, <A HREF="winsock.htm#AsyncGetProtoByName">WSAAsyncGetProtoByName()</A>,
+<A HREF="winsock.htm#AsyncGetProtoByNumber">WSAAsyncGetProtoByNumber()</A>, <A HREF="winsock.htm#AsyncGetServByName">WSAAsyncGetServByName()</A>, <A HREF="winsock.htm#AsyncGetServByPort">WSAAsyncGetServByPort()</A>,
+<A HREF="winsock.htm#AsyncSelect">WSAAsyncSelect()</A>, <A HREF="winsock.htm#CancelAsyncRequest">WSACancelAsyncRequest()</A>, <A HREF="winsock.htm#CancelBlockingCall">WSACancelBlockingCall</A>,
+<A HREF="winsock.htm#Cleanup">WSACleanup()</A>, <A HREF="winsock.htm#SetBlockingHook">WSASetBlockingHook()</A>, FD_ACCEPT, <A HREF="winsock.htm#AsyncSelect">FD_CLOSE</A>, <A HREF="winsock.htm#AsyncSelect">FD_OOB</A>,
+<A HREF="winsock.htm#AsyncSelect">FD_READ</A>, <A HREF="winsock.htm#AsyncSelect">FD_WRITE</A>
+<P>
+<I>Additional functions</I>: All functions capable of failing
+can fail with this error. A couple functions that the v1.1 specification
+missed are <A HREF="winsock.htm#SetLastError">WSASetLastError()</A> and <A HREF="winsock.htm#UnhookBlockingHook">WSAUnhookBlockingHook()</A>.<HR>
+
+<P>
+<B><A NAME="WSAENETRESET">WSAENETRESET</A> (10052)</B> <I>Network
+dropped connection on reset</I>.
+<P>
+<I>Berkeley description</I>: The host you were connected to crashed
+and rebooted.
+<P>
+<I>WinSock description</I>: Same as Berkeley.
+<P>
+<I>Detailed description:</I> 
+<P>
+<I><A HREF="winsock.htm#SetSockOpt">setsockopt()</A></I>: WinSock generates this error if you try to
+set SO_KEEPALIVE on a connection that's already timed out.
+<P>
+<I>User suggestions:</I> see WSAECONNABORTED for details.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>, <A HREF="winsock.htm#SetSockOpt">setsockopt()</A>
+<P>
+<I>Additional functions</I>: Any function that does network I/O:
+<A HREF="winsock.htm#Recv">recv()</A>, <A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#AsyncSelect">FD_READ</A>, <A HREF="winsock.htm#AsyncSelect">FD_WRITE</A>
+<P>
+<I>See also</I>: <A HREF="#WSAECONNABORTED">WSAECONNABORTED</A>,
+<A HREF="#WSAECONNRESET">WSAECONNRESET</A>, <A HREF="#WSAETIMEDOUT">WSAETIMEDOUT</A>
+<HR>
+
+<P>
+<B><A NAME="WSAENETUNREACH">WSAENETUNREACH</A> (10051)</B> <I>Network
+is unreachable</I>.
+<P>
+<I>Berkeley description</I>: A socket operation was attempted
+to an unreachable network.
+<P>
+<I>WinSock description</I>: Almost same as Berkeley. For WinSock,
+this error is equivalent to Berkeley's EHOSTUNREACH error, the
+catch-all error for unreachable hosts. &quot;You can't get there
+from here.&quot;
+<P>
+<I>TCP/IP scenario</I>: The local network system could generate
+this error if there isn't a default route configured. Typically,
+though, WinSock generates this error when it receives a &quot;host
+unreachable&quot; ICMP message from a router. The ICMP message
+means that a router can't forward the IP datagram, possibly because
+it didn't get a response to the ARP request (which might mean
+the destination host is down). Note: this error may also result
+if you are trying to send a multicast packet and the default gateway
+does not support multicast (check your interface configuration).
+<P>
+<I>User suggestions:</I> Try to ping the destination host, to
+see if you get the same results (chances are, you will). Check
+the destination address itself; is it the one you wanted to go
+to? Check whether you have a router configured in your network
+system (your WinSock implementation). Do a traceroute to try to
+determine where the failure occurs along the route between your
+host and the destination host.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Connect">connect()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>, <A HREF="winsock.htm#AsyncSelect">FD_CONNECT</A>
+<P>
+<I>Additional functions</I>: Any function that does network I/O:
+<A HREF="winsock.htm#Recv">recv()</A>, <A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#AsyncSelect">FD_READ</A>, <A HREF="winsock.htm#AsyncSelect">FD_WRITE</A>
+<P>
+<I>See also:</I> <A HREF="#WSAEHOSTUNREACH">WSAEHOSTUNREACH</A>
+<HR>
+
+<P>
+<B><A NAME="WSAENOBUFS">WSAENOBUFS</A> (10055)</B> <I>No buffer
+space available</I>.
+<P>
+<I>Berkeley description</I>: An operation on a socket or pipe
+was not performed because the system lacked sufficient buffer
+space or because a queue was full.
+<P>
+<I>WinSock description</I>: Same as Berkeley. The WinSock implementation
+was unable to allocate additional memory to accommodate the function
+request.
+<P>
+<I>User suggestions</I>: This error indicates a shortage of resources
+on your system. It can occur if you're trying to run too many
+applications (of any kind) simultaneously on your machine. If
+this tends to occur after running certain applications for a while,
+it might be a symptom of an application that doesn't return system
+resources (like memory) properly. It may also indicate you are
+not closing the applications properly. If it persists, exit Windows
+or reboot your machine to remedy the problem. You can monitor
+available memory with Program Manager's &quot;Help/About...&quot;
+command.
+<P>
+<I>WinSock functions:</I> <A HREF="winsock.htm#Accept">accept()</A>, <A HREF="winsock.htm#Bind">bind()</A>, <A HREF="winsock.htm#Connect">connect()</A>, <A HREF="winsock.htm#Listen">listen()</A>,
+<A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>, <A HREF="winsock.htm#Socket">socket()</A>, <A HREF="winsock.htm#AsyncGetHostByAddr">WSAAsyncGetHostByAddr()</A>, <A HREF="winsock.htm#AsyncGetHostByName">WSAAsyncGetHostByName()</A>,
+<A HREF="winsock.htm#AsyncGetProtoByName">WSAAsyncGetProtoByName()</A>, <A HREF="winsock.htm#AsyncGetProtoByNumber">WSAAsyncGetProtoByNumber()</A>, <A HREF="winsock.htm#AsyncGetServByName">WSAAsyncGetServByName()</A>,
+<A HREF="winsock.htm#AsyncGetServByPort">WSAAsyncGetServByPort()</A>, <A HREF="winsock.htm#AsyncSelect">FD_CONNECT</A>
+<P>
+<I>Additional functions</I>: Any other functions that use network
+system buffer space, like the &quot;database functions&quot;,
+<A HREF="winsock.htm#SetSockOpt">setsockopt()</A> with SO_RCVBUF or SO_SNDBUF options.<HR>
+
+<P>
+<B><A NAME="WSAENOPROTOOPT">WSAENOPROTOOPT</A> (10042)</B> <I>Bad
+protocol option.</I> 
+<P>
+<I>Berkeley description</I>: A bad option or level was specified
+in a <A HREF="winsock.htm#GetSockOpt">getsockopt()</A>(2) or setsockopt(2) call.
+<P>
+<I>WinSock description</I>: Same as Berkeley; the option is unknown
+or unsupported.
+<P>
+<I>Detailed description:</I> 
+<P>
+SO_BROADCAST is not supported on sockets of type SOCK_STREAM.
+<P>
+SO_ACCEPTCONN, SO_DONTLINGER, SO_KEEPALIVE, SO_LINGER, SO_OOBINLINE
+and TCP_NODELAY are not supported on sockets of type SOCK_DGRAM.
+<P>
+SO_DEBUG, SO_DONTROUTE, SO_RCVBUF, SO_SNDBUF, TCP_NODELAY: optional
+socket options.
+<P>
+SO_ACCEPTCONN, SO_ERROR, SO_TYPE: are read-only options, so they
+work with <A HREF="winsock.htm#GetSockOpt">getsockopt()</A>, but <I>not</I> with <A HREF="winsock.htm#SetSockOpt">setsockopt()</A>
+<P>
+<I>Developer suggestions:</I> Check the parameters. Are you using
+an optional level or socket option that may not be supported on
+all WinSock implementations? If so, treat this as a non-fatal
+error and ignore it, if possible.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#GetSockOpt">getsockopt()</A>, <A HREF="winsock.htm#SetSockOpt">setsockopt()</A>
+<P>
+<I>Additional functions</I>: Bad IP headers can cause routers
+and remote hosts to issue ICMP &quot;parameter problem&quot; messages,
+which result in a ENOPROTOOPT error on Berkeley-derived systems.
+These errors might be reported on any function that does network
+I/O (e.g. <A HREF="winsock.htm#Connect">connect()</A>, <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#Recv">recv()</A>, et cetera).
+<P>
+<I>See also:</I> <A HREF="#WSAEINVAL">WSAEINVAL</A><HR>
+
+<P>
+<B><A NAME="WSAENOTCONN">WSAENOTCONN </A>(10057)</B> <I>Socket
+is not connected</I>.
+<P>
+<I>Berkeley description</I>: A request to send or receive data
+was disallowed because the socket is not connected and (when sending
+on a datagram socket) no address was supplied.
+<P>
+<I>WinSock description</I>: Same as Berkeley, and then some. An
+application attempted an input/output network function call before
+establishing an association with a remote socket (i.e. before
+calling <A HREF="winsock.htm#Connect">connect()</A> or <A HREF="winsock.htm#Accept">accept()</A>). It also has a specific meaning
+for <A HREF="winsock.htm#SetSockOpt">setsockopt()</A>.
+<P>
+<I>Detailed description:</I> 
+<P>
+<I><A HREF="winsock.htm#SetSockOpt">setsockopt()</A>: </I>WinSock generates this error if you try to
+set SO_KEEPALIVE but the connection has already been aborted (e.g.
+a TCP reset received from remote host).
+<P>
+<I>Developer suggestions</I>: Chances are, that if you encounter
+this error, your application ignored the failure of some previous
+function. Although some WinSock implementations might not issue
+other errors if a connection fails, so you can handle this error
+as you would others that indicate connection failure.
+<P>
+<I>WinSock functions: </I><A HREF="winsock.htm#GetPeerName">getpeername()</A>, <A HREF="winsock.htm#Recv">recv()</A>, <A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#Send">send()</A>,
+<A HREF="winsock.htm#SendTo">sendto()</A>, <A HREF="winsock.htm#SetSockOpt">setsockopt()</A>, <A HREF="winsock.htm#ShutDown">shutdown()</A>, <A HREF="winsock.htm#AsyncSelect">FD_CONNECT</A>
+<P>
+<I>See also:</I> <A HREF="#WSAECONNABORTED">WSAECONNABORTED</A>,
+<A HREF="#WSAECONNRESET">WSAECONNRESET</A>, <A HREF="#WSAENETRESET">WSAENETRESET</A>,
+<A HREF="#WSAETIMEDOUT">WSAETIMEDOUT</A><HR>
+
+<P>
+<B><A NAME="WSAENOTEMPTY">WSAENOTEMPTY</A> (10066)</B> <I>Directory
+not empty</I>.
+<P>
+<I>Berkeley description</I>: A directory with entries other than
+`.'and `..' was supplied to a remove directory or rename call.
+<P>
+<I>WinSock description</I>: No equivalent.
+<P>
+<I>WinSock functions</I>: &lt;none&gt;<HR>
+
+<P>
+<B><A NAME="WSAENOTSOCK">WSAENOTSOCK</A> (10038)</B> <I>Socket
+operation on non-socket</I>.
+<P>
+<I>Berkeley description</I>: An operation was attempted on something
+that is not a socket. The specified socket parameter refers to
+a file, not a socket.
+<P>
+<I>WinSock description</I>: Same as Berkeley. The socket input
+parameter is not a valid socket handle (either it never was valid,
+it's a file handle (not a socket handle), or if it was a socket
+handle, it has been closed).
+<P>
+<I>Detailed description:</I> 
+<P>
+<I><A HREF="winsock.htm#Select">select()</A>:</I> fails with WSAENOTSOCK if any socket in an fd_set
+is an invalid socket handle.
+<P>
+<I>Developer suggestions:</I> Did you close a socket inadvertently
+in one part of an application without keeping another part notified?
+Use socket state in an application and/or handle this error gracefully
+as a non-fatal error.
+<P>
+<I>WinSock functions:</I> Any function that takes a socket as
+an input parameter: <A HREF="winsock.htm#Accept">accept()</A>, <A HREF="winsock.htm#Bind">bind()</A>, <A HREF="winsock.htm#CloseSocket">close<A HREF="winsock.htm#Socket">socket()</A></a>, <A HREF="winsock.htm#Connect">connect()</A>,
+<A HREF="winsock.htm#GetPeerName">getpeername()</A>, <A HREF="winsock.htm#GetSockName">getsockname()</A>, <A HREF="winsock.htm#GetSockOpt">getsockopt()</A>, <A HREF="winsock.htm#IOCTLSocket">ioctl<A HREF="winsock.htm#Socket">socket()</A></A>, <A HREF="winsock.htm#Listen">listen()</A>,
+<A HREF="winsock.htm#Recv">recv()</A>, <A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#Select">select()</A>, <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>, <A HREF="winsock.htm#SetSockOpt">setsockopt()</A>,
+<A HREF="winsock.htm#ShutDown">shutdown()</A>, <A HREF="winsock.htm#AsyncSelect">FD_CONNECT</A>
+<P>
+<I>Additional functions</I>: <A HREF="winsock.htm#AsyncSelect">WSAAsyncSelect()</A> should be in the
+list of functions (some applications might not register for or
+handle the <A HREF="winsock.htm#AsyncSelect">FD_CONNECT</A> message).<HR>
+
+<P>
+<B><A NAME="WSAEOPNOTSUPP">WSAEOPNOTSUPP </A>(10045)</B> <I>Operation
+not supported</I>.
+<P>
+<I>Berkeley description</I>: The attempted operation is not supported
+for the type of object referenced. Usually this occurs when a
+file descriptor refers to a file or socket that cannot support
+this operation, for example, trying to accept a connection on
+a datagram socket.
+<P>
+<I>WinSock description</I>: Same as Berkeley. &quot;You can't
+make a silk purse from a sow's ear.&quot;
+<P>
+<I>Detailed descriptions</I>:
+<P>
+<I><A HREF="winsock.htm#Accept">accept()</A>, <A HREF="winsock.htm#Listen">listen()</A>:</I> socket is not of type that supports
+connection-oriented service.
+<P>
+<I><A HREF="winsock.htm#Recv">recv()</A>, <A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>:</I> MSG_OOB was specified,
+but the socket is not of type SOCK_STREAM
+<P>
+<I>Developer suggestions:</I> don't do that.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Accept">accept()</A>, <A HREF="winsock.htm#Listen">listen()</A>, <A HREF="winsock.htm#Recv">recv()</A>, <A HREF="winsock.htm#RecvFrom">recvfrom()</A>,
+<A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SendTo">sendto()</A><HR>
+
+<P>
+<B><A NAME="WSAEPFNOSUPPORT">WSAEPFNOSUPPORT</A> (10046)</B> <I>Protocol
+family not supported</I>.
+<P>
+<I>Berkeley description</I>: The protocol family has not been
+configured into the system or no implementation for it exists.
+<P>
+<I>WinSock description</I>: Same as Berkeley. Apparently, the
+Windows Sockets specification left this out by oversight. The
+WSAEAFNOSUPPORT is the likely substitute error for this in WinSock,
+although its Berkeley meaning is slightly different. However,
+the WSAEPROTONOSUPPORT is another possible equivalent for WinSock
+to use in place of this error.
+<P>
+<I>WinSock functions</I>: &lt;none&gt;
+<P>
+<I>Additional functions</I>: For Berkeley compatibility, the <A HREF="winsock.htm#Socket">socket()</A>
+function should fail with this error if an unsupported address
+family is requested.
+<P>
+<I>See also:</I> <A HREF="#WSAEAFNOSUPPORT">WSAEAFNOSUPPORT</A>
+<HR>
+
+<P>
+<B><A NAME="WSAEPROCLIM">WSAEPROCLIM</A> (10067)</B> <I>Too many
+processes.</I> 
+<P>
+<I>Berkeley description</I>: No equivalent in 4.3 BSD or compatible
+operating systems.
+<P>
+<I>WinSock description</I>: No equivalent.
+<P>
+<I>WinSock functions</I>: &lt;none&gt;
+<P>
+<I>Additional functions</I>: If a WinSock implementation has an
+upper limit to the number of simultaneous tasks it can handle,
+an application's initial call to <A HREF="winsock.htm#Startup">WSAStartup()</A> could fail with
+this error.<HR>
+
+<P>
+<B><A NAME="WSAEPROTONOSUPPORT">WSAEPROTONOSUPPORT</A> (10043)</B>
+<I>Protocol not supported</I>.
+<P>
+<I>Berkeley description</I>: The protocol has not been configured
+into the system, or no implementation for it exists.
+<P>
+<I>WinSock description</I>: Same as Berkeley. So, for example,
+if a WinSock implementation doesn't support SOCK_RAW with IPPROTO_IP
+(or any other protocol), then the <A HREF="winsock.htm#Socket">socket()</A> call would fail with
+WSAEPROTONOSUPPORT (however, if it doesn't support SOCK_RAW at
+all, you should expect WSAESOCKTNOSUPPORT).
+<P>
+<I>Developer suggestion:</I> are you trying to use an optional
+feature? Handle the request as a non-fatal error (if possible),
+since some WinSock's can legally fail the request.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Socket">socket()</A>
+<P>
+<I>See also:</I> <A HREF="#WSAESOCKTNOSUPPORT">WSAESOCKTNOSUPPORT</A>
+<HR>
+
+<P>
+<B><A NAME="WSAEPROTOTYPE">WSAEPROTOTYPE </A>(10041)</B> <I>Protocol
+wrong type for socket</I>.
+<P>
+<I>Berkeley description</I>: A protocol was specified that does
+not support the semantics of the socket type requested. For example,
+you cannot use the ARPA Internet UDP protocol with type SOCK_STREAM.
+<P>
+<I>WinSock description</I>: Same as Berkeley. This error occurs
+if you specifically reference a protocol that isn't part of the
+address family you also reference. The only function that takes
+these two explicit parameters is <A HREF="winsock.htm#Socket">socket()</A>.
+<P>
+<I>Developer suggestions</I>: Since there're only one corresponding
+protocol for each of the datagram and datastream socket types
+in the Internet address family, you should simply leave the value
+in the <I>protocol</I> input parameter to <A HREF="winsock.htm#Socket">socket()</A>. Alternately,
+you could call <A HREF="winsock.htm#GetProtoByName">getprotobyname()</A> or <A HREF="winsock.htm#AsyncGetProtoByName">WSAAsyncGetProtoByName()</A> to
+get the appropriate protocol value from the network system.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Socket">socket()</A>
+<P>
+<I>See also:</I> <A HREF="#WSAEAFNOSUPPORT">WSAEAFNOSUPPORT</A>,
+<A HREF="#WSAEPFNOSUPPORT">WSAEPFNOSUPPORT</A><HR>
+
+<P>
+<B><A NAME="WSAEREMOTE">WSAEREMOTE</A> (10071)</B> <I>Too many
+levels of remote in path</I> 
+<P>
+<I>Berkeley description</I>: Item is not local to the host. A
+server has attempted to handle an NFS request by generating a
+request to another NFS server, which is not allowed.
+<P>
+<I>WinSock description</I>: No equivalent. The WinSock API does
+not provide access to the Network File System application protocol,
+so this error is irrelevant to WinSock.
+<P>
+<I>WinSock functions</I>: &lt;none&gt;<HR>
+
+<P>
+<B><A NAME="WSAESHUTDOWN">WSAESHUTDOWN</A> (10058)</B> <I>Cannot
+send after socket shutdown</I>.
+<P>
+<I>Berkeley description</I>: A request to send data was disallowed
+because the socket had already been shut down with a previous
+<A HREF="winsock.htm#ShutDown">shutdown()</A> call.
+<P>
+<I>WinSock description</I>: Same as Berkeley. By calling <A HREF="winsock.htm#ShutDown">shutdown()</A>
+you do a partial close of a socket, which means you have discontinued
+sending. The WinSock implementation will not allow you to send
+after this.
+<P>
+<I>TCP/IP scenario</I>: Calling <A HREF="winsock.htm#ShutDown">shutdown()</A> with how=1 or how=2
+sends a TCP FIN packet to the remote address, which literally
+means &quot;I'm done sending.&quot; If the local host sent any
+more data after that point, it would be in clear violation of
+the TCP specification (RFCs 793 and 1122).
+<P>
+<I>Developer suggestion</I>: The simple suggestion is &quot;don't
+do that.&quot; No matter what value you use for the &quot;how&quot;
+parameter to the <A HREF="winsock.htm#ShutDown">shutdown()</A> function, you cannot send afterwards.
+You can avoid making the mistake of trying to send on a socket
+after you've initiated a close, by keeping track of the socket
+state in your application (and checking it before you attempt
+I/O).
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Recv">recv()</A>, <A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>,
+with datastream sockets only.<HR>
+
+<P>
+<B><A NAME="WSAESOCKTNOSUPPORT">WSAESOCKTNOSUPPORT</A> (10044)</B>
+<I>Socket type not supported.</I> 
+<P>
+<I>Berkeley description</I>: The support for the socket type has
+not been configured into the system or no implementation for it
+exists.
+<P>
+<I>WinSock description</I>: Similar to Berkeley. The WinSock description
+for this error is &quot;the specified socket type is not supported
+in this address family,&quot; which qualifies the error condition
+a bit more than the Berkeley explanation does. So, for example,
+you can expect this error if a WinSock implementation doesn't
+support socket type SOCK_RAW within the Internet address family
+(AF_INET).
+<P>
+<I>Developer suggestion:</I> are you trying to use an optional
+feature? Handle the request as a non-fatal error (if possible),
+since some WinSock's can legally fail the request.
+<P>
+<I>WinSock functions</I>: <A HREF="winsock.htm#Socket">socket()</A>
+<P>
+<I>See also:</I> <A HREF="#WSAEPROTOTYPE">WSAEPROTOTYPE</A>, <A HREF="#WSAEPROTONOSUPPORT">WSAEPROTONOSUPPORT</A>
+<HR>
+
+<P>
+<B><A NAME="WSAESTALE">WSAESTALE</A> (10070)</B> <I>Stale NFS
+file handle</I>.
+<P>
+<I>Berkeley description</I>: An attempt was made to access an
+open file (on an NFS filesystem) which is now unavailable as referenced
+by the file descriptor. This may indicate the file was deleted
+on the NFS server or some other catastrophic event occurred.
+<P>
+<I>WinSock description</I>: No equivalent. NFS is &quot;network-related&quot;
+in the strictest sense, but the Network File System protocol is
+an application protocol (i.e. a &quot;high-level&quot; protocol).
+The Windows Sockets API provides access to &quot;low-level&quot;
+API's (like the transport protocols TCP and UDP), so this error
+is not relevant to WinSock.
+<P>
+<I>WinSock functions</I>: &lt;none&gt;<HR>
+
+<P>
+<B><A NAME="WSAETIMEDOUT">WSAETIMEDOUT</A> (10060)</B> <I>Connection
+timed out.</I> 
+<P>
+<I>Berkeley description</I>: A connect or send request failed
+because the connected party did not properly respond after a period
+of time. (The timeout period is dependent on the communication
+protocol.)
+<P>
+<I>WinSock description</I>: Same as Berkeley, but less. This error
+is relevant to <A HREF="winsock.htm#Connect">connect()</A>, but not to <A HREF="winsock.htm#Send">send()</A> or <A HREF="winsock.htm#SendTo">sendto()</A> as it
+is in Berkeley Sockets.
+<P>
+<I>User suggestions</I>: Check the obvious first: check that the
+destination address is a valid IP address. If you used a hostname,
+did it resolve to the correct address? If the hostname resolution
+uses a local host table, it's possible you resolved to an obsolete
+address. Can you ping that hostname?
+<P>
+Do you have a router configured? Is the router up and running
+(check by pinging it, and then ping an address on the other side
+of it)? Try a traceroute to the destination address to check that
+all the routers are functioning.
+<P>
+Check your subnet mask. If you don't have the proper subnet mask,
+your network system may treat a local address as a remote address
+(so it forwards addresses on the local subnet to the router, rather
+than broadcasting an ARP request locally), or visa versa.
+<P>
+<I>WinSock functions:</I> <A HREF="winsock.htm#Connect">connect()</A>, <A HREF="winsock.htm#AsyncSelect">FD_CONNECT</A>
+<P>
+<I>Additional functions</I>: Any function that does I/O on the
+network could generate this error, and the <A HREF="winsock.htm#AsyncSelect">WSAAsyncSelect()</A> events
+<A HREF="winsock.htm#AsyncSelect">FD_OOB</A>, <A HREF="winsock.htm#AsyncSelect">FD_READ</A>, <A HREF="winsock.htm#AsyncSelect">FD_WRITE</A>.
+<P>
+<I>See also:</I> <A HREF="#WSAECONNABORTED">WSAECONNABORTED</A>,
+<A HREF="#WSAECONNRESET">WSAECONNRESET</A>, <A HREF="#WSAENETRESET">WSAENETRESET</A>
+<HR>
+
+<P>
+<B><A NAME="WSAETOOMANYREFS">WSAETOOMANYREFS</A> (10059)</B> <I>Too
+many references; can't splice</I> 
+<P>
+<I>Berkeley description</I>: too many references to some kernel-level
+object; the associated resource has run out.
+<P>
+<I>WinSock description</I>: No equivalent.
+<P>
+<I>WinSock functions</I>: &lt;none&gt;<HR>
+
+<P>
+<B><A NAME="WSAEUSERS">WSAEUSERS </A>(10068)</B> <I>Too many users</I>.
+<P>
+<I>Berkeley description</I>: The quota system ran out of table
+entries.
+<P>
+<I>WinSock description</I>: No equivalent.
+<P>
+<I>WinSock functions</I>: &lt;none&gt;<HR>
+
+<P>
+<B><A NAME="WSAEWOULDBLOCK">WSAEWOULDBLOCK</A> (10035)</B> <I>Resource
+temporarily unavailable</I>.
+<P>
+<I>Berkeley description</I>: This is a temporary condition and
+later calls to the same routine may complete normally (also known
+as EAGAIN error in Berkeley Software Distribution version 4.3)
+<P>
+<I>WinSock description</I>: Same as Berkeley. The socket is marked
+as non-blocking (non-blocking operation mode), and the requested
+operation is not complete at this time.
+<P>
+<I>Detailed descriptions:</I> 
+<P>
+<I><A HREF="winsock.htm#Connect">connect()</A>: </I>the operation is underway, but as yet incomplete.
+<P>
+<I><A HREF="winsock.htm#CloseSocket">close<A HREF="winsock.htm#Socket">socket()</A></a>:</I> occurs on a non-blocking socket with non-zero
+timeout set with <A HREF="winsock.htm#SetSockOpt">setsockopt()</A> SO_LINGER. The behavior may vary:
+some WinSocks might complete in background, and others may require
+another call to closesocket to complete. Do not set non-zero timeout
+on non-blocking sockets to avoid this ambiguity (see Chapter 9
+for more information).
+<P>
+<I><A HREF="winsock.htm#Send">send()</A> or <A HREF="winsock.htm#SendTo">sendto()</A></I>: out of buffer space, so try again later
+or wait until <A HREF="winsock.htm#AsyncSelect">FD_WRITE</A>
+<P>
+notification (<A HREF="winsock.htm#AsyncSelect">WSAAsyncSelect()</A>) or <A HREF="winsock.htm#Select">select()</A> <I>writefds</I> is
+set.
+<P>
+<I>all other functions: </I>retry the operation again later since
+it cannot be satisfied at this time.
+<P>
+<I>Developer suggestions:</I> Every application that uses non-blocking
+sockets must be prepared for this error on <I>any</I> call to
+the functions mentioned below. For instance, even if you request
+to <A HREF="winsock.htm#Send">send()</A> a few bytes of data on a newly created TCP connection,
+<A HREF="winsock.htm#Send">send()</A> could fail with WSAEWOULDBLOCK (if, say, the network system
+has a TCP slow-start algorithm implemented). The <A HREF="winsock.htm#AsyncSelect">WSAAsyncSelect()</A>
+<A HREF="winsock.htm#AsyncSelect">FD_WRITE</A> event is specifically designed to notify an application
+after a WSAEWOULDBLOCK error when buffer space is available again
+so <A HREF="winsock.htm#Send">send()</A> or <A HREF="winsock.htm#SendTo">sendto()</A> should succeed.
+<P>
+<I>WinSock functions:</I> <A HREF="winsock.htm#Accept">accept()</A>, <A HREF="winsock.htm#CloseSocket">close<A HREF="winsock.htm#Socket">socket()</A></a>, <A HREF="winsock.htm#Connect">connect()</A>,
+<A HREF="winsock.htm#Recv">recv()</A>, <A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>, <A HREF="winsock.htm#AsyncGetHostByAddr">WSAAsyncGetHostByAddr()</A>,
+<A HREF="winsock.htm#AsyncGetHostByName">WSAAsyncGetHostByName()</A>, <A HREF="winsock.htm#AsyncGetProtoByName">WSAAsyncGetProtoByName()</A>, <A HREF="winsock.htm#AsyncGetProtoByNumber">WSAAsyncGetProtoByNumber()</A>,
+<A HREF="winsock.htm#AsyncGetServByName">WSAAsyncGetServByName()</A>, <A HREF="winsock.htm#AsyncGetServByPort">WSAAsyncGetServByPort()</A><HR>
+
+<P>
+<B><A NAME="WSAHOST_NOT_FOUND">WSAHOST_NOT_FOUND </A>(11001)</B>
+<I>Host not found</I> 
+<P>
+<I>Berkeley description</I>: No such host is known. The name you
+have used is not an official hostname or alias. This is not a
+soft error, another type of name server request may be successful.
+<P>
+<I>WinSock description</I>: Same as Berkeley. Any of the WinSock
+name resolution functions can fail with this error. The WinSock
+API does not provide any way to select specific name resolution
+protocols, server address, or record type.
+<P>
+<I>TCP/IP scenario:</I> Most WinSock implementations use domain
+name system (DNS) protocol for hostname to address resolution,
+although a few use Network Information System (NIS). Assuming
+you have a name server configured instead of or as well as a host
+table, a hostname resolution request causes a WinSock DLL to send
+a DNS &quot;A&quot; record query (address query) to the configured
+DNS query. If you have more than one server configured, the hostname
+query fails only after the WinSock DLL has queried all servers.
+<P>
+<I>User suggestions:</I> Check that you have a name server(s)
+and/or host table configured. If you are using a name server(s),
+check whether the server host(s) are up (e.g. try to ping the
+server(s)). You could also try to resolve another hostname you
+know should work, to check that the name resolution server application
+is running.
+<P>
+If you are using a host table exclusively, you'll need to update
+it to add the destination hostname and address.
+<P>
+<I>Developer suggestions:</I> for protocols and services consider
+using a hard-coded value for the protocol number or service port
+number in case your resolution attempt fails, and you can have
+your cake and eat it too.
+<P>
+<I>WinSock functions: </I><A HREF="winsock.htm#GetHostByAddr">gethostbyaddr()</A>, <A HREF="winsock.htm#GetHostByName">gethostbyname()</A>, <A HREF="winsock.htm#AsyncGetHostByAddr">WSAAsyncGetHostByAddr()</A>,
+<A HREF="winsock.htm#AsyncGetHostByName">WSAAsyncGetHostByName()</A>, <A HREF="winsock.htm#AsyncGetProtoByName">WSAAsyncGetProtoByName()</A>, <A HREF="winsock.htm#AsyncGetProtoByNumber">WSAAsyncGetProtoByNumber()</A>,
+<A HREF="winsock.htm#AsyncGetServByName">WSAAsyncGetServByName()</A>, <A HREF="winsock.htm#AsyncGetServByPort">WSAAsyncGetServByPort()</A>
+<P>
+<I>Additional functions:</I> It is strange that the asynchronous
+protocol and services functions can fail with this error, but
+the synchronous cannot. The missing functions are <A HREF="winsock.htm#GetProtoByName">getprotobyname()</A>,
+<A HREF="winsock.htm#GetProtoByNumber">getprotobynumber()</A>, <A HREF="winsock.htm#GetServByName">getservbyname()</A>, and <A HREF="winsock.htm#GetServByPort">getservbyport()</A>.
+<P>
+<I>See also:</I> <A HREF="#WSANO_DATA">WSANO_DATA</A>, <A HREF="#WSANO_RECOVERY">WSANO_RECOVERY</A>,
+<A HREF="#WSATRY_AGAIN">WSATRY_AGAIN</A><HR>
+
+<P>
+<B><A NAME="WSANOTINITIALISED">WSANOTINITIALISED</A> (10093)</B>
+<I>Successful <A HREF="winsock.htm#Startup">WSAStartup()</A> not yet performed</I> 
+<P>
+<I>Berkeley description</I>: No equivalent.
+<P>
+<I>WinSock description</I>: Either your application hasn't called
+<A HREF="winsock.htm#Startup">WSAStartup()</A>, or <A HREF="winsock.htm#Startup">WSAStartup()</A> failed, or--possibly--you are accessing
+a socket which the current active task does not own (i.e. you're
+trying to share a socket between tasks). Note the British spelling
+(with an 'S' instead of a 'Z').
+<P>
+<I>User suggestions:</I> Chances are the network subsystem is
+misconfigured or inactive. See WSASYSNOTREADY for details.
+<P>
+<I>Developer suggestions</I>: <A HREF="winsock.htm#Startup">WSAStartup()</A> failed, and you didn't
+detect it, or it wasn't called for the current task at all, or
+you called <A HREF="winsock.htm#Cleanup">WSACleanup()</A> too many times.
+<P>
+<I>WinSock functions:</I> <A HREF="winsock.htm#Accept">accept()</A>, <A HREF="winsock.htm#Bind">bind()</A>, <A HREF="winsock.htm#CloseSocket">close<A HREF="winsock.htm#Socket">socket()</A></a>, <A HREF="winsock.htm#Connect">connect()</A>,
+<A HREF="winsock.htm#GetHostByAddr">gethostbyaddr()</A>, <A HREF="winsock.htm#GetHostByName">gethostbyname()</A>, <A HREF="winsock.htm#GetHostName">gethostname()</A>, <A HREF="winsock.htm#GetPeerName">getpeername()</A>,
+<A HREF="winsock.htm#GetProtoByName">getprotobyname()</A>, <A HREF="winsock.htm#GetProtoByNumber">getprotobynumber()</A>, <A HREF="winsock.htm#GetServByName">getservbyname()</A>, <A HREF="winsock.htm#GetServByPort">getservbyport()</A>,
+<A HREF="winsock.htm#GetSockName">getsockname()</A>, <A HREF="winsock.htm#GetSockOpt">getsockopt()</A>, <A HREF="winsock.htm#IOCTLSocket">ioctl<A HREF="winsock.htm#Socket">socket()</A></A>, <A HREF="winsock.htm#Listen">listen()</A>, <A HREF="winsock.htm#Recv">recv()</A>,
+<A HREF="winsock.htm#RecvFrom">recvfrom()</A>, <A HREF="winsock.htm#Select">select()</A>, <A HREF="winsock.htm#Send">send()</A>, <A HREF="winsock.htm#SendTo">sendto()</A>, <A HREF="winsock.htm#SetSockOpt">setsockopt()</A>, <A HREF="winsock.htm#ShutDown">shutdown()</A>,
+<A HREF="winsock.htm#Socket">socket()</A>, <A HREF="winsock.htm#AsyncGetHostByAddr">WSAAsyncGetHostByAddr()</A>, <A HREF="winsock.htm#AsyncGetHostByName">WSAAsyncGetHostByName()</A>, <A HREF="winsock.htm#AsyncGetProtoByName">WSAAsyncGetProtoByName()</A>,
+<A HREF="winsock.htm#AsyncGetProtoByNumber">WSAAsyncGetProtoByNumber()</A>, <A HREF="winsock.htm#AsyncGetServByName">WSAAsyncGetServByName()</A>, <A HREF="winsock.htm#AsyncGetServByPort">WSAAsyncGetServByPort()</A>,
+<A HREF="winsock.htm#AsyncSelect">WSAAsyncSelect()</A>, <A HREF="winsock.htm#CancelAsyncRequest">WSACancelAsyncRequest()</A>, <A HREF="winsock.htm#CancelBlockingCall">WSACancelBlockingCall</A>,
+<A HREF="winsock.htm#Cleanup">WSACleanup()</A>, <A HREF="winsock.htm#SetBlockingHook">WSASetBlockingHook()</A>, <A HREF="winsock.htm#UnhookBlockingHook">WSAUnhookBlockingHook()</A>
+<P>
+<I>Additional functions</I>: The only function capable of failing
+with a WinSock error that doesn't list error is <A HREF="winsock.htm#UnhookBlockingHook">WSAUnhookBlockingHook()</A>.
+Clearly, this oversight was not intentional.<HR>
+
+<P>
+<B><A NAME="WSANO_DATA">WSANO_DATA </A>(11004)</B> <I>Valid name,
+no data record of requested type</I> 
+<P>
+<I>Berkeley description</I>: The requested name is valid, but
+does not have an Internet IP address at the name server. This
+is not a temporary error. This means another type of request to
+the name server will result in an answer.
+<P>
+<I>WinSock description</I>: Same as Berkeley for host resolution.
+For protocol and services resolution, the name or number was not
+found in the respective database.
+<P>
+<I>User suggestions:</I> see WSAHOST_NOT_FOUND for details.
+<P>
+<I>WinSock functions: </I><A HREF="winsock.htm#GetHostByAddr">gethostbyaddr()</A>, <A HREF="winsock.htm#GetHostByName">gethostbyname()</A>, <A HREF="winsock.htm#GetProtoByName">getprotobyname()</A>,
+<A HREF="winsock.htm#GetProtoByNumber">getprotobynumber()</A>, <A HREF="winsock.htm#GetServByName">getservbyname()</A>, <A HREF="winsock.htm#GetServByPort">getservbyport()</A>, <A HREF="winsock.htm#AsyncGetProtoByName">WSAAsyncGetProtoByName()</A>,
+<A HREF="winsock.htm#AsyncGetProtoByNumber">WSAAsyncGetProtoByNumber()</A>, <A HREF="winsock.htm#AsyncGetServByName">WSAAsyncGetServByName()</A>, <A HREF="winsock.htm#AsyncGetServByPort">WSAAsyncGetServByPort()</A>,
+<A HREF="winsock.htm#AsyncGetHostByAddr">WSAAsyncGetHostByAddr()</A>, <A HREF="winsock.htm#AsyncGetHostByName">WSAAsyncGetHostByName()</A>,
+<P>
+<I>See also:</I> <A HREF="#WSAHOST_NOT_FOUND">WSAHOST_NOT_FOUND</A>,
+<A HREF="#WSANO_RECOVERY">WSANO_RECOVERY</A>, <A HREF="#WSATRY_AGAIN">WSATRY_AGAIN </A>
+<HR>
+
+<P>
+<B><A NAME="WSANO_RECOVERY">WSANO_RECOVERY </A>(11003)</B> <I>This
+is a non-recoverable error</I> 
+<P>
+<I>Berkeley description</I>: This is a non-recoverable error.
+<P>
+<I>WinSock description</I>: Same as Berkeley. Specifically, the
+v1.1 Windows Sockets specification notes the domain name system
+(DNS) errors &quot;FORMERR, REFUSED, and &amp; NOTIMP. For protocols
+and services resolution, it means the respective database wasn't
+located.
+<P>
+<I>Detailed description (from RFC 1035, &quot;Domain Names&quot;,
+by P.Mockapetris):</I> 
+<P>
+<I>Format error: </I>name server was unable to interpret the query.
+<P>
+<I>Request refused:</I> name server refuses to satisfy your query
+for policy reasons.
+<P>
+<I>Not implemented:</I> name server does not perform specified
+operation.
+<P>
+<I>User suggestions:</I> see WSAHOST_NOT_FOUND for details.
+<P>
+<I>WinSock functions: </I><A HREF="winsock.htm#GetHostByAddr">gethostbyaddr()</A>, <A HREF="winsock.htm#GetHostByName">gethostbyname()</A>, <A HREF="winsock.htm#GetProtoByName">getprotobyname()</A>,
+<A HREF="winsock.htm#GetProtoByNumber">getprotobynumber()</A>, <A HREF="winsock.htm#GetServByName">getservbyname()</A>, <A HREF="winsock.htm#GetServByPort">getservbyport()</A>, <A HREF="winsock.htm#AsyncGetHostByAddr">WSAAsyncGetHostByAddr()</A>,
+<A HREF="winsock.htm#AsyncGetHostByName">WSAAsyncGetHostByName()</A>, <A HREF="winsock.htm#AsyncGetProtoByName">WSAAsyncGetProtoByName()</A>, <A HREF="winsock.htm#AsyncGetProtoByNumber">WSAAsyncGetProtoByNumber()</A>,
+<A HREF="winsock.htm#AsyncGetServByName">WSAAsyncGetServByName()</A>, <A HREF="winsock.htm#AsyncGetServByPort">WSAAsyncGetServByPort()</A>,
+<P>
+<I>See also:</I> <A HREF="#WSAHOST_NOT_FOUND">WSAHOST_NOT_FOUND</A>,
+<A HREF="#WSANO_DATA">WSANO_DATA</A>, <A HREF="#WSATRY_AGAIN">WSATRY_AGAIN</A>
+<HR>
+
+<P>
+<B><A NAME="WSASYSNOTREADY">WSASYSNOTREADY</A> (10091)</B> <I>Network
+subsystem is unavailable</I> 
+<P>
+<I>Berkeley description</I>: No equivalent.
+<P>
+<I>WinSock description</I>: The WinSock implementation cannot
+function at this time, because the underlying system it uses to
+provide network services is currently unavailable.
+<P>
+<I>User suggestions:</I> 
+<UL>
+<LI>Check that the WINSOCK.DLL file is in the current path
+<LI>Check that the WINSOCK.DLL file is from the same vendor as
+your underlying protocol stack. You cannot mix and match (WINSOCK
+DLLs must be supplied by the same vendor that provided your underlying
+protocol stack).
+<LI>You cannot use more than one WinSock implementation simultaneously.
+If you have more than one WINSOCK DLL on your system, be sure
+the first one in the path is appropriate for the network subsystem
+currently loaded.
+<LI>Check your WinSock implementation documentation to be sure
+all necessary components are currently installed and configured
+correctly.
+</UL>
+
+<P>
+<I>WinSock functions: </I><A HREF="winsock.htm#Startup">WSAStartup()</A><HR>
+
+<P>
+<B><A NAME="WSATRY_AGAIN">WSATRY_AGAIN </A>(11002)</B> <I>Non-authoritative
+host not found</I> 
+<P>
+<I>Berkeley description</I>: This is usually a temporary error
+and means that the local server did not receive a response from
+an authoritative server. A retry at some time later may be successful.
+<P>
+<I>WinSock description</I>: Same as Berkeley. Notice that asynchronous
+service and protocols functions are listed below, in addition
+to the hostname resolution functions.
+<P>
+<I>User suggestions:</I> see WSAHOST_NOT_FOUND for details.
+<P>
+<I>WinSock function: </I><A HREF="winsock.htm#GetHostByAddr">gethostbyaddr()</A>, <A HREF="winsock.htm#GetHostByName">gethostbyname()</A>, <A HREF="winsock.htm#AsyncGetHostByAddr">WSAAsyncGetHostByAddr()</A>,
+<A HREF="winsock.htm#AsyncGetHostByName">WSAAsyncGetHostByName()</A>, <A HREF="winsock.htm#AsyncGetProtoByName">WSAAsyncGetProtoByName()</A>, <A HREF="winsock.htm#AsyncGetProtoByNumber">WSAAsyncGetProtoByNumber()</A>,
+<A HREF="winsock.htm#AsyncGetServByName">WSAAsyncGetServByName()</A>, <A HREF="winsock.htm#AsyncGetServByPort">WSAAsyncGetServByPort()</A>
+<P>
+<I>See also:</I> <A HREF="#WSANO_DATA">WSANO_DATA</A>, <A HREF="#WSANO_RECOVERY">WSANO_RECOVERY</A>,
+<A HREF="#WSATRY_AGAIN">WSATRY_AGAIN</A><HR>
+
+<P>
+<B><A NAME="WSAVERNOTSUPPORTED">WSAVERNOTSUPPORTED</A> (10092)</B>
+<I>WINSOCK.DLL version out of range</I> 
+<P>
+<I>Berkeley description</I>: No equivalent.
+<P>
+<I>WinSock description</I>: The current WinSock implementation
+does not support the Windows Sockets specification version requested
+by the application.
+<P>
+<I>User suggestions:</I> Do you have the WinSock DLL that supports
+the version of the WinSock specification required by the application?
+If so, is there an older DLL in a directory in the path ahead
+of the directory containing the newer DLL? If not, check with
+your WinSock vendor to see if they have a newer WinSock available.
+<P>
+<I>Developer suggestion:</I> Use the sample code fragment in the
+<A HREF="winsock.htm#Startup">WSAStartup()</A> documentation in the v1.1 specification, which demonstrates
+how an application negotiates a Windows Sockets specification
+version.
+<P>
+<I>NOTE:</I> The MAKEWORD macro referenced in the code fragment
+is <I>not</I> available in the WINSOCK.H header file or in any
+standard header files. Here is a useable macro:
+<P>
+#define MAKEWORD(low, high) ((WORD)(((BYTE)(low)) | (((WORD)((BYTE)(high)))
+&lt;&lt; 8)))
+<P>
+<I>WinSock functions: </I><A HREF="winsock.htm#Startup">WSAStartup()</A>.
+[<A HREF="#Top">Go to Top</A>]
+<HR>
+
+<H2><A NAME="ErrorsInNumericOrder">Errors in Numerical Order</A></H2>
+
+<P>
+<A HREF="#WSABASEERR">WSABASEERR</A> (0) No Error
+<P>
+<A HREF="#WSAEINTR">WSAEINTR</A> (10004) Interrupted system call
+<P>
+<A HREF="#WSAEBADF">WSAEBADF</A> (10009) Bad file number
+<P>
+<A HREF="#WSAEACCES">WSAEACCES</A> (10013) Permission denied
+<P>
+<A HREF="#WSAEFAULT">WSAEFAULT</A> (10014) Bad address
+<P>
+<A HREF="#WSAEINVAL">WSAEINVAL</A> (10022) Invalid argument
+<P>
+<A HREF="#WSAEMFILE">WSAEMFILE</A> (10024) Too many open files
+<P>
+<A HREF="#WSAEWOULDBLOCK">WSAEWOULDBLOCK</A> (10035) Operation
+would block
+<P>
+<A HREF="#WSAEINPROGRESS">WSAEINPROGRESS</A> (10036) Operation
+now in progress
+<P>
+<A HREF="#WSAEALREADY">WSAEALREADY </A>(10037) Operation already
+in progress
+<P>
+<A HREF="#WSAEALREADY">WSAENOTSOCK</A> (10038) Socket operation
+on non-socket
+<P>
+<A HREF="#WSAEDESTADDRREQ">WSAEDESTADDRREQ</A> (10039) Destination
+address required
+<P>
+<A HREF="#WSAEMSGSIZE">WSAEMSGSIZE</A> (10040) Message too long
+<P>
+<A HREF="#WSAEPROTOTYPE">WSAEPROTOTYPE</A> (10041) Protocol wrong
+type for socket
+<P>
+<A HREF="#WSAENOPROTOOPT">WSAENOPROTOOPT</A> (10042) Bad protocol
+option
+<P>
+<A HREF="#WSAEPROTONOSUPPORT">WSAEPROTONOSUPPORT</A> (10043) Protocol
+not supported
+<P>
+<A HREF="#WSAESOCKTNOSUPPORT">WSAESOCKTNOSUPPORT</A> (10044) Socket
+type not supported
+<P>
+<A HREF="#WSAEOPNOTSUPP">WSAEOPNOTSUPP</A> (10045) Operation not
+supported on socket
+<P>
+<A HREF="#WSAEPFNOSUPPORT">WSAEPFNOSUPPORT</A> (10046)
+Protocol family not supported
+<P>
+<A HREF="#WSAEAFNOSUPPORT">WSAEAFNOSUPPORT</A> (10047) Address
+family not supported by protocol family
+<P>
+<A HREF="#WSAEADDRINUSE">WSAEADDRINUSE</A> (10048) Address already
+in use
+<P>
+<A HREF="#WSAEADDRNOTAVAIL">WSAEADDRNOTAVAIL</A> (10049) Can't
+assign requested address
+<P>
+<A HREF="#WSAENETDOWN">WSAENETDOWN</A> (10050) Network is down
+<P>
+<A HREF="#WSAENETUNREACH">WSAENETUNREACH</A> (10051) Network is
+unreachable
+<P>
+<A HREF="#WSAENETRESET">WSAENETRESET</A> (10052) Net dropped connection
+or reset
+<P>
+<A HREF="#WSAECONNABORTED">WSAECONNABORTED</A> (10053) Software
+caused connection abort
+<P>
+<A HREF="#WSAECONNRESET">WSAECONNRESET</A> (10054) Connection
+reset by peer
+<P>
+<A HREF="#WSAENOBUFS">WSAENOBUFS</A> (10055) No buffer space available
+<P>
+<A HREF="#WSAEISCONN">WSAEISCONN</A> (10056) Socket is already
+connected
+<P>
+<A HREF="#WSAENOTCONN">WSAENOTCONN</A> (10057) Socket is not connected
+<P>
+<A HREF="#WSAESHUTDOWN">WSAESHUTDOWN</A> (10058) Can't send after
+socket shutdown
+<P>
+<A HREF="#WSAETOOMANYREFS">WSAETOOMANYREFS</A> (10059) Too many
+references, can't splice
+<P>
+<A HREF="#WSAETIMEDOUT">WSAETIMEDOUT</A> (10060) Connection timed
+out
+<P>
+<A HREF="#WSAECONNREFUSED">WSAECONNREFUSED</A> (10061) Connection
+refused
+<P>
+<A HREF="#WSAELOOP">WSAELOOP</A> (10062) Too many levels of symbolic
+links
+<P>
+<A HREF="#WSAENAMETOOLONG">WSAENAMETOOLONG</A> (10063) File name
+too long
+<P>
+<A HREF="#WSAEHOSTDOWN">WSAEHOSTDOWN</A> (10064) Host is down
+<P>
+<A HREF="#WSAEHOSTUNREACH">WSAEHOSTUNREACH</A> (10065) No Route
+to Host
+<P>
+<A HREF="#WSAENOTEMPTY">WSAENOTEMPTY</A> (10066) Directory not
+empty
+<P>
+<A HREF="#WSAEPROCLIM">WSAEPROCLIM</A> (10067) Too many processes
+<P>
+<A HREF="#WSAEUSERS">WSAEUSERS</A> (10068) Too many users
+<P>
+<A HREF="#WSAEDQUOT">WSAEDQUOT</A> (10069) Disc Quota Exceeded
+<P>
+<A HREF="#WSAESTALE">WSAESTALE</A> (10070) Stale NFS file handle
+<P>
+<A HREF="#WSASYSNOTREADY">WSASYSNOTREADY</A> (10091) Network SubSystem
+is unavailable
+<P>
+<A HREF="#WSAVERNOTSUPPORTED">WSAVERNOTSUPPORTED</A> (10092) WINSOCK
+DLL Version out of range
+<P>
+<A HREF="#WSANOTINITIALISED">WSANOTINITIALISED</A> (10093) Successful
+WSASTARTUP not yet performed
+<P>
+<A HREF="#WSAEREMOTE">WSAEREMOTE</A> (10071) Too many levels of
+remote in path
+<P>
+<A HREF="#WSAHOST_NOT_FOUND">WSAHOST_NOT_FOUND </A>(11001) Host
+not found
+<P>
+<A HREF="#WSATRY_AGAIN">WSATRY_AGAIN </A>(11002) Non-Authoritative
+Host not found
+<P>
+<A HREF="#WSANO_RECOVERY">WSANO_RECOVERY </A>(11003) Non-Recoverable
+errors: FORMERR, REFUSED, NOTIMP
+<P>
+<A HREF="#WSANO_DATA">WSANO_DATA </A>(11004)* Valid name, no data
+record of requested type
+<P>
+<A HREF="#WSANO_DATA">WSANO_ADDRESS </A>(11004)* No address, look
+for MX record
+<P>
+* Note that these are same value (typically, only <A HREF="#WSANO_DATA">WSANO_DATA </A>is
+reported) 
+</BODY>
+
+</HTML>

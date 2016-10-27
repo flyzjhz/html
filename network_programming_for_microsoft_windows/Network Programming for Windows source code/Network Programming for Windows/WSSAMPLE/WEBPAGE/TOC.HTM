@@ -1,0 +1,698 @@
+<HTML>
+<HEAD>
+<TITLE>Windows Sockets Network Programming: Table of Contents 	</TITLE>
+</HEAD>
+
+<BODY>
+
+<H2><IMG SRC="winsock.gif" ALIGN="BOTTOM"><A NAME="TocTop"> Windows Sockets Network Programming</H4>
+<dl><dt><dd>
+<H3>by Bob Quinn &amp; Dave Shute</H3></dl>
+<HR>
+<H3>Table of Contents</H3><H4>
+Foreward by Martin Hall<br>
+Preface<br>
+<A HREF="#Chapter1">Chapter 1:</A> Introduction to Windows Sockets<br>
+<A HREF="#Chapter2">Chapter 2:</A> Windows Sockets Concepts<br>
+<A HREF="#Chapter3">Chapter 3:</A> TCP/IP Protocol Services<br>
+<A HREF="#Chapter4">Chapter 4:</A> Network Program Mechanics<br>
+<A HREF="#Chapter5">Chapter 5:</A> Operation Modes<br>
+<A HREF="#Chapter6">Chapter 6:</A> Socket States<br>
+<A HREF="#Chapter7">Chapter 7:</A> Sample Application and Library<br>
+<A HREF="#Chapter8">Chapter 8:</A> Host Names &amp; Addresses<br>
+<A HREF="#Chapter9">Chapter 9:</A> Socket Information &amp; Control<br>
+<A HREF="#Chapter10">Chapter 10:</A> Support Routines<br>
+<A HREF="#Chapter11">Chapter 11:</A> DLLs over WinSock<br>
+<A HREF="#Chapter12">Chapter 12:</A> Porting from BSD Sockets<br>
+<A HREF="#Chapter13">Chapter 13:</A> Debugging<br>
+<A HREF="#Chapter14">Chapter 14:</A> Do's and Don'ts<br>
+<A HREF="#Chapter15">Chapter 15:</A> Platforms<br>
+<A HREF="#Chapter16">Chapter 16:</A> Optional Features<br>
+<A HREF="#Chapter17">Chapter 17:</A> WinSock 2<br>
+<A HREF="#AppendixA">Appendix A:</A> TCP/IP Protocol Headers<br>
+<A HREF="#AppendixB">Appendix B:</A> Quick Reference<br>
+<A HREF="#AppendixC">Appendix C:</A> Error Reference<br>
+<A HREF="#AppendixD">Appendix D:</A> What You Need<br>
+<A HREF="#AppendixE">Appendix E:</A> Information Sources</H4>
+
+<HR>
+<H4><A NAME="Chapter1">Chapter 1: Introduction to Windows Sockets</H4>
+<ul>
+<li> What is Windows Sockets?<br>
+<li> What are its Benefits? <br><ul>
+<li>  An Open Standard<br>
+<li>  Provides Source Code Portability<br>
+<li>  Supports Dynamic Linking<br>
+<li>  Benefits Summary <br></ul>
+<li> What is its History?<br>
+<li> What is its Future?<br>
+<li> Conclusion<br>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+   
+<H4><A NAME="Chapter2">Chapter 2: Windows Sockets Concepts</H4>
+<ul>
+<li> The OSI Network Model<br><ul>
+<li>  Services &amp; Interfaces<br></ul>
+<li> The WinSock Network Model<br><ul>
+<li>  Information and Data<br>
+<li>  Application Protocols<br></ul>
+<li> OSI layers and WinSock<br><ul>
+<li>  Application Layer  <br>
+<li>  Presentation Layer<br>
+<li>  Session Layer <br>
+<li>  Transport Layer<br>
+<li>  Network Layer<br>
+<li>  Data Link Layer<br>
+<li>  Physical Layer <br></ul>
+<li> Modular Boxes<br>
+<li> Services &amp; Protocols<br>
+<li> Protocols &amp; APIs<br>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter3">Chapter 3: TCP/IP Protocol Services</H4>
+<ul>
+<li> What is TCP/IP?<br>
+<li> Transport Services<br><ul>
+<li>  Connection-less Services: UDP<br>
+<li>  Connection-oriented Services: TCP<br>
+<li>  Deciding on a Transport: UDP versus TCP<br></ul>
+<li> Network services<br><ul>
+<li>  IP Services<br>
+<li>  ICMP Services<br></ul>
+<li> Support Protocols &amp; Services<br><ul>
+<li>  Domain Name Service (DNS)<br>
+<li>  Address Resolution Protocol (ARP)<br>
+<li>  Other Support Protocols<br></ul>
+<li> What's its History?<br>
+<li> What's its Future?<br>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter4">Chapter 4: Network Program Mechanics</H4>
+<ul>
+<li> Client-Server Model<br><ul>
+<li>  Client &amp; Server Association<br></ul>
+<li> Network Program Sketch<br>
+<li> Open a Socket<br><ul>
+<li>  socket()<br></ul>
+<li> Name the Socket<br><ul>
+<li>  sockaddr Structure<br>
+<li>  sockaddr_in Structure<br>
+<li>  Port Numbers<br>
+<li>  Local IP Address<br>
+<li>  What's in a Socket Name?<br><ul>
+<li>   bind()<br></ul>
+<li>  Client Socket Name is Optional<br></ul>
+<li> Associate with Another Socket<br><ul>
+<li>  How a Server Prepares for an Association<br><ul>
+<li>   listen()<br></ul>
+<li>  How a Client Initiates an Association<br><ul>
+<li>   connect()<br></ul>
+<li>  How a Server Completes an Association<br><ul>
+<li>   accept()<br></ul></ul>
+<li> Send and Receive Between Sockets<br><ul>
+<li>  Sending Data on a &quot;connected&quot; Socket<br><ul>
+<li>   send()<br></ul>
+<li>  Sending Data on an &quot;unconnected&quot; Socket<br><ul>
+<li>   sendto()<br></ul>
+<li>  Receiving Data<br><ul>
+<li>   recv()<br>
+<li>   recvfrom()<br></ul>
+<li>  Association as Socket Demultiplexer<br></ul>
+<li> Close the Socket<br><ul>
+<li>  closesocket()<br>
+<li>  shutdown()<br></ul>
+<li> Client &amp; Server Sketches<br><ul>
+<li>  Connection-oriented (TCP) Network Applications<br>
+<li>  Connection-less (UDP) Network Applications<br><ul>
+<li>   Set the Remote Socket Name Once<br>
+<li>   Set the Remote Socket Name Each Datagram<br></ul></ul>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter5">Chapter 5: Operation Modes</H4>
+<ul>
+<li> What are Operation Modes?<br><ul>
+<li>  Wait on Hold: Blocking<br>
+<li>  Call Again Later: Non-blocking<br>
+<li>  Request a Call Back: Asynchronous<br></ul>
+<li> Blocking<br><ul>
+<li>  Blocking Sockets<br>
+<li>  Blocking Functions<br>
+<li>  Blocking is Fake<br>
+<li>  Blocking Hook Functions<br>
+<li>  The Blocking Context<br><ul>
+<li>   React to WSAEINPROGRESS Gracefully<br>
+<li>   Detect with WSAIsBlocking()<br>
+<li>   Canceling Blocking Operations<br>
+<li>   Maintain Application State<br></ul>
+<li>  Canceling Blocking Operations<br><ul>
+<li>   Cancellation occurs later<br>
+<li>   Further Socket Use is Limited<br>
+<li>   Cancellation Occurs Later<br>
+<li>   Further Socket Use is Limited<br>
+<li>   Cancellation May Fail<br>
+<li>   Code Example<br></ul>
+<li>  Timeouts on Blocking Operations<br><ul>
+<li>   Automatic Timeouts<br>
+<li>   User Settable Timeouts<br>
+<li>   TCP Keepalive Timeouts<br></ul>
+<li>  No Receive Minimum<br>
+<li>  Code Example<br></ul>
+<li> Non-Blocking<br><ul>
+<li>  How Do You Make a Socket Non-blocking?<br>
+<li>  Success and failure are not absolutes!<br><ul>
+<li>   WSAEWOULDBLOCK Error<br>
+<li>   Partial success<br></ul>
+<li>  Polling Instead of Blocking<br>
+<li>  Explicit Yielding<br>
+<li>  Code Example<br></ul>
+<li> Asynchronous<br><ul>
+<li>  What Are the Asynchronous Functions?<br><ul>
+<li>   WSAAsyncGetXByY()<br>
+<li>   Code Example<br>
+<li>   AU_Time Application<br></ul></ul>
+<li> Performance Differences<br>
+<li> Platform Differences<br><ul>
+<li>  Blocking is Real<br>
+<li>  Threaded Applications<br>
+<li>  Other Things Hold True<br></ul>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter6">Chapter 6: Socket States</H4>
+<ul>
+<li> What are the Socket States?<br><ul>
+<li>  Datagram Socket States  <br>
+<li>  Stream Socket States<br></ul>
+<li> What are the Methods of Detection?<br><ul>
+<li>  Function Call Success or Failure<br>
+<li>  Synchronous Detection<br>
+<li>  Asynchronous Detection<br></ul>
+<li> WSAAsyncSelect()<br><ul>
+<li>  How Does WSAAsyncSelect() Work?<br>
+<li>  What are the Asynchronous Events?<br>
+<li>  Avoid Windows of Misopportunity<br>
+<li>  What are the Re-enabling Functions?<br>
+<li>  What's in a Notification Message?<br>
+<li>  Be Prepared for Failure<br>
+<li>  Looping in Response<br>
+<li>  Canceling Asynchronous Notification<br>
+<li>  Event Descriptions<br><ul>
+<li>   FD_ACCEPT Event<br>
+<li>   FD_CLOSE Event<br>
+<li>   FD_CONNECT Event<br>
+<li>   FD_OOB Event<br>
+<li>   FD_READ Event<br>
+<li>   FD_WRITE Event<br></ul>
+<li>  AS_ECHO Application<br></ul>
+<li> select()<br><ul>
+<li>  How Do You Use select()?<br><ul>
+<li>   FD_CLR (socket, *fd_set)<br>
+<li>   FD_ISSET (socket, *fd_set)<br>
+<li>   FD_SET (socket, *fd_set)<br>
+<li>   FD_ZERO (*fd_set)<br></ul>
+<li>  select() Input Parameters<br><ul>
+<li>   readfds<br>
+<li>   writefds<br>
+<li>   exceptfds<br>
+<li>   timeval Structure<br></ul>
+<li>  Don't Use select() as a Timer<br>
+<li>  Beware Timeout of Zero<br>
+<li>  Code Example<br></ul>
+<li> Peeking at Data<br><ul>
+<li>  ioctlsocket() FIONREAD Command<br>
+<li>  recv() with MSG_PEEK Flag<br></ul>
+<li> Out-of-band Data<br><ul>
+<li>  TCP Limitations<br>
+<li>  ioctlsocket() SIOCATMARK Command<br><ul>
+<li>   Code Example<br></ul></ul>
+<li> The Listening State<br>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter7">Chapter 7: Sample Application and Library</H4>
+<ul>
+<li> Sample FTP Client<br><ul>
+<li>  File Transfer Protocol Overview<br><ul>
+<li>   Control Connection<br>
+<li>   Data Connection<br>
+<li>   FTP Commands<br>
+<li>   FTP Replies<br></ul>
+<li>  FTP Finite State Machine<br>
+<li>  AC_FTP Application<br>
+<li>  AC_FTP in Operation<br></ul>
+<li> Sample Library<br><ul>
+<li>  CenterWnd()<br>
+<li>  CloseConn()<br>
+<li>  CreateLclFile()<br>
+<li>  Dlg_About()<br>
+<li>  GetAddr()<br>
+<li>  GetBuf()<br>
+<li>  GetHostID()<br>
+<li>  GetLclDir()<br>
+<li>  GetPort()<br>
+<li>  WSAErrStr()<br>
+<li>  WSAperror()<br></ul>
+<li> WinSockx.h<br>
+<li> Globals.c<br>
+<li> WSA_Xtra.h<br>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter8">Chapter 8: Host Names &amp; Addresses</H4>
+<ul>
+<li> Host Name and Address Resolution <br><ul>
+<li>  hostent Structure<br>
+<li>  Host Name Resolution<br><ul>
+<li>   gethostbyname()<br><ul>
+<li>    Code Example<br></ul>
+<li>   WSAAsyncGetHostByName()<br><ul>
+<li>    Upon Completion<br>
+<li>    Sketch of Function Operation<br>
+<li>    Code Example<br></ul></ul>
+<li>  Address Resolution<br><ul>
+<li>   gethostbyaddr()<br><ul>
+<li>    Code Example<br></ul>
+<li>   WSAAsyncGetHostByAddr()<br><ul>
+<li>    Code Example<br></ul></ul></ul>
+<li> Host Table, DNS &amp; NIS<br><ul>
+<li>  Host Table<br>
+<li>  Domain Name System (DNS)<br>
+<li>  Network Information Service (NIS)<br></ul>
+<li> Local Host Information<br><ul>
+<li>  gethostname()<br></ul>
+<li> Addresses and Formatting<br><ul>
+<li>  in_addr structure<br><ul>
+<li>   Address References<br>
+<li>   Address Class<br>
+<li>   Common Addresses<br></ul>
+<li>  inet_addr()<br><ul>
+<li>   Code Example<br></ul>
+<li>  inet_ntoa()<br><ul>
+<li>   Code Example<br></ul></ul>
+<li> Protocol and Address Families<br>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter9">Chapter 9: Socket Information &amp; Control</H4>
+<ul>
+<li> Socket Control<br><ul>
+<li>  FIONBIO<br><ul>
+<li>   Code Example<br></ul>
+<li>  FIONREAD<br><ul>
+<li>   Code Example<br></ul>
+<li>  SIOCATMARK<br><ul>
+<li>   Code Example<br></ul>
+<li>  Other Control Commands<br></ul>
+<li> Socket Options<br><ul>
+<li>  getsockopt() and setsockopt()<br>
+<li>  Code Examples<br><ul>
+<li>   setsockopt() with Boolean Option<br>
+<li>   getsockopt() with Integer Option<br>
+<li>   setsockopt() with struct linger Option<br></ul>
+<li>  SO_ACCEPTCONN<br>
+<li>  SO_BROADCAST<br><ul>
+<li>   What's a Broadcast Address?<br>
+<li>   Multicast Addresses<br>
+<li>   Proper use of Broadcasts<br></ul>
+<li>  SO_DEBUG<br>
+<li>  SO_DONTLINGER<br>
+<li>  SO_DONTROUTE<br>
+<li>  SO_ERROR<br>
+<li>  SO_KEEPALIVE<br><ul>
+<li>   How Do Keepalives Work?<br>
+<li>   How Often are Keepalives Sent?<br>
+<li>   Implement Your Own Keepalive<br></ul>
+<li>  SO_LINGER<br><ul>
+<li>   Avoiding Ambiguities<br>
+<li>   Do You Need SO_LINGER?<br>
+<li>   linger Structure<br>
+<li>   Code Example<br></ul>
+<li>  SO_OOBINLINE<br>
+<li>  SO_RCVBUF and SO_SNDBUF<br>
+<li>  SO_REUSEADDR<br>
+<li>  SO_TYPE<br>
+<li>  TCP_NODELAY<br><ul>
+<li>   What's the Nagle Algorithm?<br>
+<li>   What Applications Need TCP_NODELAY?<br></ul>
+<li>  Unsupported Options<br>
+<li>  Future Options<br></ul>
+<li> Blocking Hooks<br><ul>
+<li>  WSASetBlockingHook()<br>
+<li>  WSAUnhookBlockingHook()<br>
+<li>  Blocking Hook Functions<br></ul>
+<li> Socket Names<br><ul>
+<li>  getsockname()<br><ul>
+<li>   Code Example<br></ul>
+<li>  getpeername()<br><ul>
+<li>   Code Example<br></ul></ul>
+<li> Blocking Status<br><ul>
+<li>  WSAIsBlocking()<br></ul>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter10">Chapter 10: Support Routines</H4>
+<ul>
+<li> Startup and Cleanup<br><ul>
+<li>  WSAStartup()<br><ul>
+<li>   When and Where?<br>
+<li>   WSAStartup() Error Messages<br>
+<li>   WSAData structure<br>
+<li>   Version Negotiation<br>
+<li>   Code Example<br></ul>
+<li>  WSACleanup()<br></ul>
+<li> Byte Ordering<br><ul>
+<li>  Byte Ordering Functions<br><ul>
+<li>   htons()<br>
+<li>   ntohs()<br>
+<li>   ntohl()<br>
+<li>   htonl()<br>
+<li>   Code Example<br></ul></ul>
+<li> Service Names and Ports<br><ul>
+<li>  servent Structure<br>
+<li>  Service Resolution<br><ul>
+<li>   getservbyname()<br><ul>
+<li>    Code Example<br></ul>
+<li>   WSAAsyncGetServByName()<br><ul>
+<li>    Upon Completion<br>
+<li>    Code Example<br></ul></ul>
+<li>  Port Resolution<br><ul>
+<li>   getservbyport()<br>
+<li>   WSAAsyncGetServByPort()<br></ul>
+<li>  Services Database<br></ul>
+<li> Protocol Names and Numbers<br><ul>
+<li>  protoent Structure<br>
+<li>  Protocol Name Resolution<br><ul>
+<li>   getprotobyname()<br><ul>
+<li>    Code Example<br></ul>
+<li>   WSAAsyncGetProtoByName()<br><ul>
+<li>    Code Example<br></ul></ul>
+<li>  Protocol Number Resolution<br><ul>
+<li>   getprotobynumber()<br>
+<li>   WSAAsyncGetProtoByNumber()<br></ul>
+<li>  Protocols Database<br></ul>
+<li> Error Reporting<br><ul>
+<li>  WSAGetLastError()<br>
+<li>  WSASetLastError()<br><ul>
+<li>   Code Example<br></ul>
+<li>  Error Text Display<br></ul>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter11">Chapter 11: DLLs over WinSock</H4>
+<ul>
+<li> Creating a New API<br><ul>
+<li>  Emulated API<br>
+<li>  Application Protocol API<br>
+<li>  Encapsulated WinSock API<br></ul>
+<li> DLL Issues<br><ul>
+<li>  Reentrancy<br>
+<li>  Setting a Blocking Hook<br>
+<li>  Task Management<br><ul>
+<li>   Registering the Application Process<br>
+<li>   Registering a Helper Process<br></ul>
+<li>  Loading the WinSock DLL Explicitly<br></ul>
+<li> Sample DLL<br><ul>
+<li>  WSASimpl Application<br>
+<li>  WSASimpl DLL<br></ul>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter12">Chapter 12: Porting from BSD Sockets</H4>
+<ul>
+<li> Differences to Consider<br><ul>
+<li>  Sockets are not File Handles<br>
+<li>  Cannot dup() a Socket<br>
+<li>  close() and ioctl() Functions are Renamed<br>
+<li>  read(), write() or fcntl() Functions Unavailable<br>
+<li>  Some ioctlsocket() FIO Command Unavailable<br>
+<li>  select()'s fd_sets are Opaque<br>
+<li>  select() Doesn't Act as a Timer<br>
+<li>  signal() Unavailable<br>
+<li>  Domain Name Unavailable<br>
+<li>  Address Info and Manipulation Unavailable<br>
+<li>  syslog() Unavailable<br>
+<li>  errno Variable Unavailable<br>
+<li>  perror() and strerror() Unavailable<br>
+<li>  Database File Manipulation Unavailable<br>
+<li>  bcmp(), bcopy() and bzero() Unavailable<br>
+<li>  Local IPC Unavailable<br>
+<li>  OOB API Differs<br>
+<li>  setsockopt() SO_DEBUG optional<br></ul>
+<li> 16-bit Windows Considerations<br><ul>
+<li>  16-bit Windows Doesn't Clean House<br>
+<li>  16-bit Windows is Non-preemptive<br>
+<li>  16-bit Windows File System isn't Secure<br>
+<li>  16-bit Windows Uses Segmented Addressing<br>
+<li>  fork() Unavailable<br></ul>
+<li> Incidentals<br><ul>
+<li>  Include Files<br>
+<li>  Socket Domains<br>
+<li>  Socket Types<br>
+<li>  Socket Handles<br>
+<li>  Error Values<br></ul>
+<li> Functions List<br>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter13">Chapter 13: Debugging</H4>
+<ul>
+<li> Problem Types<br><ul>
+<li>  Installation Problem<br>
+<li>  Network Problem<br>
+<li>  Application Problem<br>
+<li>  WinSock DLL Problem<br></ul>
+<li> What failed, and how?<br><ul>
+<li>  Protection Faults<br></ul>
+<li> Problem Qualification<br>
+<li> Installation Debugging<br>
+<li> Network Debugging<br><ul>
+<li>  Generic Network Debugging<br>
+<li>  Host Resolution Debugging<br></ul>
+<li> Application Debugging<br>
+<li> Debugging Tools<br><ul>
+<li>  Network Debugging Utilities<br><ul>
+<li>   ping<br>
+<li>   traceroute<br>
+<li>   nslookup<br>
+<li>   Standard UNIX Tools<br>
+<li>   SNMP Tools<br>
+<li>   Ad hoc Tools<br>
+<li>   Network Analyzers<br></ul>
+<li>  Application Debugging Utilities<br><ul>
+<li>   WinScope<br>
+<li>   X-Ray Winsock<br>
+<li>   Create Your Own WinSock Watcher<br></ul></ul>
+<li> WinSock Compliance &amp; Performance Utilities<br><ul>
+<li>  wsatest<br>
+<li>  Windows Sockets API Tester (WSAT)<br>
+<li>  Socket Wrencher<br></ul>
+<li> Other Application Debugging Tools<br>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter14">Chapter 14: Do's and Don'ts</H4>
+<ul>
+<li> Characterizing Your Application<br>
+<li> Application Data Flow<br><ul>
+<li>  Use Big Buffers<br>
+<li>  Think MTU<br>
+<li>  Consider the Maxim<br><ul>
+<li>   Send Moderate Amounts<br>
+<li>   Receive Large Amounts<br></ul>
+<li>  Don't Peek<br>
+<li>  Receive Before You Send<br></ul>
+<li> Stream Algorithms<br><ul>
+<li>  Sending Structured Data<br><ul>
+<li>   Code Example<br></ul>
+<li>  Sending Interactive Data<br>
+<li>  Detecting a Dead Connection<br>
+<li>  Verifying Data Delivery<br></ul>
+<li> Datagram Algorithms<br><ul>
+<li>  Implementing a Timeout<br>
+<li>  Sequencing Datagrams<br>
+<li>  Throttling Sends<br>
+<li>  Synchronizing Sender and Receiver<br></ul>
+<li> Good News Code<br><ul>
+<li>  Check Returns<br>
+<li>  Check for Partial Success<br>
+<li>  Expect Any Error at Any Time<br>
+<li>  Check for Non-Fatal Errors<br>
+<li>  Handle Errors Gracefully<br>
+<li>  Leave an Out<br>
+<li>  Don't Ignore Warnings<br></ul>
+<li> Common Traps and Pitfalls<br><ul>
+<li>  Opening and Naming a Socket<br>
+<li>  Connecting<br>
+<li>  Listening and Receiving<br>
+<li>  Closing a Socket<br>
+<li>  Using Host Names and Addresses<br>
+<li>  Using WSAAsyncSelect()<br>
+<li>  Using Blocking Sockets<br>
+<li>  Exiting and Application<br>
+<li>  Miscellaneous<br></ul>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter15">Chapter 15: Platforms</H4>
+<ul>
+<li> The WOSA Network Model<br>
+<li> 32-bit WinSock<br><ul>
+<li>  Windows 95<br>
+<li>  Cross-Execution<br>
+<li>  32-bit WinSock Features<br><ul>
+<li>   New Socket Options<br><ul>
+<li>    SO_OPENTYPE<br>
+<li>    SO_RCVTIMEO and SO_SNDTIMEO<br></ul>
+<li>   Service Features<br>
+<li>   Other Protocol Suites<br></ul>
+<li>  32-bit operating system advantages<br><ul>
+<li>   Blocking is Real!<br>
+<li>   Threading<br>
+<li>   Sockets are File Handles<br>
+<li>   Console Interface<br></ul></ul>
+<li> Other platforms<br>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter16"><A HREF="CH16.HTM">Chapter 16:</A> Optional Features</H4>
+<ul>
+<li> Optional Standard is an Oxymoron<br>
+<li> Should You use Optional Features?<br>
+<li> SOCK_RAW<br><ul>
+<li>  ICMP Ping Application<br>
+<li>  Traceroute<br>
+<li>  Code Example<br></ul>
+<li> Multicast<br><ul>
+<li>  Why Use Multicast?<br>
+<li>  Multicast API<br><ul>
+<li>   IP_ADD_MEMBERSHIP<br>
+<li>   IP_DROP_MEMBERSHIP<br>
+<li>   IP_MULTICAST_IF<br>
+<li>   IP_MULTICAST_LOOP<br>
+<li>   IP_MULTICAST_TTL<br></ul>
+<li>  Multicast Mechanics<br>
+<li>  Code Example<br></ul>
+<li> Loopback<br>
+<li> Sharing Sockets<br><ul>
+<li>  Is Socket Sharing Possible?<br></ul>
+<li> Optional Options<br>
+<li> Sockets as File Handles<br>
+<li> Expect Any Error Anywhere<br>
+<li> Other Optional Features<br>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="Chapter17">Chapter 17: WinSock 2</H4>
+<ul>
+<li> Do You Need WinSock 2?<br>
+<li> Overview of Features<br>
+<li> Multiple Protocol Support<br><ul>
+<li>  WinSock 2 Architecture<br>
+<li>  Protocol independence<br>
+<li>  Namespace Independence<br><ul>
+<li>   Globally Unique Identifiers<br>
+<li>   Generic Address Formatting<br>
+<li>   Parametric Service Searches<br>
+<li>   Service Installation and Registration<br></ul></ul>
+<li> Overlapped I/O<br>
+<li> Scatter and Gather<br>
+<li> Quality of Service<br>
+<li> Socket Groups<br>
+<li> Multipoint and Multicast<br>
+<li> Conditional Acceptance<br>
+<li> Connect and Disconnect Data<br>
+<li> Socket Sharing<br>
+<li> Protocol-Specific Additions<br><ul>
+<li>  WSAIoctl()<br>
+<li>  get/setsockopt()<br></ul>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="AppendixA">Appendix A: TCP/IP Protocol Headers</H4>
+<ul>
+<li> Layering within TCP/IP Packets<br>
+<li> ARP Header<br>
+<li> IP Header<br>
+<li> ICMP Header<br>
+<li> IGMP Header<br>
+<li> UDP Header<br>
+<li> TCP Header<br>
+<li> Sample Dialogs<br><ul>
+<li>  Server on Same Subnet<br>
+<li>  Server on Different Subnet<br></ul>
+</ul>[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="AppendixB">Appendix B: Quick Reference</H4>
+<ul>
+<li> Structures<br>
+<li> Functions<br>
+<li> Macros<br>
+</ul>[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="AppendixC"><A HREF="A_C.HTM">Appendix C:</A> Error Reference</H4>
+<ul>
+<li> Where to Get Error Values<br>
+<li> Where Errors Came From<br>
+<li> What Errors to Expect<br>
+<li> User-Fixable Errors<br>
+<li> Detailed Error Descriptions<br><ul>
+<li>  Error-less Functions<br>
+<li>  Function-less Errors<br>
+<li>  Error Description List<br></ul>
+<li> Errors in Numerical Order<br>
+</ul>[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="AppendixD"><A HREF="A_D.HTM">Appendix D:</A> What You Need</H4>
+<ul>
+<li> Essential Files<br><ul>
+<li>  Where to Get Them<br></ul>
+<li> Compile &amp; Link Mechanics<br>
+<li> Using Different WinSocks<br>
+<li> Using Different Languages<br>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+
+<H4><A NAME="AppendixE"><A HREF="A_E.HTM">Appendix E:</A> Information Sources</H4>
+<ul>
+<li> Internet Sources<br><ul>
+<li>  URLs and URIs<br>
+<li>  FTP sites<br>
+<li>  List Servers<br>
+<li>  Mail lists<br>
+<li>  Newsgroups<br>
+<li>  Web Pages<br></ul>
+<li> Bibliography<br><ul>
+<li>  RFCs<br>
+<li>  FAQs<br>
+<li>  Articles<br>
+<li>  Texts<br></ul>
+</ul>
+[<A HREF="#TocTop">Go to top</A>]
+<HR>
+</BODY>
+</HTML>

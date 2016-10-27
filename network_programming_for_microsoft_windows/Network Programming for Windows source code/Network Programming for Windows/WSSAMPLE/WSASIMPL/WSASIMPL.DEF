@@ -1,0 +1,18 @@
+;-------------------------
+; filename: WSASIMPL.DEF
+;-------------------------
+
+LIBRARY   WSASIMPL
+
+DESCRIPTION 'Simplified WinSock API DLL (c) Bob Quinn 1995'
+CODE      PRELOAD MOVEABLE
+DATA      PRELOAD MOVEABLE SINGLE
+HEAPSIZE  8196
+
+EXPORTS
+	ConnectTCP    @1
+	SendData      @2
+	RecvData      @3
+	CloseTCP      @4
+	SubclassProc  @10
+	 

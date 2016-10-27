@@ -1,0 +1,12 @@
+;------------------------
+; filename: SIMPLTST.DEF
+;------------------------
+
+NAME      SIMPLTST
+
+DESCRIPTION 'Simple TCP echo client test for WSASIMPL.DLL'
+CODE      PRELOAD MOVEABLE DISCARDABLE
+DATA      PRELOAD MOVEABLE MULTIPLE
+
+HEAPSIZE  8192
+

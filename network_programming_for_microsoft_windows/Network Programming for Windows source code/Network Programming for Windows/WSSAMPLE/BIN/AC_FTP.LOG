@@ -1,0 +1,13 @@
+220 netra FTP server (SunOS 5.6) ready.
+USER anonymous
+331 Guest login ok, send ident as password.
+PASS xxxxxxxxxx
+230 Guest login ok, access restrictions apply.
+PWD
+257 "/" is current directory.
+PORT 192,168,0,20,19,121
+200 PORT command successful.
+TYPE A
+200 Type set to A.
+LIST
+QUIT

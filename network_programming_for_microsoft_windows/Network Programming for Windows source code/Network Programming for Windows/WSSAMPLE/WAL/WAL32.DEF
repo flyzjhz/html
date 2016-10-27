@@ -1,0 +1,11 @@
+;----------------------
+; filename: WAL32.DEF
+;----------------------
+
+NAME         WAL32
+
+DESCRIPTION  'WinSock Application Launcher (c) Bob Quinn 1995'
+CODE         PRELOAD MOVEABLE DISCARDABLE
+DATA         PRELOAD MOVEABLE MULTIPLE
+
+HEAPSIZE     4096

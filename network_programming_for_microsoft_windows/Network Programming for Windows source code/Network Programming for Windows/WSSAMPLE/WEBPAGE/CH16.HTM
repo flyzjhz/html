@@ -1,0 +1,1209 @@
+<HTML>
+
+<HEAD>
+<TITLE>Network Programming with Windows Sockets: Chapter 16</TITLE>
+</HEAD>
+
+<BODY>
+
+<H1><A NAME="Top"><IMG SRC="winsock.gif" ALIGN="BOTTOM"> Chapter 16: Optional
+Features</A></H1>
+
+<P>
+<I>When you are at sea, keep clear of the land</I> --Publilius
+Syrus
+<P>
+This is a hypertext version of Chapter 16 in the text _Windows
+Sockets Network Programming_, by Bob Quinn and Dave Shute.  The
+ping and multicast code examples are available in the multitst.exe
+sample program available from this web page.
+<UL>
+<LI><A HREF="#oxymoron">Optional standard is an oxymoron</A> 
+<LI><A HREF="#ShouldYouUse">Should you use optional features?</A>
+
+<LI><A HREF="#SockRaw">SOCK_RAW </A>
+<LI><A HREF="#Multicast">Multicast </A>
+<LI><A HREF="#loopback">Loopback </A>
+<LI><A HREF="#SharingSockets">Sharing Sockets </A>
+<LI><A HREF="#OptionalOptions">Optional Options </A>
+<LI><A HREF="#SocketsAsFileHandles">Sockets as File Handles </A>
+<LI><A HREF="#ExpectErrors">Expect any error anywhere </A>
+<LI><A HREF="#OtherOptions">Other Optional Features </A>
+</UL>
+
+<P>
+The primary goal of the Windows Sockets specification was to provide
+a single API across all TCP/IP protocol stacks. To this end, the
+many TCP/IP stack vendors who cooperated in its development agreed
+to compromise a few features that were not available from all
+TCP/IP stacks. Rather than leave some of these features out of
+the specification altogether, they made them optional. For most
+of these optional features they defined the syntax and semantics,
+but not for all of them.
+<P>
+Optional features were not always intentional, however. The WinSock
+specification didn't prescribe the proper API behavior for some
+circumstance, which left it open to interpretation. Fortunately,
+most of these ambiguities are corner cases which applications
+can usually avoid.
+<P>
+In this chapter we do a survey of the optional features of the
+Windows Sockets API. We describe the options, and--where possible--show
+you how to use them. Many of these features are optional by intent,
+but we describe others that were optional because of ambiguities
+in the specification. One of the features we describe in detail--multicast--was
+not even considered at the time the spec was being created. Since
+that time, however, there's more demand for a multicast API and
+multicast support is available in some WinSock implementations.
+<H2><A NAME="oxymoron">Optional standard is an oxymoron</A></H2>
+
+<P>
+In an API specification as large as WinSock, that supports a protocol
+suite as rich and flexible as TCP/IP, with so many WinSock providers
+trying to agree on a single standard, it is difficult to satisfy
+everyone's' requirements and limitations. In the name of progress,
+those involved must occasionally compromise by using words like
+&quot;should&quot; and &quot;may,&quot; rather than &quot;must&quot;
+when describing the proper API and behavior. With these words,
+they introduce optional features.
+<P>
+Defining a specification involves making some features optional
+in order to satisfy the common denominator among WinSock providers.
+Allowing different behavior in a specification designed to describe
+<I>The Way</I> is indeed a contradiction, but it's a necessary
+evil that is executed in the name of the greater good. The main
+goal remains the focus: agreement on the core API, the one that
+the majority of network applications will rely on. Ultimately,
+those who use the specification--WinSock application developers
+and users--will determine how standard the optional features are.
+<P>
+Among the intentional options in the WinSock specification, the
+degree to which WinSock or other relevant standards describe the
+API and behavior can vary greatly. For example, the method and
+format of debug output from the SO_DEBUG option is completely
+arbitrary. By contrast, the use of SOCK_RAW for access to ICMP
+is well-defined by Berkeley Sockets and RFC 1122, &quot;Hosts
+Requirements.&quot;
+<P>
+In a large specification like WinSock unintentional options--caused
+by ambiguities and omissions--are also inevitable. We describe
+the most prominent of these in this chapter, along with intentional
+options. We describe when and why, and illustrate how to use them.
+<P>
+[<A HREF="#Top">Go to Top</A>]
+<HR>
+<H2><A NAME="ShouldYouUse">Should you use optional features?</A>
+</H2>
+<UL>
+<LI><A HREF="#OptionsToAvoid">Options to Avoid</A> 
+</UL>
+<P>
+The immediate answer to the question of whether or not you should
+use optional features is definitively, <I>yes you should!</I>
+Just don't depend on them.
+<P>
+Most optional features can enhance the performance and capabilities
+of your application. However, your application should not fail
+if and when the optional features aren't available. For example,
+generally you can get better bulk data throughput if you increase
+your input and output buffer sizes with SO_RCVBUF and SO_SNDBUF.
+However, your application should still be able to function with
+the default buffer sizes if your attempts to change the buffer
+sizes fail (with the WSAENOPROTOOPT or WSAEINVAL error).
+<P>
+You can (and should) avoid dependence on some optional features
+by redesigning your application. For example, you shouldn't require
+a specific amount of receive buffer space for your application
+to function. The doesn't require WinSocks to support the SO_RCVBUF
+socket option, so you may not be able to specify the system buffer
+space you get. For datastream sockets, you can (and should) always
+allocate this buffer space in your application instead of relying
+on system buffers. For datagram sockets, you'd have to redesign
+your application protocol to use smaller datagrams.
+<P>
+Of course, there are some applications that cannot possibly function
+when a Windows Sockets implementation doesn't support a particular
+optional feature. For example, SOCK_RAW support is essential to
+many network monitoring type applications, that use ICMP pings.
+<H3><A NAME="OptionsToAvoid">Options to Avoid</A></H3>
+
+<P>
+You should avoid using options that don't have standard API and
+behavior definitions. For example, <A HREF="#SharingSockets">sharing sockets</A>.
+The Windows Sockets specification doesn't mention the possibility
+of sharing sockets, so socket sharing is an optional feature by
+implication. The problem is that each WinSock implementation that
+allows sharing may have different requirements. The SO_DEBUG socket
+option is another optional feature without a description. The
+WinSock specification doesn't describe <A HREF="#SockRaw">SOCK_RAW </A>or
+<A HREF="#Multicast">multicast</A> support either, but fortunately
+we can refer to the de facto standard defined by Berkeley Sockets.
+<P>
+Using a proprietary API extension like socket sharing is a step
+backward. You limit your application, and you complicate it also.
+The v1.1 WinSock does not define a standard way to identify individual
+WinSock implementations. There's no standards committee to assign
+specific manufacturer identifiers like the IEEE does for Ethernet
+and Token Ring network interface manufacturers. The WSAData structure
+returned by WSAStartup() provides a location for vendor
+specific information, but does not prescribe the format.
+<P>
+In any case, the programming convenience of application reliance
+on optional features does not justify the incompatibility your
+application will suffer on different WinSock implementations.
+For instance, an application that uses socket sharing won't function
+on WinSocks that don't allow socket sharing, and may not function
+on different WinSocks that do allow it. Since it is possible to
+write any type of application without relying on proprietary features,
+we recommend that you avoid proprietary features altogether for
+the benefit of portability. After all, the main reason to use
+WinSock is to avoid proprietary APIs and take advantage of the
+standard.
+<P>
+[<A HREF="#Top">Go to Top</A>]
+<HR>
+<H2><A NAME="SockRaw">SOCK_RAW</A></H2>
+
+<UL>
+<LI><A HREF="#IPPROTO_ICMP">IPPROTO_ICMP Echo</A> 
+<LI><A HREF="#ICMPexample1">Code Example</A> 
+<LI><A HREF="#IP_TTL">IP_TTL Traceroute</A> 
+<LI><A HREF="#ICMPexample2">Code Example</A><BR>
+</UL>
+<P>
+SOCK_RAW is a type of socket that denotes a &quot;raw socket&quot;
+in the same way that SOCK_STREAM denotes a datastream socket and
+SOCK_DGRAM denotes a datagram socket. It's a macro (defined in
+WINSOCK.H) that you use as the value for the <I>type</I> parameter
+in socket() function. As section 2.6.10 of the v1.1 Windows
+Socket specification states, the support of SOCK_RAW is not mandated.
+However, it is encouraged, so many WinSock implementations do
+provide support (one notable exception are TCP/IP stacks from
+Microsoft).
+<P>
+Unfortunately, the WinSock specification doesn't describe the
+acceptable syntax. There are many variations of raw sockets, that
+correspond to different levels of support. True raw sockets allow
+free reign of the network and transport protocol headers.
+<P>
+Fortunately, few applications need low-level raw sockets support.
+Most applications require the common variation that allows access
+to the ICMP protocol to provide the ping facility, and this is
+what most WinSock implementations provide. The Berkeley sockets
+API model for this &quot;raw ICMP&quot; API is well-defined.
+
+<H3><A NAME="IPPROTO_ICMP">IPPROTO_ICMP Echo</A></H3>
+
+<P>
+As we describe in Chapter 14, &quot;Debugging,&quot; the ICMP
+ping facility provides a way to reach out and gently touch another
+machine. All TCP/IP hosts are required to reply to an ICMP echo
+request. Sending an echo request, and reading the echo reply is
+the simplest way to check IP connectivity between two network
+hosts and by implication it can provide a surprising amount of
+other information.
+<P>
+The ICMP ping capability is essential for any network management
+application designed to run over WinSock, but many average applications
+can benefit also. By embedding ICMP ping an application can perform
+simple diagnostics automatically. This can help application users,
+and provide essential information to support personnel.
+<P>
+To create an ICMP ping application a WinSock socket() function
+must support the &quot;raw ICMP&quot; socket type (<I>af</I>=AF_INET,
+<I>type</I>=SOCK_RAW, <I>protocol</I>=IPPROTO_ICMP). The following
+code example shows you how.
+<H3><A NAME="ICMPexample1">Code Example</A></H3>
+
+<P>
+The following code example illustrates the essentials that go
+into a ping application.. A few things to notice about in this
+example:
+<UL>
+<LI>You can use this code in any operation mode (blocking, non-blocking
+or asynchronous).
+<LI>The ID and sequence numbers in the ICMP header (nIcmpId
+and nIcmpSeq) allow an application to match echo requests
+with replies. At least one WinSock implementation uses the ID
+field for their own, so we recommend using the sequence field
+for portability.
+<LI>You can expect the echo reply to contain a copy of the data
+you send
+<LI>The syntax for sends and receives are asymmetric. As in Berkeley
+Sockets, you provide the ICMP header and data when you send, but
+when you receive you get the IP header as well as the ICMP header
+and data.
+<LI>In implementations that support the <A HREF="#IP_TTL">IP_TTL </A>socket
+option (which we describe next) you could alter the IP time to
+live before sending the ICMP echo, and read the destination address
+from the ICMP error packet response and trace the route of the
+datagram.
+</UL>
+
+<PRE>
+/* ICMP types */ 
+#define ICMP_ECHOREPLY 0 /* ICMP type: echo reply */
+#define ICMP_ECHOREQ 8   /* ICMP type: echo request */
+
+/* definition of ICMP header as per RFC 792 */ 
+typedef struct icmp_hdr { 
+  u_char icmp_type;      /* type of message */ 
+  u_char icmp_code;      /* type sub code */ 
+  u_short icmp_cksum;    /* ones complement cksum */ 
+  u_short icmp_id;       /* identifier */ 
+  u_short icmp_seq;      /* sequence number */ 
+  char icmp_data[1];     /* data */ 
+} ICMP_HDR, *PICMPHDR, FAR *LPICMPHDR; 
+#define ICMP_HDR_LEN sizeof(ICMP_HDR) 
+
+/* definition of IP header version 4 as per RFC 791 */
+#define IPVERSION 4 
+typedef struct ip_hdr { 
+  u_char ip_hl;          /* header length */ 
+  u_char ip_v;           /* version */ 
+  u_char ip_tos;         /* type of service */ 
+  short ip_len;          /* total length */ 
+  u_short ip_id;         /* identification */ 
+  short ip_off;          /* fragment offset field */ 
+  u_char ip_ttl;         /* time to live */ 
+  u_char ip_p;           /* protocol */ 
+  u_short ip_cksum;      /* checksum */ 
+  struct in_addr ip_src; /* source address */ 
+  struct in_addr ip_dst; /* destination address */ 
+} IP_HDR, *PIP_HDR, *LPIP_HDR; 
+#define IP_HDR_LEN sizeof(IP_HDR) 
+#define PNGBUFSIZE 8192+ICMP_HDR_LEN+IP_HDR_LEN 
+
+/* external functions */ 
+extern void WSAErrMsg(LPSTR); 
+
+/* private data */ 
+static ICMP_HDR FAR *lpIcmpHdr; /* pointers into our I/O buffer */ 
+static IP_HDR FAR *lpIpHdr; 
+static char achIOBuf[PNGBUFSIZE]; 
+static SOCKADDR_IN stFromAddr; 
+static DWORD lCurrentTime, lRoundTripTime; 
+/* 
+ * Function icmp_open() 
+ * 
+ * Description: opens an ICMP "raw" socket.
+ */ 
+SOCKET icmp_open(void) { 
+  SOCKET s; 
+  s = socket (AF_INET, SOCK_RAW, IPPROTO_ICMP); 
+  if (s == SOCKET_ERROR) { 
+    WSAErrMsg("socket(type=SOCK_RAW, protocol=IPROTO_ICMP)");
+    return (INVALID_SOCKET); 
+  } 
+  return (s); 
+} /* end icmp_open() */ 
+
+/* 
+ * Function: icmp_sendto() 
+ * 
+ * Description: Initializes an ICMP header, inserts the current
+ * time in the ICMP data and initializes the data, then sends
+ * the ICMP Echo Request to destination address. 
+ */ 
+int icmp_sendto (SOCKET s, 
+    HWND hwnd, 
+    LPSOCKADDR_IN lpstToAddr, 
+    int nIcmpId, 
+    int nIcmpSeq, 
+    int nEchoDataLen) { 
+  int nAddrLen = sizeof(SOCKADDR_IN); 
+  int nRet; 
+  u_short i; 
+  char c; 
+  /*--------------------- init ICMP header -----------------------*/
+
+  lpIcmpHdr = (ICMP_HDR FAR *)achIOBuf; 
+  lpIcmpHdr->icmp_type  = ICMP_ECHOREQ; 
+  lpIcmpHdr->icmp_code  = 0; 
+  lpIcmpHdr->icmp_cksum = 0; 
+  lpIcmpHdr->icmp_id    = nIcmpId++; 
+  lpIcmpHdr->icmp_seq   = nIcmpSeq++; 
+
+  /*--------------------put data into packet------------------------
+   * insert the current time, so we can calculate round-trip time 
+   * upon receipt of echo reply (which will echo data we sent) 
+   */ 
+  lCurrentTime = GetCurrentTime(); 
+  _fmemcpy (&(achIOBuf[ICMP_HDR_LEN]),&lCurrentTime,sizeof(long));
+
+  /* data length includes the time (but not icmp header) */
+  c=' ';   /* first char: space, right after the time */
+
+  for (i=ICMP_HDR_LEN+sizeof(long); 
+      ((i < (nEchoDataLen+ICMP_HDR_LEN)) && (i < PNGBUFSIZE));i++) { 
+       achIOBuf[i] = c; 
+       c++; 
+       if (c > '~') /* go up to ASCII 126, then back to 32 */
+       c= ' '; 
+  } 
+
+  /*----------------------assign ICMP checksum ----------------------
+   * ICMP checksum includes ICMP header and data, and assumes current 
+   * checksum value of zero in header 
+   */ 
+  lpIcmpHdr->icmp_cksum = 
+      cksum((u_short FAR *)lpIcmpHdr, nEchoDataLen+ICMP_HDR_LEN); 
+
+  /*--------------------- send ICMP echo request -------------------*/
+  nRet = sendto (s,                              /* socket */ 
+          (LPSTR)lpIcmpHdr,                      /* buffer */ 
+          nEchoDataLen+ICMP_HDR_LEN+sizeof(long),/* length */
+          0,                                     /* flags */ 
+          (LPSOCKADDR)lpstToAddr,                /* destination */ 
+          sizeof(SOCKADDR_IN));                  /* address length */ 
+  if (nRet == SOCKET_ERROR) { 
+    WSAErrMsg("sendto()"); 
+  } 
+  return (nRet); 
+} /* end icmp_sendto() */ 
+
+/* 
+ * Function: icmp_recvfrom() 
+ * 
+ * Description: 
+ * receive icmp echo reply, parse the reply packet to remove the 
+ * send time from the ICMP data. 
+ */ 
+u_long icmp_recvfrom(SOCKET s, 
+    LPINT lpnIcmpId, 
+    LPINT lpnIcmpSeq, 
+    LPSOCKADDR_IN lpstFromAddr) { 
+  u_long lSendTime; 
+  int nAddrLen = sizeof(struct sockaddr_in); 
+  int nRet, i; 
+  /*-------------------- receive ICMP echo reply ------------------*/
+
+  stFromAddr.sin_family = AF_INET; 
+  stFromAddr.sin_addr.s_addr = INADDR_ANY; /*not used on input anyway*/ 
+  stFromAddr.sin_port = 0; /* port not used in ICMP */
+
+  nRet = recvfrom (s,                                 /* socket */ 
+     (LPSTR)achIOBuf,                                 /* buffer */ 
+     PNGBUFSIZE+ICMP_HDR_LEN+sizeof(long)+IP_HDR_LEN, /* length */ 
+     0,                                               /* flags  */ 
+     (LPSOCKADDR)lpstFromAddr,                        /* source */ 
+     &nAddrLen);                                      /* addrlen*/ 
+  if (nRet == SOCKET_ERROR) { 
+    WSAErrMsg("recvfrom()"); 
+  }
+ 
+  /*------------------------- parse data ---------------------------
+   * remove the time from data for return. 
+   * NOTE: the data received and sent may be asymmetric, as they
+   * are in Berkeley Sockets. As a reusult, we may receive 
+   * the IP header, although we didn't send it. This subtlety is 
+   * not often implemented so we do a quick check of the data
+   * received to see if it includes the IP header (we look for 0x45 
+   * value in first byte of buffer to check if IP header present).
+   */ 
+
+  /* figure out the offset to data */ 
+  if (achIOBuf[0] == 0x45) { /* IP header present? */ 
+    i = IP_HDR_LEN + ICMP_HDR_LEN; 
+    lpIcmpHdr = (LPICMPHDR) &(achIOBuf[IP_HDR_LEN]);
+  } else { 
+    i = ICMP_HDR_LEN; 
+    lpIcmpHdr = (LPICMPHDR) achIOBuf; 
+  }
+ 
+  /* pull out the ICMP ID and Sequence numbers */ 
+  *lpnIcmpId = lpIcmpHdr->icmp_id; 
+  *lpnIcmpSeq = lpIcmpHdr->icmp_seq; 
+
+  /* remove the send time from the ICMP data */ 
+  _fmemcpy (&lSendTime, (&achIOBuf[i]), sizeof(u_long));
+
+  return (lSendTime); 
+} /* end icmp_recvfrom() */ 
+
+/* 
+ * Function: cksum() 
+ * 
+ * Description: 
+ * Calculate Internet checksum for data buffer and length (one's
+ * complement sum of 16-bit words). Used in IP, ICMP, UDP, IGMP. 
+ */ 
+u_short cksum (u_short FAR*lpBuf, int nLen) { 
+  register long lSum = 0L; /* work variables */
+
+  /* note: to handle odd number of bytes, last (even) byte in
+   * buffer have a value of 0 (we assume that it does) 
+   */
+  while (nLen > 0) { 
+    lSum += *(lpBuf++); /* add word value to sum */ 
+    nLen -= 2; /* decrement byte count by 2 */ 
+  }
+ 
+  /* put 32-bit sum into 16-bits */ 
+  lSum = (lSum & 0xffff) + (lSum>>16); 
+  lSum += (lSum >> 16); 
+
+  /* return Internet checksum. Note:integral type 
+   * conversion warning is expected here. It's ok. 
+   */ 
+  return (~lSum); 
+} /* end cksum() */
+</PRE>
+<P>
+[<A HREF="#Top">Go to Top</A>]
+<HR>
+<H3><A NAME="IP_TTL">IP_TTL Traceroute</A></H3>
+
+The traceroute utility reports the IP addresses of all router
+&quot;hops&quot; between you and a destination host. It uses the
+time-to-live (TTL) mechanism in the Internet Protocol (IP) to
+elicit a response from each intermediate router. All routers decrement
+the TTL in each IP header they receive, and they typically respond
+to a TTL of 0 by returning an ICMP &quot;TTL exceeded&quot; error
+packet to the sender. It can work with UDP or ICMP datagrams (see
+the illustration of this in Chapter 14, &quot;Debugging&quot;).
+Unfortunately, the v1.1 of the WinSock specification doesn't provide
+API access to the contents of an IP header (like TTL). By the
+BSD de facto standard, access to the IP TTL field would require
+SOCK_RAW IPPROTO_IP support, <I>or</I> the setsockopt() (<I>level</I>=IPPROTO_IP,
+<I>cmd</I>=IP_TTL) support.
+Many WinSock compliant TCP/IP implementations come with a traceroute
+utility. However, they access a proprietary API to provide this
+low-level IP header access. As a result their traceroute application
+won't run over other WinSock implementations.
+Fortunately, WinSock version 2.0 prescribes support for the IP_TTL
+option. The following code sample shows how to use it. Note: the
+value we use for IP_TTL is compatible with Berkeley sockets, however
+it conflicts with the Steve Deering multicast value (which we
+describe next). This macro value of may change in WinSock version 2.0.
+ 
+<HR>
+<H3><A NAME="ICMPexample2">Code Example</A></H3>
+<PRE>
+#define IP_TTL 4 /* level=IPPROTO_IP option, Time To Live */ 
+#define MAX_TTL 255 /* maximum IP Time To Live value */ 
+/* 
+ * Function set_IP_TTL() 
+ * 
+ * Description: Attempts to set the IP Time to live value using the 
+ * IP_TTL socket option (which is rarely supported). This is necessary 
+ * to implement a traceroute application. 
+ */ 
+int set_ttl (SOCKET s, int nTimeToLive) { 
+  int nRet; 
+  nRet = setsockopt (s, 
+                     IPPROTO_IP, 
+                     IP_TTL, 
+                     (LPSTR)&nTimeToLive, 
+                     sizeof(int)); 
+  if (nRet==SOCKET_ERROR) { 
+    WSAErrMsg(setsockopt(lewel=IPPROTO_IP, option=IP_TTL));
+  } 
+  return (nRet); 
+} /* end set_IP_TTL() */
+</PRE>
+<HR>
+<H2><A NAME="Multicast">Multicast</A></H2>
+
+<UL>
+<LI><A HREF="#WhyMulticast">Why use Multicast?</A> 
+<LI><A HREF="#MulticastAPI">Multicast API</A> 
+<UL>
+<LI><A HREF="#IP_ADD_MEMBERSHIP">IP_ADD_MEMBERSHIP</A> 
+<LI><A HREF="#IP_DROP_MEMBERSHIP">IP_DROP_MEMBERSHIP</A> 
+<LI><A HREF="#IP_MULTICAST_IF">IP_MULTICAST_IF</A> 
+<LI><A HREF="#IP_MULTICAST_LOOP">IP_MULTICAST_LOOP </A>
+<LI><A HREF="#IP_MULTICAST_TTL">IP_MULTICAST_TTL</A> 
+</UL>
+
+<LI><A HREF="#MulticastMechanics">Multicast Mechanics</A> 
+<LI><A HREF="#MulticastExample">Code Example</A><BR>
+
+</UL>
+
+<P>
+In RFC-1112 &quot;Host Extensions for IP Multicasting,&quot; Steve
+Deering details the extensions that TCP/IP protocol stacks use
+to support multicasting (RFC-1122 &quot;Hosts Requirements&quot;
+has a few addendum and clarifications). He describes the <A HREF="#MulticastMechanics">mechanics of multicast</A>,
+and focuses on Internet Group Management Protocol (IGMP). The
+main purpose of IGMP is to allow IP hosts to report group memberships
+to any local &quot;multicast routers&quot; (routers which support
+IGMP). In effect, IGMP is the muscle behind multicast. By keeping
+routers informed about multicast hosts, it allows multicast datagrams
+to traverse an internetwork and reach many hosts simultaneously.
+The ability to traverse an internetwork and reach an unlimited
+number of &quot;member&quot; hosts simultaneously without affecting
+others adversely is the linchpin of multicast.
+<P>
+In an effort to create a multicast test bed despite the lack of
+multicast-capable routers on the Internet, the IETF established
+the multicast backbone (MBONE). The MBONE is a virtual network
+that allows multicast datagrams to traverse the Internet across
+non-multicast routers in an IP &quot;tunnel.&quot; A special router
+encapsulates multicast datagrams and sends them as unicast IP
+datagrams to other special routers, which de-encapsulate them
+and send them on the local network as standard multicast datagrams.
+As demonstrated by the live MBONE multicast of the Rolling Stones
+rock concert on November 18, 1994, from Dallas Texas, even this
+limited capability has impressive potential. The video was choppy
+and the audio low-fidelity, but like early radio and TV broadcasts
+it got everyone excited. It was a harbinger of what's to come.
+<P>
+A Class D IP address in the range 224.0.0.0 to 239.255.255.255
+is a &quot;multicast address.&quot; Each is also known as a &quot;host
+group address,&quot; since datagrams with a multicast destination
+address can be received by all hosts that have joined the group
+that an address represents. The address 224.0.0.0 is reserved,
+and 224.0.0.1 is assigned to the permanent group of all IP hosts.
+The &quot;Assigned Numbers&quot; RFC publishes other permanent
+host group addresses.
+<P>
+A host with a TCP/IP stack must support IGMP to join a multicast
+group in order to receive multicast datagrams. Any host can send
+a multicast datagrams without being a group member. Multicast
+datagrams can only traverse routers which are IGMP-capable (i.e.
+multicast routers), unless &quot;tunneled&quot; as described earlier.
+<H3><A NAME="WhyMulticast">Why use Multicast?</A></H3>
+
+<P>
+Multicast addresses provide a limited broadcasting, but without
+the problems and limitations of traditional broadcasts. Since
+they don't use a broadcast hardware address, only those hosts
+which have <A HREF="#IP_ADD_MEMBERSHIP">joined a group </A>&quot;read&quot;
+the packet off the net. As a result, multicast datagrams don't
+incur the extra overhead that traditional broadcast packets do.
+<P>
+Sending datagrams to a multicast address is analogous to transmitting
+radio signals on a particular frequency. Just as you must tune
+a radio receiver to the particular frequency to receive the radio
+signal, you must join a multicast group to receive the multicast
+packets. Unlike a radio transmission, however, you need not be
+in range to receive the signal. Provided the route between you
+and the sender has properly configured multicast routers (or MBONE),
+you can receive multicast datagrams from anywhere.
+<P>
+The downside of multicast is that currently multicast-capable
+routers are relatively rare. And multicasts must be co-ordinated
+between networked hosts to avoid conflicts, make sure someone
+is listening, and conserve limited network bandwidth.
+<P>
+[<A HREF="#Top">Go to Top</A>]
+<HR>
+<H3><A NAME="MulticastAPI">Multicast API</A></H3>
+
+<P>
+Steve Deering also wrote &quot;IP Multicast Extensions for 4.3BSD
+and related systems&quot; which describes the extensions to the
+Sockets API for support of multicasting. We'll describe this API
+in the remainder of this section and show you how to use it. The
+v1.1 Windows Sockets specification doesn't reference any of this,
+and very few Windows Sockets implementations currently provide
+support, but there are bound to be more. Version 2.0 of the Windows
+Sockets specification is slated to adopt this API as its own standard.
+<P>
+The multicast API uses a number of new socket options. As with
+the other socket options we describe in Chapter 10, &quot;Socket
+Information and Control,&quot; you set and retrieve the values
+for these options with setsockopt() and getsockopt().
+The value of the getsockopt() and setsockopt()
+<I>level </I>parameter for all of these options is IPPROTO_IP.
+Only two of the five new options use an integer type for the option
+value. Two of them use a new multicast structure (struct im_req),
+and another uses an in_addr structure.
+<P>
+As with any option, if a WinSock implementation doesn't support
+it, the call to either setsockopt() or getsockopt()
+will fail with WSAENOPROTOOPT.
+<H4><A NAME="IP_ADD_MEMBERSHIP">IP_ADD_MEMBERSHIP</A></H4>
+
+<P>
+The IP_ADD_MEMBERSHIP option allows you to join a multicast
+group specified by the host group address in the multicast address
+structure. You must join a group to receive multicast datagrams.
+You do not need to join a group to send multicast datagrams. 
+<HR>
+
+<PRE WIDTH=132>
+option name         data      default  getsockopt setsockopt socket     special      
+<I>type</I>               <I>()</I>         ()         <I>type</I>       <I>notes</I>        
+
+IP_ADD_MEMBERSHIP   struct    &lt;none&gt;   no         yes        DG or RAW  level        
+                    ip_mreq                                             IPPROTO_IP   
+
+</PRE>
+<HR>
+
+<P>
+You can join multiple host groups on a single socket. The maximum
+number of memberships is typically twenty, although this value
+may differ on different WinSock implementations. This value can
+also vary over a single WinSock implementation since (link-layer)
+network drivers have their own limits. You can also join the same
+host group address on multiple interfaces.
+<P>
+The multicast address structure is defined as follows:
+<P>
+struct ip_mreq { 
+<P>
+struct in_addr imr_multiaddr; /* multicast group to join */
+
+<P>
+struct in_addr imr_interface; /* interface to join on */
+
+<P>
+} 
+<P>
+<I>imr_multiaddr:</I> The multicast host group to join. By joining,
+you implicitly notify your local multicast router of your membership
+(the TCP/IP stack sends an IGMP), and you enable your local interface
+(network driver) to receive multicast datagrams destined for this
+multicast address.
+<P>
+<I>imr_interface:</I> This is the IP address of the local network
+interface you wish to receive multicast datagrams on. Typically,
+you will specify INADDR_ANY for this value to use the default
+interface. You can specify any multicast capable interface on
+your system.
+<P>
+You can have multiple sockets join the same group address on different
+ports. Be careful, though. You may run into problems if the underlying
+protocol stack doesn't use the multicast address along with the
+port number to demultiplex the packet at the UDP (transport) level.
+<P>
+It is also possible to have multiple sockets join the same or
+different groups on the <I>same</I> port number. To do so, you'd
+need to call setsockopt(SO_REUSEADDR) to allow duplicate socket
+names. However, the same caveats in the description of SO_REUSEADDR
+in Chapter 10, &quot;Socket Information and Control&quot; apply
+here. You need to be careful and test this over different WinSocks,
+since demultiplexing multicast data to multiple sockets can have
+varying results.
+<P>
+When successful, this option will cause your TCP/IP protocol stack
+to send an <A HREF="#MulticastMechanics">IGMP</A> Host Membership
+Report to 224.0.0.1 (the &quot;all-hosts&quot; multicast group).
+See the &quot;Multicast mechanics&quot; described in more detail
+below.
+<H4><A NAME="IP_DROP_MEMBERSHIP">IP_DROP_MEMBERSHIP</A></H4>
+
+<P>
+The IP_DROP_MEMBERSHIP option allows you to drop the
+host membership in a multicast group. <HR>
+
+<PRE WIDTH=132>
+option name          data      default getsockopt setsockopt( socket    special      
+<I>type</I>              <I>()</I>         )           <I>type</I>      <I>notes</I>        
+
+IP_DROP_MEMBERSHIP   struct    &lt;none&gt;  no         yes         DG or     level        
+                     ip_mreq                                  RAW       IPPROTO_IP   
+
+
+</PRE>
+<HR>
+
+<P>
+The underlying TCP/IP stack keeps a reference count of the number
+of requests to join a particular host group. When you set the
+IP_DROP_MEMBERSHIP option for a particular group, the
+underlying stack decrements the reference count by one. The stack
+only sends notification to drop a multicast group membership to
+the (data-link) network driver when the reference count is zero.
+This option does not generate any <A HREF="#MulticastMechanics">IGMP</A>
+activity.
+<H4><A NAME="IP_MULTICAST_IF">IP_MULTICAST_IF</A></H4>
+
+<P>
+The IP_MULTICAST_IF option allows you to specify a default
+local interface from which to send multicast packets. This option
+is only relevant on hosts with more than one interface. <HR>
+
+<PRE WIDTH=132>
+option name          data      default getsockopt setsockopt( socket    special      
+<I>type</I>              <I>()</I>         )           <I>type</I>      <I>notes</I>        
+
+IP_MULTICAST_IF      struct    FALSE   no         yes         DG or     level        
+                     in_addr                                  RAW       IPPROTO_IP   
+
+
+</PRE>
+<HR>
+
+<P>
+All multicast capable hosts must have a default multicast interface,
+so you're not required to use this option. You may override the
+default and IP_MULTICAST_IF selection by specifying an interface
+when you join a group (with setsockopt() IP_ADD_MEMBERSHIP))..
+<H4><A NAME="IP_MULTICAST_LOOP">IP_MULTICAST_LOOP</A></H4>
+
+<P>
+The IP_MULTICAST_LOOP option enables or disables the
+receipt of multicast packets that you send to a multicast group
+you're a member of. <HR>
+
+<PRE WIDTH=132>
+option name          data      default getsockopt setsockopt( socket    special      
+<I>type</I>              <I>()</I>         )           <I>type</I>      <I>notes</I>        
+
+IP_MULTICAST_LOOP    BOOL      TRUE    yes        yes         DG or     level        
+                                                              RAW       IPPROTO_IP   
+
+
+</PRE>
+<HR>
+
+<P>
+This option is enabled by default. In other words, by default
+you will get a copy of all multicast packets you send, from each
+of the interfaces that you've joined as a group member.
+<H4><A NAME="IP_MULTICAST_TTL">IP_MULTICAST_TTL</A></H4>
+
+<P>
+The IP_MULTICAST_TTL option allows you to change the
+IP &quot;time to live&quot; (TTL) value in the multicast packets
+you send. You need to use this option if you want to send multicast
+packets beyond the local network, since the default TTL for multicast
+packets is one. <HR>
+
+<PRE WIDTH=132>
+option name          data      default getsockopt( setsockopt socket    special      
+<I>type</I>              <I>)</I>           <I>()</I>         <I>type</I>      <I>notes</I>        
+
+IP_MULTICAST_TTL     int       1       yes         yes        DG or     level        
+                                                              RAW       IPPROTO_IP   
+
+
+</PRE>
+<HR>
+
+<P>
+To send multicast packets beyond the local network, your local
+router and any other routers between you and the hosts you want
+to send to must be multicast capable (i.e. they must be &quot;multicast
+routers,&quot; with support for <A HREF="#MulticastMechanics">IGMP</A>).
+<P>
+You can check whether there are any host group members currently
+available, with an &quot;expanding ring search.&quot; You start
+with a TTL value of zero and then larger TTL values for each subsequent
+send to the multicast address, until you get a response (the suggested
+TTL value sequence is 0, 1, 2, 4, 8, 16, 32). Eventually, you'll
+elicit a response from one or more group members &quot;listening&quot;
+on the same UDP port number you are sending to.
+<P>
+You can use any valid host group address as a destination address
+in an expanding ring search. You cannot use the &quot;all-hosts&quot;
+group (224.0.0.1) however, since multicast routers never forward
+packets destined for the all-hosts group beyond the local network
+(this limitation is similar to the limitation on packets sent
+to the IP broadcast address).
+<H3><A NAME="MulticastMechanics">Multicast Mechanics</A></H3>
+
+<P>
+You don't need to know a lot about the mechanics of multicast
+support since the WinSock API insulates you from the low-level
+details. But as with anything else, it helps to know something
+so you know what to look for when you encounter problems. For
+the most part, you'd need a network analyzer to put this information
+to practical use, since it all has to do with the Internet Group
+Management Protocol (IGMP) that TCP/IP stacks use to provide multicast
+support. The following information is from RFC 1112, &quot;Host
+Extensions for IP Multicasting&quot;, August 1989, by Steve Deering.
+<P>
+When a TCP/IP host starts, it sends a host membership report to
+the all-hosts group (224.0.0.1) from each network interfaces to
+notify the multicast routers. Every host remains a member of the
+all-hosts group for as long as the host is active.
+<P>
+When you join a specific multicast group with setsockopt (IPPROTO_IP,
+IP_ADD_MEMBERSHIP), your TCP/IP stack notifies the driver
+so it can create a hardware multicast address (for example, low-order
+23-bits of multicast address become low-order 23-bits of Ethernet
+address). If this is the first membership request for this group,
+it also sends an IGMP &quot;host membership report&quot; packet
+immediately, then sends another at a random timeout period up
+to 10 seconds later to cover the possibility of the initial report
+being lost or damaged (datagrams are unreliable, after all).
+<P>
+Multicast routers send IGMP &quot;host membership queries&quot;
+to the all-hosts group periodically to refresh their knowledge
+of memberships present on a particular network. If it doesn't
+receive any reports for a particular group after some number of
+queries, then the routers assume that that group has no local
+members and that they need not forward remotely-originated multicasts
+for that group onto the local network.
+<P>
+When a host sees a &quot;host membership query&quot; (which only
+multicast routers send, never multicast hosts), it doesn't send
+reports immediately. Instead it starts a random delay timer for
+each of its group memberships on the network interface of the
+incoming query. When a timer expires, it sends the host membership
+report to the all-hosts address (so other hosts on the local net
+see it), but <I>only</I> if it hasn't seen a report for the same
+group from some other host. As a result, each host membership
+query typically generates only one report for each group present
+on a network. Multicast routers need not know which hosts belong
+to a group, but only that (at least) one host belongs to a group
+on a particular network.
+<P>
+Hosts never send a host membership report for the all-hosts group
+in response to a host membership query, since the &quot;all-hosts'
+group membership is a given. A multicast host sends a host membership
+report for the all-hosts group only when it initializes each multicast
+interface at boot time..
+<H3><A NAME="MulticastExample">Code Example</A></H3>
+
+<P>
+The following macros may already be defined in your WINSOCK.H
+file, and they may or may not be the same. Unfortunately, there
+is some confusion about the socket option values. The original
+values Steve Deering of Stanford University defined in his document
+&quot;IP Multicast Extensions for 4.3BSD UNIX related systems
+(MULTICAST 1.2 Release),&quot; had IP_MULTICAST_IF defined with
+a value of two. However, Berkeley Sockets already had the IPPROTO_IP
+level socket option of value two assigned to IP_TTL. There were
+other conflicts with other values, so Berkeley changed all the
+values by adding 7. 
+<P>
+The multicast socket options defined in the WINSOCK.H file
+that comes with the v3.5 Windows NT SDK have the original Steve
+Deering values (not the BSD compatible values). WinSock version
+2 will probably adopt the Berkeley values. 
+<P>
+As mentioned, you can use any UDP socket to send to a multicast
+address. You do not need to use any of the multicast options.
+In addition to sendto() (which we use in this example),
+you could use connect() to set a default destination
+port and address, and then send(). As always, if you
+use connect() and send(), you'll need to call
+connect() again with the destination port and address
+both set to 0 to reset the socket before you can change the destination
+port and address.
+
+<PRE>
+#ifndef IP_MULTICAST_IF 
+/* 
+ * The following constants are taken from include/netinet/in.h
+ * in Berkeley Software Distribution version 4.4. Note that these 
+ * values *DIFFER* from the original values defined by Steve Deering 
+ * as described in &quot;IP Multicast Extensions for 4.3BSD UNIX related 
+ * systems (MULTICAST 1.2 Release)&quot;. It describes the extensions 
+ * to BSD, SunOS and Ultrix to support multicasting, as specified
+ * by RFC-1112. 
+ */ 
+#define IP_MULTICAST_IF 9 /* set/get IP multicast interface */ 
+#define IP_MULTICAST_TTL 10 /* set/get IP multicast TTL */
+#define IP_MULTICAST_LOOP 11 /* set/get IP multicast loopback */ 
+#define IP_ADD_MEMBERSHIP 12 /* add (set) IP group membership */ 
+#define IP_DROP_MEMBERSHIP 13 /* drop (set) IP group membership */ 
+#define IP_DEFAULT_MULTICAST_TTL 1 
+#define IP_DEFAULT_MULTICAST_LOOP 1 
+#define IP_MAX_MEMBERSHIPS 20 
+/* The structure used to add and drop multicast addresses */ 
+typedef struct ip_mreq { 
+  struct in_addr imr_multiaddr; /* multicast group to join */
+  struct in_addr imr_interface; /* interface to join on */
+}IP_MREQ; 
+#endif 
+...
+#define DESTINATION_MCAST "234.5.6.7" 
+#define DESTINATION_PORT 4567 
+... 
+  int nRet, nSize, nOptVal; 
+  SOCKET hSock; 
+  achInBuf[BUFSIZE]; 
+  struct sockaddr_in stSourceAddr, stDestAddr; 
+  u_short nSourcePort; 
+  struct ip_mreq stIpMreq; 
+... 
+  /* get a datagram (UDP) socket */ 
+  hSock = socket(PF_INET, SOCK_DGRAM, 0); 
+  if (hSock == INVALID_SOCKET) { 
+    <notify user of WinSock error> 
+  } 
+... 
+  /*----------------------- to send ---------------------------
+
+  /* Theoretically, you do not need any special preparation to 
+   * send to a multicast address. However, you may want a few
+   * things to overcome the limits of the default behavior 
+   */
+... 
+  /* init source address structure */ 
+  stSourceAddr.sin_family = PF_INET; 
+  stSourceAddr.sin_port = htons(nSourcePort); 
+  stSourceAddr.sin_addr.s_addr = INADDR_ANY; 
+
+  /* 
+   * Calling bind() is not required, but some implementations need it 
+   * before you can reference any multicast socket options
+   */ 
+  nRet = bind (hSock, 
+         (struct sockaddr FAR *)&stSourceAddr, 
+         sizeof(struct sockaddr)); 
+  if (nRet == SOCKET_ERROR) { 
+    <notify user of WinSock error> 
+  } 
+... 
+  /* disable loopback of multicast datagrams we send, since the 
+   * default--according to Steve Deering--is to loopback all
+   * datagrams sent on any interface which is a member of the
+   * destination group address of that datagram.
+   */ 
+  nOptVal = FALSE; 
+  nRet = setsockopt (hSock, IPPROTO_IP, IP_MULTICAST_LOOP, 
+        (char FAR *)nOptVal, sizeof(int)); 
+  if (nRet == SOCKET_ERROR) { 
+    /* rather than notifying the user, we make note that this option 
+     * failed. Some WinSocks don't support this option, and default
+     * with loopback disabled), so this failure is of no consequence.
+     * However, if we *do* get loop-backed data, we'll know why
+     */ 
+    bLoopFailed = TRUE; 
+  } 
+... 
+  /* increase the IP TTL from the default of one to 64, so our
+   * multicast datagrams can get off of the local network 
+   */
+  nOptVal = 64; 
+  nRet = setsockopt (hSock, IPPROTO_IP, IP_MULTICAST_LOOP,
+         (char FAR *)nOptVal, sizeof(int)); 
+  if (nRet == SOCKET_ERROR) { 
+    <notify user of WinSock error> 
+  } 
+... 
+  /* Initialize the Destination Address structure */ 
+  stDestAddr.sin_family = PF_INET; 
+  stDestAddr.sin_addr.s_addr = inet_addr (DESTINATION_MCAST);
+  stDestAddr.sin_port = htons (DESTINATION_PORT); 
+... 
+  nRet = sendto (hSock, (char FAR *)achOutBuf, 
+          lstrlen(achOutBuf), 0, 
+          (struct sockaddr FAR *) &stDestAddr, 
+          sizeof(struct sockaddr)); 
+  if (nRet == SOCKET_ERROR) { 
+    <notify user of WinSock error> 
+  } 
+... 
+  /*----------------------- to receive -------------------------
+   * Register for FD_READ events (any operation mode will work, but 
+   * we happened to use asynchronous mode in this example 
+   */
+  nRet = WSAAsyncSelect (hSock, hwnd, WM_READ_DATA, FD_READ);
+
+  if (nRet == SOCKET_ERROR) { 
+    <notify user of WinSock error> 
+  } 
+... 
+  /* join the multicast group we want to receive datagrams from */ 
+  stIpMreq.imr_multiaddr.s_addr = DESTINATION_MCAST; /* group addr */ 
+  stIpMreq.imr_interface.s_addr = INADDR_ANY; /* use default */ 
+  nRet = setsockopt (hSock, IPPROTO_IP, IP_ADD_MEMBERSHIP,
+          (char FAR *)&stIpMreq, sizeof (struct ip_mreq));
+
+  if (nRet == SOCKET_ERROR) { 
+    <notify user of WinSock error> 
+  } 
+... 
+  /* multicast datagram receive routine from our Window Procedure */ 
+  case WM_READ_DATA: 
+    if (WSAGETSELECTERROR (lParam)) { 
+      <notify user of WinSock Error> 
+    } 
+    switch (WSAGETSELECTEVENT (lParam)) { 
+      case FD_READ: 
+        /* Recv the available data */ 
+        nSize = sizeof(struct sockaddr); 
+        nRet = recvfrom (hSock, (char FAR *)achInBuf, 
+                BUFSIZE, 0, 
+                (struct sockaddr *) &stSockAddr, &nSize); 
+        if (nRet == SOCKET_ERROR) { 
+          <notify user of WinSock error> 
+        } 
+        break; 
+    }
+</PRE>
+<P>
+[<A HREF="#Top">Go to Top</A>]
+<HR>
+<H2><A NAME="loopback">Loopback</A></H2>
+<P>
+Loopback is ability to send data on a virtual circuit between
+two datastream sockets, or two datagram sockets in the same or
+different processes. One common use is for development and testing
+network applications, without a network (on a standalone computer).
+Another is to allow one application to access the services of
+another, even if it's located on the same machine. These expectations
+are perfectly reasonable, but the v1.1 Windows Sockets specification
+does not guarantee the availability of these capabilities (including
+127.0.0.1, the de facto standard loopback address on TCP/IP hosts).
+Since 16-bit Windows is not a true multitasking environment, this
+is not really surprising.
+<P>
+Although a number of WinSock implementations can loopback successfully,
+to assure compatibility with all WinSock implementations you should
+not design an application that depends on its availability.
+<P>
+[<A HREF="#Top">Go to Top</A>]
+<HR>
+<H2><A NAME="SharingSockets">Sharing Sockets</A></H2>
+<UL>
+<LI><A HREF="#SharingPossible">Is socket sharing possible?</A>
+</UL>
+<P>
+By &quot;sharing sockets&quot; we're talking about allowing two
+or more tasks to use a single socket handle. In other words, task
+A gets a socket descriptor from a successful call to socket(),
+and task B uses that descriptor in socket calls. The v1.1 WinSock
+spec doesn't say it's illegal, but it doesn't say that it's legal
+either, so you should not assume you can do it.
+<P>
+You might be tempted to do it if you wanted to create an application
+that spawned other applications. For example, an &quot;inet daemon&quot;
+in UNIX keeps sockets listening on different ports for various
+servers, and when a connection request comes in it spawns the
+application and hands-off the connected socket.
+<P>
+As we described in Chapter 12, &quot;DLLs over WinSock,&quot;
+socket sharing can simplify intermediate DLL design. Since DLLs
+don't have task ids of their own, they inherit the id of the task
+currently active. It would be convenient if a DLL could access
+a socket no matter which task were currently active (assuming
+the DLL made sure to call WSAStartup() to register the
+task with the WinSock DLL).
+<H3><A NAME="SharingPossible">Is Socket Sharing Possible?</A>
+</H3>
+
+<P>
+Some WinSock implementations allow socket sharing between any
+task that has successfully called WSAStartup() to register
+with the WinSock DLL. We call this implicit sharing, since it
+is automatic. The task that &quot;owns&quot; the socket--the active
+task when the socket was created--does not have to &quot;export&quot;
+it actively, nor do the other tasks need to &quot;import&quot;
+it either. Typically, the only limitation is that only the &quot;owner&quot;
+task can close the socket.
+<P>
+WinSock version 1.1 does not have a standard API for explicit
+socket sharing, but WinSock version 2.0 does. This new API is
+modeled after the BSD Unix model, and is currently supported in
+32-bit WinSock. You share sockets explicitlly by calling DuplicateHandle()
+(see Chapter 13, &quot;Porting from BSD Sockets&quot; for more
+information).
+<P>
+The bottom line is you should not attempt to share sockets between
+different applications to ensure compatibility among 1.1 WinSock
+implementations,
+<P>
+[<A HREF="#Top">Go to Top</A>]
+<HR>
+<H2><A NAME="OptionalOptions">Optional Options</A></H2>
+<P>
+A number of setsockopt() and getsockopt() options
+are optional. In some cases, Berkeley (or other) precedent defines
+their function well. However, in other cases, the precedent is
+inadequate or isn't well established. In Chapter 10, &quot;Socket
+information and control,&quot; we described all the socket options,
+including the optional ones in the v1.1 WinSock specification.
+They are: SO_DEBUG, SO_DONTROUTE, SO_RCVBUF and SO_SNDBUF.
+<P>
+The specification states that all Windows Sockets implementations
+should recognize all options, and return plausible values for
+each. An implementation may silently ignore an optional option
+on setsockopt(), and return a constant value for getsockopt().
+The getsockopt() function may even return the value set
+by setsockopt(), without using the value at all. On some
+WinSock implementations that don't support the option named, getsockopt()
+or setsockopt() will fail with WSAENOPROTOOPT.
+<P>
+The Microsoft 32-bit Windows Sockets interface (WSOCK32.DLL) also
+has a number of options not found in the v1.1 Windows Sockets
+specification. The SO_SNDTIMEO and SO_RCVTIMEO
+options are compatible with their counterparts in Berkeley Sockets.
+The SO_OPENTYPE option is new to the Win32 API, and deals
+with what Microsoft calls &quot;overlapped I/O.&quot; We describe
+these options in detail in the previous Chapter 15, &quot;Platforms.&quot;
+
+<P>
+[<A HREF="#Top">Go to Top</A>]
+<HR> 
+<H2><A NAME="SocketsAsFileHandles">Sockets as File Handles</A>
+</H2>
+<P>
+&quot;In Berkeley Sockets, sockets are represented by standard
+file descriptors. While nothing in the Windows Sockets API prevents
+an implementation from using regular file handles to identify
+sockets, nothing requires it either.&quot; In other words, you
+cannot assume that a socket is equivalent to a file handle.
+<P>
+In addition to causing the WinSock specification writers to rename
+the close() and ioctl() functions to closesocket()
+and ioctlsocket(), and avoiding support of fcntl(),
+read() and write(), the fact that file handles
+and sockets aren't required to be equivalent caused them to create
+the macros for access to the fdsets of the select() function.
+Related to the changes necessary in select() is that--unlike
+with file handles--you can never make any assumptions about the
+value of a socket handle.
+<P>
+We discuss this difference between sockets and file handles in
+detail in Chapter 13, &quot;Porting from BSD Sockets.&quot;
+<P>
+[<A HREF="#Top">Go to Top</A>]
+<HR> 
+<H2><A NAME="ExpectErrors">Expect Any Error Anywhere</A></H2>
+<P>
+&quot;Note that this specification defines a recommended set of
+error codes, and lists the possible errors which may be returned
+as a result of each function. It may be the case in some implementations
+that other Windows Sockets error codes will be returned in addition
+to those listed, and applications should be prepared to handle
+errors other than those enumerated under each API description.&quot;
+<P>
+In effect, this paragraph puts the onus of responsibility on applications.
+WinSock implementations aren't relieved of responsibility entirely,
+since they must return the listed errors for the listed conditions.
+This quote states that implementations can return any other WinSock
+errors they want under any conditions not listed by the specification.
+<P>
+Each additional error is an optional feature. These aren't bad
+things, since they provide additional information that can help
+you debug a problem when it arises. They should not require any
+extra coding, if your application is designed to handle errors
+properly. Unlike other optional features, you <I>must</I> be prepared
+to deal with these to assure maximum portability for your application.
+<P>
+[<A HREF="#Top">Go to Top</A>]
+<HR>
+<H2><A NAME="OtherOptions">Other Optional Features</A></H2>
+<P>
+The most significant other optional feature is support of protocol
+suites--or in Sockets parlance, &quot;domains&quot;--other than
+TCP/IP (the Internet domain). Most significantly, the WinSock
+DLL for Windows NT provides support for AppleTalk, Novell IPX/SPX.,
+ISO TP4 and NetBEUI. Version 2.0 of the Windows Sockets specification
+will likely endorse the NT APIs as the de facto standard for these
+protocol suites (see Chapter 15, &quot;Platforms&quot; for more
+information).
+<P>
+There are a number of other optional features throughout the v1.1
+WinSock API. Most of the remainder result from ambiguities. For
+example, as mentioned in Chapter 6, &quot;Socket States,&quot;
+the specification doesn't say you can't use select()
+with NULL fd_sets as a timer, but it doesn't say you can either.
+In this case, as with other similar cases, if the Windows Sockets
+specification doesn't specifically make as statement one way or
+the other, then you should assume the feature is not widely supported.
+<P>
+As we said earlier: you should use optional features when they're
+available, since they add value to the WinSock API. However, you
+should not design your applications to depend on them, since this
+will limit the number of WinSock implementations your application
+can use. Although with some optional features--like SOCK_RAW and
+multicast--you don't have much choice; the only way your application
+can work is if the WinSock implementation provides the optional
+feature support in the de facto standard fashion. 
+<P>
+[<A HREF="#Top">Go to Top</A>]
+</BODY>
+
+</HTML>

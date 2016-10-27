@@ -1,0 +1,875 @@
+<HTML>
+<HEAD>
+<TITLE>Network Programming with Windows Sockets</TITLE>
+</HEAD>
+
+<BODY>
+
+<H1><IMG SRC="winsock.gif" ALIGN="BOTTOM"> Appendix E: Information
+Sources</H1>
+
+<P>
+This is a hypertext version of Appendix E in the text _Windows
+Sockets Network Programming_, by Bob Quinn and Dave Shute.
+<UL>
+<LI><A HREF="#InetSources">Internet Sources</A> 
+<LI><A HREF="#Biblography">Bibliography</A> 
+</UL>
+
+<P>
+This appendix contains recommended information sources of all
+types. It's split into two sections: Internet sources and Bibliography.
+The Internet sources are newsgroups, mail lists, ftp sites, and
+World Wide Web pages. The bibliography contains magazine and journal
+articles, textbooks, frequently asked question (FAQ) listings,
+and Internet requests for comments (RFCs).<HR>
+
+<H2><A NAME="InetSources">Internet Sources</A></H2>
+
+<P>
+This section contains the &quot;dynamic&quot; information sources
+available on the Internet:
+<UL>
+<LI><A HREF="#FTPSites">FTP Sites</A> 
+<LI><A HREF="#ListServers">List Servers</A> 
+<LI><A HREF="#MailLists">Mail Lists</A> 
+<LI><A HREF="#NewsGroups">Newsgroups</A> 
+<LI><A HREF="#WebPages">Web Pages</A> 
+</UL>
+
+<P>
+There are many places where you can get pointers to new sources
+of information. The best way to find about them as they appear
+is by reading relevant newsgroups and mail lists. FAQs can point
+you to them after the fact, and many Internet books have pointers.
+<H3><A NAME="URLsAndURIs">URLs and URIs</A></H3>
+
+<P>
+To access various resources on the Internet, you need a destination
+host, the name of a resource, and an indication of what protocol
+to use to access the resource. Meet the universal resource locator
+(URL). URLs tell you where to go, what to see, and what to do.
+URLs are a subset of universal resource identifiers (URIs), and
+Tim Berners-Lee --the father of World Wide Web--describes both
+in a pair of draft RFCs available on www.cern.ch, the home of
+the World Wide Web. Here we paraphrase from those documents:
+<UL>
+<LI><I>URI</I>: encodes the names and addresses of objects on
+the Internet. They encapsulate a name in any registered namespace,
+and label it with the namespace, to produce a member of the universal
+set of objects.
+<LI><I>URL</I>: encodes the physical addresses of objects that
+are retrievable using application protocols already deployed on
+the Internet. It is a form of URI that expresses an address that
+maps onto a specific access algorithm.
+</UL>
+
+<P>
+You won't typically use URIs, but you will often use URLs. Here's
+a simple high-level description of the <B>URL syntax</B>. The
+draft RFC details the complete syntax in Bakus-Naur form, but
+here is a simpler description of the URL form in common notation
+(<B>{}</B> surround required parameters, <B>[]</B> surround optional
+parameters, and other characters are mandatory seperators).
+<P>
+<B>{service}://{host}[:port]/[path/.../][file name]</B> 
+<UL>
+<LI><I>service </I>(required field): The service is a standard
+service name that indicates the protocol to use; Berners-Lee calls
+them &quot;URL schemes.&quot; The standard URL syntax currently
+recognizes file, ftp, gopher, and http (Note: &quot;file&quot;
+requires local disk access, rather than a network access).
+<LI><I>host</I> (required field): The host is the host name or
+IP address of the network destination on which to access the service
+<LI><I>port</I> (optional field): The port number is not frequently
+used, but may be specified if the service is available on a non-standard
+port number.
+<LI><I>path</I> (optional field): This specifies the path name
+to the destination directory on the target host. Note: A path
+without a file after it, always ends with a forward slash character
+(&quot;/&quot;).
+</UL>
+
+<P>
+We use URLs throughout the remainder of this appendix to denote
+resource locations, where appropriate.<HR>
+
+<H3><A NAME="FTPSites">FTP Sites</A></H3>
+
+<P>
+The File Transfer Protocol (FTP) provides the most fundemental
+means of transferring files on the Internet. Here is a list of
+WinSock-related or networking-related sites you may find helpful.
+Almost all network software vendors maintain FTP sites, although
+we don't list them here. These sites are worth exploring since
+they sometimes have interesting files you would otherwise not
+know about.
+<DL>
+<DT><A HREF="ftp://ftp.sockets.com">ftp://ftp.sockets.com</A>
+<BR>
+
+<DD>FTP site for this book. All source code, errata, and other
+new information about this book are available. Additional WinSock
+information is also available.
+<DT><A HREF="ftp://ftp.stardust.com">ftp://ftp.stardust.com/pub/winsock</A>
+<BR>
+
+<DD>This site hosts many WinSock files including documentation,
+public domain and shareware applications and description of theWinSock
+application development consulting and educational services they
+offer.
+<DT><A HREF="ftp://ftp.cica.indiana.edu">ftp://ftp.cica.indiana.edu/pub/pc/win3/winsock </A>(United
+States)<BR>
+
+<DT><A HREF="ftp://wuarchive.wustl.edu">ftp://wuarchive.wustl.edu/systems/ibmpc/simtel/win3/winsock</A>
+<BR>
+
+<DT><A HREF="ftp://sunsite.unc.edu">ftp://sunsite.unc.edu/pub/micro/pc-stuff/ms-windows/winsock</A>
+<BR>
+
+<DT><A HREF="ftp://ftp.tu-clausthal.de">ftp://ftp.tu-clausthal.de/pub/windows/winsock/ </A>(Germany)
+<BR>
+
+<DT><A HREF="ftp://ftp.sunet.se">ftp://ftp.sunet.se/pub/pc/windows </A>(Sweden)
+<BR>
+
+<DT><A HREF="ftp://info.nic.surfnet.nl">ftp://info.nic.surfnet.nl/mirror-archives/software/winsock </A>(The
+Netherlands)<BR>
+
+<DT><A HREF="ftp://ftp.monash.edu.au">ftp://ftp.monash.edu.au/pub/win3/winsock </A>(Australia)
+<BR>
+
+<DT><A HREF="ftp://ftp.hk.super.net">ftp://ftp.hk.super.net/pub/windows </A>(Hong
+Kong)<BR>
+
+<DT><A HREF="ftp://ftp.iij.ad.jp">ftp://ftp.iij.ad.jp/pub/win3/winsock </A>(Japan)
+<BR>
+
+<DT><A HREF="ftp://ftp.demon.co.uk">ftp://ftp.demon.co.uk/pub/ibmpc/winsock </A>(United
+Kingdom)<BR>
+
+<DD>These are some of the best sites from which to get public
+domain and shareware Windows Socket applications, including development
+and debugging tools. A few of the public domain applications have
+source code available.
+<DT><A HREF="ftp://rtfm.mit.edu">ftp://rtfm.mit.edu</A><BR>
+
+<DD>This site has a complete database of USENET FAQs, with a useful
+text search tool to find exactly the FAQ you need (see the &quot;FAQs&quot;
+section in this appendix for more information).
+<DT><A HREF="ftp://ftp.rahul.net">ftp://ftp.rahul.net/pub/mitch/YABL</A>
+<BR>
+
+<DD>This site contains an annotated bibliography of C and UNIX
+books.
+<DT><A HREF="ftp://cs.washington.edu">ftp://cs.washington.edu/~ftp/pub/cstyle.tar.Z</A>
+<BR>
+
+<DT><A HREF="ftp://toronto.edu">ftp://toronto.edu/doc/programming</A>
+<BR>
+
+<DT><A HREF="ftp://ftp.cs.umd.edu">ftp://ftp.cs.umd.edu</A><BR>
+
+<DD>Indian Hill Style Guide, and other useful C-programming documents
+can be found here.
+<DT><A HREF="ftp://ftp.csd.uwm.edu">ftp://ftp.csd.uwm.edu/pub/inet.services.txt</A>
+<BR>
+
+<DD>Scott Yanoff's great list of Internet services pointers resides
+here; although it is not WinSock specific, it is a great resource
+for Internet newcomers.
+<DT><A HREF="ftp://ftp.isi.edu">ftp://ftp.isi.edu/in_notes/iana/assignments</A>
+<BR>
+
+<DD>This site has the latest from the Internet Assigned Numbers
+Authority (IANA), like standard port numbers, and multicast addresses.
+IANA regularly updates the &quot;Assigned Numbers&quot; RFC.
+<DT><A HREF="ftp://ds.internic.net">ftp://ds.internic.net</A>
+<BR>
+
+<DD>This is the Internet Network Information Center, the primary
+repository for RFCs.
+<DT><A HREF="ftp://ftp.trumpet.com.au">ftp://ftp.trumpet.com.au</A>
+<BR>
+
+<DT><A HREF="ftp://ftp.utas.edu.au">ftp://ftp.utas.edu.au/pc/trumpet/winsock</A>
+<BR>
+
+<DD>These are Peter Tattam's home sites for his shareware Trumpet
+WinSock implementation and applications.
+<DT><A HREF="ftp://ftp.uu.net">ftp://ftp.uu.net</A><BR>
+
+<DD>/networking/bsd-net2: Berkeley Software Distribution (BSD)
+source code<BR>
+
+<DT>
+<DD>/usenet/news.answers: FAQs from USENET newsgroups<BR>
+/published/books : Addison-Wesley has source code from published
+books
+<DT><A HREF="ftp://gatekeeper.dec.com">ftp://gatekeeper.dec.com</A>
+<BR>
+
+<DD>You can find all dinds of useful stuff here, like RFCs and
+BSD source code. This site has a good keyword search utility that
+helps locate what you need.
+<DT><A HREF="ftp://sunsite.unc.eduk">ftp://sunsite.unc.edu/pub/micro/pc-stuff/ms-windows/winsock</A>
+<BR>
+
+<DD>This is the official site for the WinSock FAQ, but it also
+has copies of the specification, requisite development files,
+and applications.
+</DL>
+<HR>
+
+<H3><A NAME="ListServers">List Servers</A></H3>
+
+<P>
+Some e-mail locations have list servers that automatically send
+requested information. To send a request, you specify your query
+in the &quot;Subject:&quot; field in the message header, or in
+the main body of your message, or in a combination of both. Different
+list servers and queries require different formats. We describe
+the format with each entry below.
+<P>
+<B>info@lcs.com</B>: subject: &quot;faq&quot; for Windows Sockets
+application FAQ
+<P>
+<B>resolve@cs.widener.edu</B> or <B>dns@grasp.insa-lyon.fr</B>:
+subject: &quot;help&quot;, message body: &quot;site <I>domain
+name or address</I>&quot;; it mails back the domain name information
+(i.e. it provides DNS name resolution via e-mail)
+<P>
+<B>mail-server@nisc.sri.com</B>: nothing in the subject field;
+message body: &quot;send rfcnnnn.txt&quot; to have an RFC text
+file sent to you<HR>
+
+<H3><A NAME="MailLists">Mail Lists</A></H3>
+
+<P>
+Here are a few mail lists to which you can subscribe. Be sure
+to note how to get off the list in case you get tired of the eemail
+traffic.
+<P>
+<B>winnews</B>: Microsoft WinNews Electronic newsletter, created
+by Microsoft's Personal Operating System's Division (POSD) to
+include the latest announcement and resource pointers for MS Windows.
+Currently this is read-only for announcements. To subscribe, mail
+to enews@microsoft.nwnet.com with &quot;subscribe winnews&quot;
+in the message body.
+<P>
+<B>winsock-hackers</B>: Not heavily trafficked, but the best place
+to expose your WinSock development question to many of the WinSock
+heavies. It is well read by most of the WinSock implementors,
+so this is the place where many WinSock specification ambiguities
+are discussed. Subscribe by mailing to listserv@sunsite.unc.edu
+with a subject and body of &quot;subscribe winsock-hackers.&quot;
+<P>
+<B>winsock-l</B>: Good place for WinSock application users, also
+for developers but not many development issues are discussed.
+Not as heavily trafficked as the alt.winsock newsgroup, but useful.
+To join, mail to list-admin@papa.indstate.edu with nothing in
+Subject:, and &quot;subscribe winsock-l&quot; as the (only) textual
+body of the message. List members have access to WinSock applications
+at ftp://papa.indstate.edu/winsock-l, which is regularly updated.
+<HR>
+
+<H3><A NAME="NewsGroups">Newsgroups</A></H3>
+
+<P>
+USENET newsgroup access is available from any Internet service
+provider. There are interest groups for everything under the sun
+including a lot of network-programming related traffic. The rules
+of courtesy dictate that you should always refer to the &quot;frequently
+asked questions&quot; for answers before you post a question (see
+FAQs section in this appendix for more information).
+<P>
+<B>alt.winsock</B>: deals with everything related to Windows Sockets.
+There are occasional messages dealing with programming, but it
+tends to stay crowded with messages about the shareware WinSock
+implementations and the latest WinSock applications (problems
+or praises).
+<P>
+<B>alt.winsock.programming</B>: a good place to ask questions,
+or simply lurk watching for information. There's a manageable
+amount of traffic here.
+<P>
+<B>comp.os.ms-windows.networking.tcp-ip</B>: This is a bit redundant
+of alt.winsock, but without the volume of message traffic.
+<P>
+<B>comp.os.ms-windows.networking.windows</B>: Many people send
+the same WinSock-related messages here as well as to alt.winsock
+and tcp-ip.
+<P>
+<B>comp.os.ms-windows.programmer.win32</B>: This deals with generic
+Win32 programming questions, but there are some specific to WSOCK32
+and others dealing with UNIX-to-Win32 porting issues.<HR>
+
+<H3><A NAME="WebPages">Web Pages</A></H3>
+
+<P>
+World Wide Web traffic has surpassed FTP traffic on the Internet.
+The web is everywhere, and growing daily. There are countless
+useful sites for WinSock-related information, although only a
+few specialize in WinSock programming. Many of the FTP sites listed
+in the FTP section of this appendix also have web pages. There
+are many search engines for finding information anywhere on the
+Internet. Here are some pointers you may find helpful.
+<DL>
+<DT><A HREF="http://www.sockets.com/">http://www.sockets.com/</A>
+<BR>
+
+<DD>The home site for this book. All source code, errata, and
+other new information about this book are available. Lots of additional
+WinSock information is also available.
+<DT><A HREF="http://www.stardust.com/">http://www.stardust.com/</A>
+<BR>
+
+<DD>This is home site for Stardust Technologies WinSock Resource
+Center, which maintians a comprehensive repository of WinSock
+development information including documentation, articles, software,
+sample code and more for WinSock Versions 1.1 and 2.
+<DT><A HREF="http:// www.yahoo.com/">http:// www.yahoo.com/</A>
+<BR>
+
+<DD>This web hub has a database of links to many useful web sites,
+including other web search engines. It's a user-friendly and effective
+way to find web sites with answers to your WinSock, networking,
+and protocol standards questions.
+<DT><A HREF="http://sunsite.unc.edu/pub/micro/pc-stuff/ms-windows/winsock/index.html">http://sunsite.unc.edu/pub/micro/pc-stuff/ms-windows/winsock/index.html </A>
+<BR>
+
+<DD>This is the official Windows Sockets Web page.
+<DT><A HREF="http://bongo.cc.utexas.edu/~neuroses/cwsapps.html">http://bongo.cc.utexas.edu/~neuroses/cwsapps.html</A>
+<BR>
+
+<DT><A HREF="http://homepage.eznet.net/~rwilloug/ewa.html">http://homepage.eznet.net/~rwilloug/ewa.html</A>
+<BR>
+
+<DD>Here you'll find &quot;The Consummate WinSock Applications
+List,&quot; which lists Forest Stroud's annotated list of popular
+shareware and public domain WinSock applications..
+<DT><A HREF="http://www.lcs.com">http://www.lcs.com</A><BR>
+
+<DT><A HREF="http://www.primenet.com/~larsenc/">http://www.primenet.com/~larsenc/</A>
+<BR>
+
+<DD>This site has a WinSock programming and application FAQ.
+<DT><A HREF="http://webcrawler.cs.washington.edu/WebCrawler/WebQuery.html">http://webcrawler.cs.washington.edu/WebCrawler/WebQuery.html</A>
+<BR>
+
+<DD>This has hundreds of thousands of web documents indexed for
+keyword searches.
+<DT><A HREF="http://www-atp.llnl.gov/atp/standards.html">http://www-atp.llnl.gov/atp/standards.html</A>
+<BR>
+This is an excellent jump point when looking for any standards
+documents of any kind, but those dealing with network-related
+standards in particular.
+<DT><A HREF="http://ds.internic.net">http://ds.internic.net</A>
+<BR>
+
+<DD>The Internet Network Information Center (NIC) is the primary
+repository of RFCs, as well as other helpful information (like
+a comprehensive list of Internet Service Providers).
+<DT><A HREF="http://www.cs.colorado.edu/home/mcbryan/WWW.html">http://www.cs.colorado.edu/home/mcbryan/WWW.html</A>
+<BR>
+
+<DD>The World Wide Web Worm is another helpful web search system.
+<DT><A HREF="http://www.eit.com/techinfo/mbone/references.html">http://www.eit.com/techinfo/mbone/references.html</A>
+<BR>
+
+<DT><A HREF="http://www.research.att.com/mbone_faq.html">http://www.research.att.com/mbone_faq.html</A>
+<BR>
+
+<DD>Internet multicast backbone (MBONE) references
+<DT><A HREF="http://www.eecs.nwu.edu/unix.html">http://www.eecs.nwu.edu/unix.html</A>
+<BR>
+
+<DD>This site provides a &quot;reference desk&quot; for UNIX.
+<DT><A HREF="http://www.NeoSoft.com:80/internet/paml">http://www.NeoSoft.com:80/internet/paml</A>
+<BR>
+
+<DD>Here is a list of publicly accessible mailing lists.
+<DT><A HREF="http://www.uwm.edu/Mirror/inet.services.html">http://www.uwm.edu/Mirror/inet.services.html</A>
+<BR>
+
+<DD>This site has a great list of Internet services pointers;
+they are not WinSock specific, but they're helpful for Internet
+newcomers.
+</DL>
+<HR>
+
+<H2><A NAME="Biblography">Bibliography</A></H2>
+
+<P>
+This section contains the &quot;static&quot; information sources:
+<UL>
+<LI><A HREF="#RFCs">RFCs</A> 
+<LI><A HREF="#FAQs">FAQs</A> 
+<LI><A HREF="#MagsAndJournals">Magazine and Journal Articles</A>
+
+<LI><A HREF="#TextBooks">Textbooks</A> 
+</UL>
+<HR>
+
+<H3><A NAME="RFCs">RFCs</A></H3>
+
+<P>
+Requests for Comments (RFCs) are the official specifications for
+Internet standards, surprisingly enough. They started out informally,
+but the Internet the IAB (Internet Activities Board) and IETF
+(Internet Engineering Task Force) now have a well-established
+standards review process for RFCs. The central site for RFCs is
+<B>ds.internic.net</B> (<A HREF="ftp://ds.internic.net">ftp://ds.internic.net </A>or
+<A HREF="http://ds.internic.net">http://ds.internic.net</A>),
+though RFCs are widely available. Many of these RFCs get updated
+regularly. You can check the latest RFC index for the current
+version.
+<DL>
+<DT>Berners-Lee, Tim. draft-bernerslee-www-uri-00, &quot;Universal
+Resource Identifiers in WWW,&quot; March 12, 1994, and draft-ietf-uri-uri-03,
+&quot;Uniform Resource Locators,&quot; March 21, 1994. <BR>
+
+<DD>These describe URIs and URLs (see earlier section in this
+appendix) used to address World Wide Web pages (for WWW-browsers
+like NetScape and Mosaic).
+<DT>Braden, R., Borman, D., and Partridge, C. &quot;Computing
+the Internet Checksum,&quot; Sept. 1988<BR>
+
+<DD>This summarizes techniques and algorithms for efficiently
+computing the Internet checksum used in IP, TCP, UDP, and ICMP
+headers.
+<DT>Cohen, David. IEN 137, &quot;On Holy Wars and a Plea for Peace,&quot;
+1 April 1980<BR>
+
+<DD>As the date implies, this is a funny IEN (&quot;Internet Experiment
+Notes,&quot; which were the precursors to RFCs), but it's also
+very informative. It gives the derivation of the terms &quot;big
+endian&quot; and &quot;little endian,&quot; which are based on
+Jonathan Swift's Lilliputians and Blefuscians. They had a holy
+war about which end of the egg to break, analogous to the holy
+war about whether to transmit MSB or LSB first.
+<DT>Deering, Steve. RFC 1112, &quot;Host Extensions for IP Multicasting,&quot;
+Aug. 1989, <BR>
+
+<DD>Describes the TCP/IP protocol stack extensions required of
+a host to support multicasting and provides mechanics of the Internet
+Group Management Protocol (IGMP) used for multicasting.
+<DT>Deering, Steve. RFC 1256, &quot;ICMP Router Discovery Messages,&quot;
+Sept. 1991<BR>
+
+<DD>Describes the ICMP router discovery mechanism (router solicitation
+and router advertisements).
+<DT>Stine, Robert H. RFC 1175, &quot;FYI on Network Management
+Tool Catalog: Tools for Montoring and Debugging TCP/IP Internets
+and Interconnected Devices,&quot; 1990. <BR>
+
+<DD>The title says it all. Although dated 1990, it is still relevant.
+<DT>Mockapetris, P.<BR>
+
+<DD>RFC 1034, &quot;Domain Names - Concepts and Facilities,&quot;
+Nov. 1987, is an introduction to DNS.<BR>
+
+<DT>
+<DD>RFC 1035, &quot;Domain Names - Implementation and Specification,&quot;
+Nov. 1987, describes the details of the domain name system and
+protocol.
+<DT>Plummer, David C. RFC 826, &quot;An Ethernet Address Resolution
+Protocol,&quot; Nov. 1982
+<DD>Describes ARP over Ethernet. It contains this great quote:
+&quot;The world is a jungle in general, and the networking game
+contributes many animals.&quot;
+<DT>Postel, Jonathan B.<BR>
+
+<DD>RFC 768, &quot;User Datagram Protocol,&quot; Aug. 1980, describes
+UDP.<BR>
+
+<DT>
+<DD>RFC 791, &quot;Internet Protocol,&quot; Sept. 1981, describes
+IP.<BR>
+
+<DT>
+<DD>RFC 792, &quot;Internet Control Message Protocol,&quot; Sept.
+1981, describes ICMP.<BR>
+
+<DT>
+<DD>RFC 793, &quot;Transmission Control Protocol,&quot; Sept '81,
+describes TCP.<BR>
+
+<DT>
+<DD>RFC 821, &quot;Simple Mail Transfer Protocol,&quot; Aug. 1982,
+describes SMTP.<BR>
+
+<DT>
+<DD>RFC 862, &quot;Echo Protocol,&quot; May 1983, describes TCP
+and UDP echo service.<BR>
+
+<DT>
+<DD>RFC 863, &quot;Discard Protocol,&quot; May 1983, describes
+TCP and UDP discard service.<BR>
+
+<DT>
+<DD>RFC 864, &quot;Character Generator Protocol,&quot; May 1983,
+TCP and UDP chargen.
+<DT>Postel, J.B. and Reynolds, J.K.<BR>
+
+<DD>RFC 854, &quot;Telnet Protocol Specification,&quot; May 1983,
+describes basic telnet<BR>
+
+<DT>
+<DD>RFC 959, &quot;File Transfer Protocol (FTP),&quot; Oct. 1985,
+describes FTP
+<DT>Reynolds, J.K. and Postel, J.B. RFC 1700, &quot;Assigned Numbers,&quot;
+Oct. 1994<BR>
+
+<DD>Describes network byte ordering (big endian) and lists all
+standard numbers on the Internet: protocols, well-known ports,
+multicast addresses, Sun RPC numbers, and so forth.
+<DT>Romao, Artur, RFC 1713, &quot;Tools for DNS Debugging,&quot;
+Nov. 1994<BR>
+
+<DD>This is an informational RFC that catalogs and describes tools
+for detection and correction of anomalies in a DNS configuration
+(describes host, dnswalk, lamers, DOC, DDT, and BIND checker code).
+
+</DL>
+<HR>
+
+<H3><A NAME="FAQs">FAQs</A></H3>
+
+<P>
+Frequently Asked Questions (FAQs) answer common questions. Each
+USENET newsgroup usually has at least one FAQ. There are a few
+sites for USENET FAQs, but two of the best are <A HREF="ftp://ftp.uu.net">ftp://ftp.uu.net/usenet/news.answers </A>and
+<A HREF="ftp://rtfm.mit.edu">ftp://rtfm.mit.edu</A>. Whenever
+you start reading a newsgroup and a question occurs to you, you
+should check the FAQ for an answer before asking. They are not
+called &quot;frequently asked questions&quot; for nothing.
+<DL>
+<DT>Adobe, Bernard &lt;adoba@netcom.com&gt;, &quot;Frequently
+Asked Questions (and answers) about TCP/IP on PC-Compatible Computers&quot;
+<BR>
+
+<DD><A HREF="ftp://ftp.netcom.com">ftp://ftp.netcom.com/pub/mailcom/IBMTCP/ibmtcp.zip</A>,
+<DT>
+<DD><A HREF="http://www.zilker.net/users/internaut/update.html">http://www.zilker.net/users/internaut/update.html</A>
+
+<DT>Kriz, Harry M. &lt;hmkriz@vt.edu&gt;, &quot;Windows and TCP/IP
+for Internet Access&quot;<BR>
+
+<DD><A HREF="ftp://nebula.lib.vt.edu">ftp://nebula.lib.vt.edu/pub/windows/winsock/wtcpip0?.asc </A>('?'
+varies by version), <A HREF="http://learning.lib.vt.edu/wintcpip/wintcpip.html">http://learning.lib.vt.edu/wintcpip/wintcpip.html</A>,
+(also see: http://learning.lib.vt.edu/authors/hmkriz.html)
+<DT>Larsen, C. &lt;larsenc@lcs.com&gt;, &quot;WinSock Application
+FAQ,&quot; <BR>
+
+<DD>Very comprehensive. Available by mailing to info@lcs.com,
+Subject: faq.
+<DT>Sinkovits, Ed &lt;edsink@mbnet.mb.ca&gt; or Compuserve: 73003,3065,
+&quot;Winsock Client Software Packages,&quot; <BR>
+
+<DD>Very comprehensive. Available on CICA and mirror sites:<BR>
+ftp://ftp.cica.indiana.edu/pub/pc/win3/winsock/winter0?.zip ('?'
+varies by version)
+<DT>Summit, Steve &lt;scs@eskimo.com&gt;, &quot;C-faq&quot;<BR>
+
+<DD>A syntax and semantics discussion that covers things like
+null pointers, arrays, pointers, C-style, and use of the lint
+utility.
+<DT>Towfiq, Mark &lt;towfiq@suneast.east.sun.com&gt;, &quot;Official
+WinSock FAQ,&quot;<BR>
+
+<DD><A HREF="ftp://sunsite.unc.edu">ftp://sunsite.unc.edu/pub/micro/pc-stuff/ms-windows/winsock/FAQ </A>
+</DL>
+<HR>
+
+<H3><A NAME="MagsAndJournals">Magazine and Journal Articles</A>
+</H3>
+
+<P>
+The articles collected here are from various magazines, with a
+number of them from the Microsoft Developers' Network CD (MSDN
+CD). This subscription service available from Microsoft provides
+you with a new CD-ROM quarterly that contains articles from <I>Microsoft
+Systems Journal</I>, some Microsoft Press texts (like Petzold),
+Technical Education seminars, white papers, specifications, and
+so forth, and any sample source code that accompany these. It
+is a gold mine with an easy-to-use, effective, and fast search
+utility, and is definitely recommended.
+<DL>
+<DT>Adams, Timothy, &quot;<I>Intercepting DLL Function Calls</I>,&quot;
+<BR>
+
+<DD><I>Windows/DOS Developer's Journal</I>, June 1992<BR>
+Describes how to write a utility that intercepts calls from any
+application to any DLL. It could be used as a model for a generic
+WinSock application debugging utility like TracePlus or WinScope
+(as described in Chapter 13, &quot;Debugging&quot;)..
+<DT>Allard, J. (Kieth Moore and David Treadwell). &quot;<I>Plug
+into Serious Network Programming with the Windows Sockets API</I>,&quot;
+<BR>
+<A HREF="http://www.mfi.com/msj/msjtop.html">Microsoft Systems Journal</A><U><I>,
+July 1993  This is an introductory description of the Windows
+Sockets API, which includes a sample asynchronous application
+called WORMHOLE (source code is available from ftp://ftp.microsoft.com
+and on <A HREF="http://www.microsoft.com/pages/developer/msdn">Microsoft Developer Network </A>CD-ROM).</I></U>
+<DT>Chan, Chuck (Margaret K. Johnson, Keith Moore, and David Treadwell),
+&quot;<I>Write an NT WinSock Service</I>,&quot; <BR>
+
+<DD><I>Byte Magazine</I>, Dec. 1994  Describes how to take advantage
+of Windows NT features to write a secure server in a design akin
+to a UNIX daemon (i.e., the operating system spawns the service
+process when it receives a connection request). Although somewhat
+high level, it has many useful pointers.
+<DT>Collyer, Geoff (and Henry Spencer). &quot;<I>News Need Not
+Be Slow</I>,&quot; <BR>
+
+<DD>This is a short and sweet collection of sensible rules of
+thumb for optimizing any application. It uses the optimization
+of the BSD USENET news server application as a practical example
+of what can be accomplished. It says things like &quot;prepare
+for the worst, but optimize for the typical case,&quot; and &quot;buying
+in bulk is often cheaper ...the law of diminishing returns does
+apply to buying in bulk.&quot; Highly recommended.
+<DT>Dolenc, A. (A. Lemmke, D. Keppel, G. V. Reilly). &quot;<I>Notes
+on Writing Portable Programs in C</I>,&quot;<BR>
+
+<DD>Describes the behavior of different C-preprocessors, compilers
+and environments, with some references to ANSI C.
+<DT>Dreyer, Lori (John Miller and Al Dunn). &quot;<I>Porting a
+UNIX/XWindows Application to Windows using Win32s</I>,&quot; 
+<BR>
+USENET comp.os.ms-windows.programmer.win32, September 12, 1994
+  This is a telling saga of the pain suffered during a comprehensive
+code port that illuminates some fundamental programming differences
+between the UNIX and Windows worlds. It deals mostly with non-Sockets
+issues.
+<DT>Edson, Dave. &quot;<I>Dave's Top Ten List of Tricks, Hints,
+and Techniques for Programming in Windows</I>,&quot; <BR>
+
+<DD><A HREF="http://www.mfi.com/msj/msjtop.html">Microsoft Systems Journal</A>,Oct..1992
+ Includes suggestions for Windows application development that
+are still valid and helpful.
+<DT>Finnegan, James. &quot;<I>Hook and Monitor Any 16-bit Windows
+Function with our ProcHook DLL</I>,&quot; <BR>
+
+<DD><A HREF="http://www.mfi.com/msj/msjtop.html">Microsoft Systems Journal</A>,
+Jan. 1994 Shows you how to write your own WinSock DLL debugging
+tool that will show all the function calls any WinSock application
+makes to any WinSock implementation. WinScope and TracePlus use
+similar techniques, as described in Chapter 13, &quot;Debugging.&quot;
+<DT>Jablon, David P. &quot;<I>Windows Sockets</I>,&quot; <BR>
+
+<DD><A HREF="http://www.netline.com/unixrev/unixrev.main.html">UNIX Review</A>,
+Oct. 1994. This is a good &quot;heads up&quot; for anyone familiar
+with BSD Sockets (in the UNIX environment) and new to Windows
+Sockets. It lists many of the issues we cover in Chapter 12, &quot;Porting
+Applications from BSD Sockets.&quot;
+<DT>Long, David. &quot;<I>Designing DLLs for Multiple Client Applications,
+Part 1: Strategy</I>&quot; and &quot;Part 2: Implementation,&quot;
+<BR>
+
+<DD>April 21, 1993, Technical Articles: Kernels and Drivers for
+Windows (16-bit) on <A HREF="http://www.microsoft.com/pages/developer/msdn">Microsoft Developer Network </A>CD-ROM.
+<DT>Long, David (and Dan Ruder), &quot;<I>Mechanics of Dynamic
+Linking</I>,&quot;<BR>
+
+<DD>Jan. 1993, <A HREF="http://www.microsoft.com/pages/developer/msdn">Microsoft Developer Network </A>CD-ROM.
+ Provides a good explanation of how the mechanism that makes WinSock's
+binary computability is possible.
+<DT>Microsoft. &quot;<I>Windows Sockets Transport Independence
+for Windows NT</I>,&quot; <BR>
+
+<DD>from <A HREF="http://www.mfi.com/msj/msjtop.html">Microsoft Developer Network </A>CD-ROM.
+ Explains how to use Windows NT's &quot;Transport Device Interface,&quot;
+generically known as the Service Provider Interface (SPI) in WOSA.
+This mechanism is the basis for WinSock 2's multiple protocol,
+although details have changed (for the better).
+<DT>Microsoft. &quot;<I>WOSA Backgrounder: Delivering Enterprise
+Services to the Windows-based Desktop</I>,&quot; <BR>
+
+<DD>Created July 1993, from <A HREF="http://www.microsoft.com/pages/developer/msdn">Microsoft Developer Network </A>CD-ROM.
+<DT>Schulzrinne, Henning, &quot;<I>Voice Communication Across
+the Internet: A Network Voice Terminal</I>,&quot; <BR>
+
+<DD>Describes the UNIX-based &quot;network voice terminal&quot;
+he calls nevot and thoroughly explores the issues involved in
+voice transmission in particular, and real-time data transmission
+in general.
+<DT>Sparling, Chip. &quot;<I>Plugging into TCP/IP with Windows
+Sockets</I>,&quot; <BR>
+
+<DD><I>Data Communications</I>, Oct. 1993<BR>
+Provides an introduction to Windows Sockets API with comparisons
+to existing de facto standard APIs.
+<DT>Spencer, Henry (David Keppel, Mark Brader). &quot;<I>Recommended
+C Style and Coding Standards</I>.&quot; <BR>
+
+<DD>The scope is coding style, not functional organization. Available
+with other C-related articles from: <A HREF="ftp://cs.washington.edu">ftp://cs.washington.edu/~ftp/pub/cstyle.tar.Z</A>,
+<A HREF="ftp://cs.toronto.edu">ftp://cs.toronto.edu/doc/programming</A>,
+<A HREF="ftp://ftp.cs.umd.edu">ftp://ftp.cs.umd.edu/pub/style-guide</A>
+
+<DT>Treadwell, David, &quot;<I>Developing Transport-Independent
+Applications Using the Windows Sockets Interface</I>,&quot; <BR>
+
+<DD>Tech Ed 1994 Windows NT, Microsoft Development Library, from
+<A HREF="http://www.microsoft.com/pages/developer/msdn">Microsoft Developer Network </A>CD-ROM.
+ Introduces programming with WinSock, with some emphasis on NT,
+its multiple transport support, and how to use it.
+</DL>
+<HR>
+
+<H3><A NAME="TextBooks">Textbooks</A></H3>
+
+<DL>
+<DT>Brown, Ralf (and Jim Kyle). <U><I>Network Interrupts: A Programmer's
+Reference to Network APIs</I></U></DT><BR>
+<DD><A HREF="http://www.aw.com">Addison-Wesley</A>, Reading, MA,
+1994, ISBN: 0-201-62664-6  This is a conglomerate of quick references for just about every network API in existence (including WinSock and BSD 4.x Sockets).  The Windows Sockets API has obsoleted many, but it's a convenient, all-in-one reference for the driver APIs (ODI, NDIS, and Packet Driver).</DD>
+<P>
+<DT>Carl-Mitchell, Smoot (and John S. Quarterman), <U><I>Practical
+Internetworking with TCP/IP and UNIX</I></U></DT><BR>
+<DD><A HREF="http://www.aw.com">Addison-Wesley</A>, Reading, MA,
+1993, ISBN: 0-201-58629-0  This contians practical descriptions
+of all aspects of TCP/IP in UNIX systems, with discussion of MAC
+and PC integration. It's a great quick reference that answers
+many questions, or at least gets you pointed in a direction so
+you can answer it yourself.</DD>
+<P>
+<DT>Cole, Gerald D. <U><I>Computer Networking for Systems Programmers</I></U></DT><BR>
+<DD>John Wiley and Sons, New York, NY, 1990, ISBN: 0-471-51057-2.  A comprehensive survey of networking layers and protocols, it makes a good &quot;quick reference&quot; book: very readable but not in-depth. </DD>
+<P>
+<DT>Comer, Douglas. <U><I>Internetworking with TCP/IP Volume I</I></U></DT><BR>
+<DD><A HREF="http://www.prenhall.com">Prentice-Hall</A>, Englewood
+Cliffs, NJ, 1991, ISBN: 0-13-468505-9  This beginner's-level introduction (undergraduate text book) to the structure of the TCP/IP protocol suite makes the transition to advanced texts like RFCs, Stevens Volume I, or Stallings Volume III relatively painless. </DD>
+<P>
+<DT>Dumas, Arthur. <U><I>Programming WinSock</I></U></DT><BR>
+<DD>Sams Publishing, Indianapolis, IN, 1995, ISBN: 0-672-30594-1
+This provides a good tutorial for using WinSock with C++; it doesn't
+cover many of the intracacies of WinSock, but includes source
+code that illustrates many of the basics.</DD>
+<P>
+<DT>Estrada, Susan. <U><I>Connecting to the Internet</I></U></DT><BR>
+<DD><A HREF="http://www.ora.com">O'Reilly &amp; Associates</A>,
+Sebastopol, CA, 1993, ISBN: 1-56592-061-9  An excellent introduction to Internet service providers, and what
+you need to know to get connected. This book gives a quick overview
+of what's available on the Internet, and lots of information about
+the different types of Internet access available. It is best at
+providing practical advice about how to choose what's best for
+you or your business.</DD>
+<P>
+<DT>Hunt, Craig. <U><I>TCP/IP Network Administration</I></U></DT><BR>
+<DD><A HREF="http://www.ora.com">O'Reilly &amp; Associates</A>,
+Sebastopol, CA, 1992, ISBN: 0-937175-82-X  This is battle armor for anyone in the trenches. It is detailed,
+yet readable, like anything edited by Mike Loukides.</DD>
+<P>
+<DT>Krol, Ed. <U><I>The Whole Internet: User's Guide &amp; Catalog</I></U></DT><BR>
+<DD><A HREF="http://www.ora.com">O'Reilly &amp; Associates</A>,
+Sebastopol, CA, 1992, ISBN: 1-56592-025-2  There are alot of Internet guide books available these days, but
+this is still one of the best. This isn't surprising, since Ed
+wrote the original Internet guide in 1989 (RFC 1118, &quot;Hitchhiker's
+Guide to the Internet&quot;).</DD>
+<P>
+<DT>Myers, Brian (and Eric Hamer). <U><I>Mastering Windows NT Programming</I></U></DT><BR>
+<DD>Sybex, Alameda, CA, 1993, ISBN: 0-7821-1264-1  This is a comprehensive, detailed, and readable programming guide
+and reference for Windows NT. Similar to Petzold's for Windows 3.1.</DD>
+<P>
+<DT>Petzold, Charles <U><I>Programming Windows 3.1, (3rd edition)</I></U></DT><BR>
+<DD><A HREF="gopher://infx.info.com:5700/">Microsoft Press</A>,
+Redmond, WA, 1992, ISBN: 1-55615-395-3
+The definitive Windows 3.1 programming guide and reference, this
+text contains lots of sample code (includes disk).</DD>
+<P>
+<DT>Pietrek, Matt. <U><I>Windows Internals</I></U></DT><BR>
+<DD><A HREF="http://www.aw.com">Addison-Wesley</A>, Reading, MA,
+1993 ISBN: 0-201-62217-3
+This is a companion to Undocumented Windows that exposes components
+in the black box that is Windows. It helps you to understand what
+you should and shouldn't do in your 16-bit Windows applications
+(and why). Also, it can provide guidance when you need some hint
+as to which way a bug scurried.</DD>
+<P>
+<DT>Raymond, Eric. <U><I>The New Hacker's Dictionary</I></U></DT><BR>
+<DD><A HREF="http://www-mitpress.mit.edu">MIT Press</A>, Cambridge,
+MA, 1991, ISBN: 0-262-68069-6
+This is not an average (lame) computer dictionary. Hackerspeak
+is obfuscated English, and this text defines the grammar and vocabulary.
+It'll help you with USENET messages, RFCs, as well as encounters
+with hacknoids. Besides being useful, it's pretty entertaining
+too. Note: This text is also available in electronic form on the
+Internet from the Gutenberg Project.</DT>
+<P>
+<DT>Richter, Jeffrey. <U><I>Advanced Windows Programming</I></U></DT><BR>
+<DD><A HREF="gopher://infx.info.com:5700/">Microsoft Press</A>,
+Redmond, WA, 1995, ISBN 1-55615-677-4
+This is a very useful tutorial and reference for Win32 programming.</DD>
+<P>
+<DT>Schulman, Andrew. <U><I>Unauthorized Windows 95: Developers Resource Kit<BR></I></U></DT>
+<DD><A HREF="http://www.idgbooks.com">IDG Books</A>, San Mateo,
+CA, 1994, ISBN: 1-56884-305-4  
+A glimpse at the internals Windows 95 before its release, it reveals
+the &quot;new&quot; operating system's MS-DOS foundation.</DD>
+<P>
+<DT>Schulman, Andrew (David Maxey and Matt Pietrek). <U><I>Undocumented
+Windows</I></U></DT><BR>
+<DD><A HREF="http://www.aw.com">Addison-Wesley</A>, Reading, MA,
+1992, ISBN: 0-201-60834-0  This is full of information about the
+mechanics of Microsoft Windows 3.x. and includes useful source
+code for exploring Windows and debugging application problem.</DD>
+<P>
+<DT>Stallings, William, <U><I>Networking Standards: a Guide to
+OSI, ISDN, LAN and MAN</I></U></DT><BR>
+<DD><A HREF="http://www.aw.com">Addison-Wesley</A>, Reading, MA,
+1993, ISBN: 0-201-56357
+If you need to delve into the low-level &quot;network access&quot;
+layers (layers 1 and 2 in the OSI network reference model), then
+you want a copy of this book. It focuses on OSI, but it deals
+with details in many medias: Broadband, ISDN, Ethernet, IEEE 802.5,
+FDDI, ATM, and Frame Relay.</DD>
+<P>
+<DT>Stevens, W. Richard. <U><I>Advanced Programming in the UNIX
+Environment</I></U></DT><BR>
+<DD><A HREF="http://www.aw.com">Addison-Wesley</A>, Reading, MA,
+1992, ISBN: 0-201-56317-7  This comprehensive reference for programming
+with the runtime library of the (any) UNIX environment contains
+excellent descriptions of concepts with code illustrations in
+C. It describes programming standards: ANSI, IEEE POSIX, and X/Open,
+and references specifics in a variety of UNIX platforms (&quot;vanilla
+SVR4.&quot; 4.3+BSD, BSD/386, and SunOS 4.1.1 and 4.1.2). It is
+edited by Brian Kernighan</DD>
+<P>
+<DT>Stevens, W. Richard. <U><I>TCP/IP Illustrated, Volume 1</I></U></DT><BR>
+<DD><A HREF="http://www.aw.com">Addison-Wesley</A>, Reading, MA,
+1994, ISBN: 0-201-63346-9  It doesn't get any better than this
+comprehensive, in-depth, and readable book. If you need to program
+or debug a TCP/IP network, you should have a copy of this book.</DD>
+<P>
+<DT>Stevens, W. Richard. <U><I>UNIX Network Programming</I></U></DT><BR>
+<DD><A HREF="www.prenhall.com">Prentice-Hall</A>, Englewood Cliffs,
+NJ, 1990, ISBN: 0-13-949876-1  This is the definitive reference
+for Berkeley Sockets and System V TLI. It describes all the various
+UNIX interprocess communication paradigms. It provides many examples
+of common TCP/IP application protocols, including ping, TFTP,
+LPR, and BSD &quot;r&quot; (remote) utilities such as rsh. We
+highly recommend this book.</DD>
+<P>
+<DT>Tannenbaum, Andrew S. <U><I>Computer Networks</I></U></DT><BR>
+<DD><A HREF="http://www.prenhall.com">Prentice-Hall</A>, Englewood
+Cliffs, NJ, 1989, ISBN: 0-13-162959-X  This standard network reference
+has a comprehensive survey of every layer in the OSI Network Reference
+Model.</DD>
+<P>
+<DT>Umar, Amjad. <U><I>Distributed Computing: A Practical Synthesis</I></U></DT><BR>
+<DD><A HREF="http://www.prenhall.com">Prentice-Hall</A>, Englewood
+Cliffs, NJ, 1993, ISBN: 0-13-036252-2  An excellent introduction
+to network hardware and software architecture, with descriptions
+of many open standards, this text contains a nice mix of high-level
+management discussions and down-and-dirty technical applications
+and integration (with case studies).</DD>
+</DL>
+
+<P>
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,747 @@
+<HTML>
+<HEAD>
+<TITLE>WinSock Development Information</TITLE>
+</HEAD>
+
+<BODY>
+
+<P>
+<IMG SRC="sockets.gif" ALIGN="BOTTOM"> 
+<H1><A NAME="WSNP_TOP"><IMG SRC="winsock.gif" ALIGN="BOTTOM"> WinSock Development
+Information</A></H1>
+
+<P> Welcome to the web page for the <A HREF="#WSNP">Windows Sockets
+Network Programming</A>, by Bob Quinn and Dave Shute.  This hypertext 
+document contains WinSock information and samples that any novice or 
+experienced application developer can use. Most of this material comes 
+right out of the book, and there's much more where this came from.
+<U><I>Windows Sockets Network Programming</I></U> provides a detailed
+introduction, and complete reference to WinSock versions 1.1 and
+2.0.<BR>
+
+<UL>
+<LI><A HREF="#WSADevFiles">WinSock Development Files</A> 
+<LI><A HREF="a_c.htm">WinSock Error List</A> 
+<LI><A HREF="#Databases">Services and Protocols Files</A> 
+<LI><A HREF="#SampleApps">Sample Applications</A> 
+<LI><A HREF="#WSASIMPL">Sample DLL over WinSock </A>
+<LI><A HREF="#WINSOCKX">Sample Subroutine Library</A>
+<LI><A HREF="winsock2.htm">WinSock Version 2 Information</A>
+<LI><A HREF="#Miscellaneous">Miscellaneous</A> 
+</UL>
+
+<ADDRESS>
+Please send comments, suggestions, and bug reports to <A HREF="mailto:webmaster@sockets.com">webmaster@sockets.com</A><br>
+Copyright (c) Bob Quinn, 1995 (last modified 08/22/95) 
+</ADDRESS>
+<HR>
+
+<H2><A NAME="WSNP"><IMG SRC="winsock.gif" ALIGN="BOTTOM"> <U><I>Windows
+Sockets Network Programming</I></U></A></H2>
+
+<P>
+<I>by Bob Quinn and Dave Shute, with foreword by Martin Hall<BR>
+</I>Addison-Wesley, Reading, MA, ISBN: 0-201-63372-8
+<P>
+As our preface describes in more detail, the main purpose of this
+book is to illustrate how to write WinSock applications that will
+run over any WinSock implementation, and run well. It is possible,
+and it is easier than you might think.
+<UL>
+<LI><A HREF="toc.htm">Table of Contents</A> 
+<LI><A HREF="foreword.htm">Foreword </A>
+<LI><A HREF="preface.htm">Preface </A>
+<LI><A HREF="ch16.htm">Chapter 16: Optional Features</A> 
+<LI><A HREF="a_d.htm">Appendix D: What You Need</A> 
+<LI><A HREF="a_e.htm">Appendix E: Information Sources</A> 
+</UL>
+[<A HREF="#WSNP_TOP">Go to top</A>]
+<HR>
+
+<H2><A NAME="WSADevFiles"></A>
+<IMG SRC="winsock.gif" ALIGN="BOTTOM"></A> WinSock Development
+Files</H2>
+
+<P>
+In <A HREF="a_d.htm">Appendix D: What You Need</A>, we describe
+each of the files you need to begin WinSock development, and how
+to use them. Appendix D refers to the &quot;official&quot; WinSock
+development files; we supplied some additional (unofficial) files
+to make up for a few deficiencies in WinSock, and to simplify
+application development. We describe the <A HREF="#WINSOCKX">WINSOCKX.LIB</A>
+subroutine library and <A HREF="#WSASIMPL">WSASIMPL.DLL</A> sample
+DLL over WinSock later in this document, and you can refer to
+the contents of the <A HREF="wsa_xtra.h">WSA_XTRA.H</A> file for
+more information about its content and purpose.
+<P>
+WINSOCK.H official WinSock header file (16- and 32-bit)<BR>
+WINSOCK.HLP official Windows helpfile for WinSock version 1.1
+<BR>
+WINSOCK.LIB official 16-bit WinSock import library file <BR>
+WSOCK32.LIB official 32-bit WinSock import library file
+<P>
+WSA_XTRA.H unofficial header file with stuff that WINSOCK.H missed
+<P>
+WINSOCKX.H unofficial header file for our WinSock subroutine library
+<BR>
+WINSOCKX.LIB unofficial 16-bit version of subroutine library 
+<BR>
+WSOCK32X.LIB unofficial 32-bit version of subroutine library
+<P>
+WSASIMPL.LIB import library for simple 16-bit dll sample <BR>
+WSASMP32.LIB import library for simple 32-bit dll sample <BR>
+
+<P>
+<A HREF="winsock.htm">WinSock version 1.1 specification</A>
+[<A HREF="#WSNP_TOP">Go to top</A>]
+<HR>
+<H2><A NAME="Databases"><IMG SRC="winsock.gif" ALIGN="BOTTOM"> Services and Protocols
+Files</H2>
+
+<P>
+Section B.4 &quot;Database Files&quot; in the v1.1 WinSock specification
+states that if local files exist for resolution of the database
+routines (in the getXbyY() and WSAAsyncGetXbyY() function families),
+then they must be identical to that used in BSD UNIX (Berkeley
+Software Distribution version 4.3 is the defacto reference). There
+are three of these files that correspond to the three sets of
+functions for hostname/address, services/port number, and protocol
+name/number resolution. On a BSD UNIX system these files are /etc/hosts,
+/etc/services, and /etc/protocols, respectively.
+<P>
+It does not make sense to try to present a /etc/hosts file here,
+since they are site specific, and infrequently used these days
+in deference to Domain Name Service (DNS). We do not have standard
+copies of the /etc/services and /etc/procotols files--you should
+get these from your WinSock vendor--but we have the references
+from the Assigned Numbers RFC hyperlinked their contents to the
+RFCs that define their Internet standards. We downloaded these
+files from the <A HREF="http://www.isi.edu/div7/infra/iana.html">Internet Assigned Numbers Authority (IANA).</A>
+
+<UL>
+<LI><A HREF="services.htm">port-numbers </A>(/etc/services file contents)
+contents)
+<LI><A HREF="protocol.htm">protocol-numbers </A>(/etc/protocols file contents)
+</UL>
+[<A HREF="#WSNP_TOP">Go to top</A>]
+<HR>
+
+<H2><A NAME="SampleApps"><IMG SRC="winsock.gif" ALIGN="BOTTOM">
+Sample Applications</A></H2>
+
+<P>
+All but one of the sample applications available here are used
+as examples in the text <A HREF="#WSNP">Windows Sockets Network Programming</A>.
+<UL>
+<LI><A HREF="#AC_FTP">AC_FTP.EXE</A> FTP client application (asynchronous
+operation mode with a TCP socket)
+<LI><A HREF="#AS_ECHO">AS_ECHO.EXE</A> echo server application
+(asynchronous operation mode with a TCP socket)
+<LI><A HREF="#UA_TIME">UA_TIME.EXE</A> daytime client and server
+application (asynchronous operation mode with a UDP socket)
+<LI><A HREF="#MULTITST">MULTITST.EXE</A> optional features test
+application (asynchronous multicast UDP and SOCK_RAW ICMP ping)
+<LI><A HREF="#WAL">WAL.EXE</A> flexible WinSock implementation
+test, exploration, and benchmark tool (not pretty, but does everything)
+</UL>
+
+<P>
+[<A HREF="ftp://ftp.sockets.com/pub/wssample/wsa_all.zip">get all samples with setup</A>]
+<P>
+We used Microsoft Visual C++ enviroments (versions 1.52 for 16-bit,
+and version 2.1 for 32-bit) to create most of the makefiles. Unfortunately,
+because the paths are hard-coded in the file, you will have to
+bring the project files (.mak) into the respective MS C++ environments
+to readjust things to the new directory, and even then you will
+have to manually alter the project to access the library files
+(the are in the root of the directory where you install the samples).
+<P>
+All samples--including the sample DLL and static library--have
+a number of other things in common:
+<UL>
+<LI>They all have 32-bit versions, and all 32-bit version names
+end with &quot;32&quot; (16-bit versions don't have a number).
+<LI>They use the WSAperror() function from <A HREF="#WINSOCKX">WINSOCKX.LIB</A>
+to display error values and short descriptions when an unexpected
+error occurs.
+<LI>They display error messages on any suspicious error condition.
+ They don't hide errors, but report them whenever they occur. 
+As we describe n <A HREF="a_c.htm">Appendix C: WinSock Error Reference</A>,
+these error messages should appear only when a &quot;user fixable
+error&quot; occurs. If you get an error message from a sample
+application for a <I>non</I> user-fixable error, then this may
+indicate an anomoly in the WinSock implementation that your applications
+may need to deal with.  We show you the errors on purpose, to
+make you aware of unexpected conditions.
+<LI>They have a minimal user interface, and do not have help (.HLP)
+files available.
+<LI>They are meant to be played with.  They are for exploration
+and experimentation as well as to illustrate how to write WinSock
+applications.
+</UL>
+
+<P>
+The icons used for each sample don't mean much, but they meet
+the following three criteria:
+<UL>
+<LI>They each contain the socket from the official WinSock icon.
+<LI>Each one is colorful in its own unique and wonderful way.
+<LI>Each took under 10 minutes to create.
+</UL>
+[<A HREF="#WSNP_TOP">Go to top</A>]
+<HR>
+
+<H3><A NAME="AC_FTP"></A><IMG SRC="ac_ftp.gif" ALIGN="BOTTOM">
+AC_FTP.EXE: file transfer protocol client application </H3>
+
+<P>
+This application is described in detail in Chapter 7, &quot;Sample
+Application and Library.&quot;
+<P>
+<B>What it does</B>: AC_FTP is a file transfer protocol client
+that uses asynchronous socket operation mode and utilizes many
+programming techniques described in detail throughout the book.
+It connects to an FTP server, sends commands and receives replies
+according to <A HREF="rfc959.txt">RFC 959</A> to get and put files,
+change directories, get file lists, delete files.
+<P>
+<B>What it illustrates</B>: The source code for AC_FTP illustrates
+many key aspects of WinSock application programming, including
+how to connect as a TCP client and as a server, how to maximize
+data throughput using sockets with asynchronous operation mode.
+It also demonstrates how to receive variable length data on a
+stream connection; this is often a problem since TCP (<A HREF="rfc793.txt">RFC 793</A>
+and <A HREF="rfc1122.txt">RFC 1122</A>) does not preserve packet
+boundaries. It also shows how to implement an application protocol--the
+FTP protocol--using a state machine; maintaining socket state
+is an important aspect of most network applications.
+<P>
+<B>How to Use it</B>: AC_FTP implements a subset of the FTP command
+set, and has buttons in the main dialog box for each of the commands
+available..
+<UL>
+<LI>Start by pressing the &quot;Connect&quot; button, and fill
+in the destination hostname or IP address (the location of the
+FTP server), the user name and password.. Once the &quot;Status&quot;
+in upper right of the AC_FTP application window says &quot;connected,&quot;
+you can press the other buttons to issue FTP commands
+<LI>The &quot;DIR&quot; button in the &quot;Remote Working Directory&quot;
+box.retrieves the remote file directory, and &quot;DIR&quot; in
+the &quot;Local Working Directory&quot; displays the file directory
+from the local disk. AC_FTP puts the file directory list into
+a temporary file called delete.me, and invokes the Windows notepad.exe
+to display it. You can leave several such directory file lists
+open for simultaneos viewing
+<LI>The &quot;CWD&quot; buttons allow you move to different directories
+on the remote or local systems.
+<LI>The &quot;Put&quot; and &quot;Get&quot; buttons send and receive
+files, respectively.
+<LI>You can &quot;Abort&quot; any pending operation, &quot;Close&quot;
+the control connection, or &quot;Exit&quot; the application at
+any time.
+</UL>
+
+<P>
+<B>Known Problems</B>: AC_FTP, as all other the sample applications,
+suffers from a user-hostile interface. User friendliness was sacrificed
+to minimize user interface code, and emphasize the network code.
+The most blatant user-hostile feature is the text in the status
+box that scrolls in the wrong direction. The method of displaying
+the file directories is less than ideal also, but calls for very
+little code. The CWD command does not allow you to move between
+disks on the local system.
+<P>
+<B>File List</B>: <BR>
+AC_FTP\AC_FTP.DEF <BR>
+AC_FTP\AC_FTP.ICO <BR>
+AC_FTP\RESOURCE.H <BR>
+AC_FTP\AC_FTP.H <BR>
+AC_FTP\AC_FTP.MAK Makefile for 16-bit ac_ftp.exe <BR>
+AC_FTP\AC_FTP32.MAK Makefile for 32.bit ac_ftp32.exe <BR>
+AC_FTP\AC_FTP.RC <BR>
+AC_FTP\FTP_DATA.C all routines for the data connection <BR>
+AC_FTP\FTP_CTRL.C all routines for the control connection <BR>
+AC_FTP\AC_FTP.C<P>
+[<A HREF="#WSNP_TOP">Go to top</A>]
+<HR>
+
+<H3><A NAME="AS_ECHO"><IMG SRC="as_echo.gif" ALIGN="BOTTOM"> AS_ECHO.EXE</A>:
+echo server application</H3>
+
+<P>
+This application is described in Chapter 6, &quot;Socket States.&quot;
+<P>
+<B>What it does</B>: AS_ECHO provides the standard TCP echo service
+(on port 7), as described by <A HREF="rfc862.txt">RFC 862</A>.
+The application reads data from any number of echo clients simultaneously,
+and sends the data received from each client back to the client
+that sent it.
+<P>
+<B>What it illustrates</B>: AS_ECHO illustrates how to write a
+fast and efficient TCP server capable of handling multiple connections
+simultaneously using asynchronous operation mode.
+<P>
+<B>How to Use it</B>: As is the case with most server applications,
+AS_ECHO has a minimal user interface; it is mainly driven by clent
+connections. After you run it, it displays the local host name
+and IP address (if it could be retrieved using our GetHostID()
+routine from <A HREF="#WINSOCKX">WINSOCKX.LIB</A>). The main dialog
+box displays the number of active connections, the number of connections
+that have disconnected, the total number of bytes received is
+updated realtime, and the data rate of the last connection is
+displayed as each client disconnects. The data rate and address
+of each connection are also logged to a file named as_echo.log.
+The application does not have any options, and the only interaction
+possible is with either the &quot;About&quot; button to display
+the about box, or the &quot;Exit&quot; button to quit the program.
+<P>
+<B>Known Problems</B>: If AS_ECHO is running on a WinSock implementation
+that uses the same buffer pool for input and output, and a client sends 
+data faster than it reads data, then AS_ECHO will stop working.  In this
+case it cannot send because all system buffers are full of incoming data,
+and it has no application buffer space available to read the data from
+the system buffers.
+<P>
+For example, this is a problem running WAL asynch echo client against 
+AS_ECHO.  To avoid the problem, you can adjust the I/O options in the
+WAL client so the number of loops and loop limit are 1.  This will lower
+the data throughput considerably, but you can increase that by decreasing
+the timeout to 50 milliseconds.
+<P>
+<B>File List</B>:<BR>
+AS_ECHO\AS_ECHO.DEF <BR>
+AS_ECHO\AS_ECHO.H <BR>
+AS_ECHO\AS_ECHO.ICO <BR>
+AS_ECHO\RESOURCE.H <BR>
+AS_ECHO\AS_ECHO.MAK Makefile for 16-bit as_echo.exe <BR>
+AS_ECHO\ASECHO32.MAK Makefile for 32-bit asecho32.exe <BR>
+AS_ECHO\AS_ECHO.RC <BR>
+AS_ECHO\AS_ECHO.C <P>
+[<A HREF="#WSNP_TOP">Go to top</A>]
+<HR>
+
+<H3><A NAME="MULTITST"><IMG SRC="multitst.gif" ALIGN="BOTTOM">
+MULTITST.EXE</A>: multicast and ping test application</H3>
+
+<P>
+This application is referenced in 
+<A HREF="ch16.htm">Chapter 16, &quot;Optional Features.&quot;</A>
+
+<P>
+<B>What it does</B>: The MULTITST application allows sending and
+receiving of multicast datagrams (<A HREF="rfc1112.txt">RFC 1112</A>
+and <A HREF="rfc1122.txt">RFC 1122</A>), and experimentation with
+the multicast APIs. MULTITST also sends and receives Internet
+Control Message Protocol (<A HREF="rfc791.txt">RFC 791</A>) &quot;echo
+request&quot; and &quot;echo reply&quot; datagrams, typically
+known as &quot;ping&quot; packets. and uses the IP_TTL socket
+option to set the IP time-to-live field for traceroute.
+<P>
+<B>What it illustrates</B>: It shows how to use the multicast,
+and SOCK_RAW sockets for ICMP (with IP_TTL).
+<P>
+<B>How to Use it</B>: The two parts to this program--multicast UDP
+and ICMP Ping--have seperate interfaces.  We'll describe the steps
+involved with using each seperately. To play with multicast, you 
+need to get a socket by selecting the &quot;Socket&quot; menu item.  Once 
+you have a socket, you can send to  multicast addresses, or any other IP 
+address with the Sendto menu item at any point. However, receiving
+multicast packets requires additional steps.
+<P>
+The steps required to receive multicast datagrams, sometimes differ 
+between different multicast implementations.  For Microsoft's, for 
+example, you must call call bind() (with the Bind menu item) next.  
+For bind() you can select any class D address, and any port number 
+(or use 0 to let the TCP/IP stack assign an arbitrary port).  Next 
+step involves socket options, which you can access with the 
+&quot;SockOpts&quot;  menu selection.  The most important option is 
+IP_ADD_MEMBERSHIP, which joins the multicast group to allow you to 
+receive datagrams destined for that address.  You should specify the 
+same class D address for the multicast group that you used in the call 
+to bind().  In some cases, you may also have to use the IP_MULTICAST_IF 
+option to specify the default interface.  Here is a short description 
+of these and other multicast-related options; for more information, see 
+<A HREF:"ch_16.htm">Chapter 16: &quot;Optional Features&quot;</A><br>
+<UL>
+<li>IP_ADD_MULTICAST:  join multicast group to receive multicast 
+datagrams
+<li>IP_DROP_MULTICAST: leave a multicast group
+<li>IP_MULTICAST_LOOP: disable or enable multicast loopback (enabled
+by default)
+<li>IP_MULTICAST_TTL:  set the IP &quot;Time to Live&quot; for multicast (it is
+only one by default, which means multicast don't go beyond the first
+router)
+<li>IP_MULTICAST_IF:   set the multicast interface
+</UL>
+*Important Note* The &quot;BSD option values&quot; is set by default 
+to use the BSD-compatible values for the option name macro values.  
+You will need to disable this setting for multicast implementations 
+--like Microsoft's--that use the Steve Deering values for each
+multicast option.
+<P>
+To send and receive ICMP &quot;ping&quot; datagrams, select the 
+&quot;Ping&quot; menu item, and the ping interface will be displayed.
+First, press the &quot;socket()&quot; button to get raw socket to use
+for ICMP.  Next, enter an IP address or hostname as the &quot;Destination
+host.&quot;  At this point you can press &quot;sendto()&quot; to send
+an ICMP echo request packet, and MULTITST will display a message box
+when the response arrives.  You could change the ICMP ID and sequence
+numbers if you wish; these change the values of the ICMP fields as
+described in <A HREF="rfc792.txt">RFC791</A>.  You can also try changing
+the time to live value in the IP header (<A HREF="rfc791.txt">RFC 791</A>),
+although very few WinSock implementations support the BSD-compatible 
+IP_TTL socket option that the MULTITST application uses.
+<P>
+<B>Known Problems</B>: MULTITST notifies the user of each multicast 
+datagram and ping echo response arrival by displaying a message box.
+This is less than ideal, especially when receiving ping responses
+sent to broadcast addresses, or when using the traceroute option
+(by setting IP TTL).
+<P>
+<B>File List</B>: <BR>
+MULTITST\MULTITST.DEF <BR>
+MULTITST\MULTITST.ICO <BR>
+MULTITST\ICMPPING.H <BR>
+MULTITST\RESOURCE.H <BR>
+MULTITST\MULTITST.MAK Makefile for 16-bit multitst.exe <BR>
+MULTITST\MULTI_32.MAK Makefile for 32-bit multi_32.exe <BR>
+MULTITST\MULTITST.H <BR>
+MULTITST\ICMPPING.C <BR>
+MULTITST\MULTITST.RC <BR>
+MULTITST\MULTITST.C <P>
+[<A HREF="#WSNP_TOP">Go to top</A>]
+<HR>
+
+<H3><A NAME="UA_TIME"><IMG SRC="ua_time.gif" ALIGN="BOTTOM"> UA_TIME.EXE</A>:
+daytime client and server application</H3>
+
+<P>
+This application is referenced in Chapter 5, &quot;Operation Modes.&quot;
+<P>
+<B>What it does</B>: UA_TIME works as a client and a server using
+UDP in asynchronous operation mode to implement the simple daytime
+protocol, as described in <A HREF="rfc867.txt">RFC 867</A>. As a client, it sends a datagram to the daytime service (port 13),
+then reads the response, which contains a human-readable string
+indicating the current date and time maintained by the daytime
+server system. As a server, it responds to each unsolicited datagram
+received on port 13, but returning a human-readable date/time
+string.
+<P>
+<B>What it illustrates</B>: It shows how to create a combination
+client and server that uses a UDP socket (<A HREF="rfc768.txt">RFC 768</A>)
+and asynchronous operation mode. It also allows uses setsockopt()
+SO_BROADCAST to allow sending and recieving broadcast datagrams.
+<P>
+<B>How to Use it</B>: The program starts without a socket, so
+the first thing you need to do is use the &quot;Open&quot; command
+to get a socket, and call bind(). You then use &quot;Sendto&quot;
+to send requests to daytime server systems. If you use &quot;Options&quot;
+to enable the use of broadcast destination addresses, you can
+send to the limited broadcast address (255.255.255.255) to query
+all the hosts on your local network. Each time a response is received,
+UA_TIME displays the time/date string along with the source address
+in a message box.
+<P>
+<B>Known Problems</B>: This application should display each response
+in a scrolling window rather than displaying a message box for
+each.
+<P>
+<B>File List</B>: <BR>
+UA_TIME\UA_TIME.DEF <BR>
+UA_TIME\UA_TIME.ICO <BR>
+UA_TIME\RESOURCE.H <BR>
+UA_TIME\UA_TIME.MAK Makefile for 16-bit ua_time.exe <BR>
+UA_TIME\UATIME32.MAK Makefile for 32-bit uatime32.exe <BR>
+UA_TIME\UA_TIME.RC <BR>
+UA_TIME\UA_TIME.C <P>
+[<A HREF="#WSNP_TOP">Go to top</A>]
+<HR>
+
+<H3><A NAME="WAL"><IMG SRC="idwalico.gif" ALIGN="BOTTOM"> WAL.EXE:</A>
+WinSock application launcher</H3>
+
+<P>
+This application was not referenced in the book at all It was
+a tool created and used for exploration and development of many
+programming techniques described throughout the text, however.
+It's like a black box with many different knobs and displays.
+It may seem overwhelming at first glance, but it is really quite
+simple to use.
+<P>
+<B>What it does</B>: It can act as a client or server application,
+using TCP or UDP, in blocking, nonblocking or asynchronous operation
+mode, sending or receiving or both. It has many operational parameters,
+many of which can be adjusted on-the-fly during execution, and
+it allows setting and getting socket options as it executes also.
+It implements several simple protocols: echo (<A HREF="rfc862.txt">RFC 862</A>),
+discard (<A HREF="rfc863.txt">RFC 863</A>), and chargen (<A HREF="rfc864.txt">RFC 864</A>).
+<P>
+<B>What it illustrates</B>: It is a WinSock exploration, experimentation
+and benchmarking tool that illustrates how a WinSock implementation
+behaves in certain conditions. Most significantly, it illustrates
+the effects of looping on recv() calls in response to asynchronous
+FD_READ event notification, and investigates how to adjust the
+read loop dynamically.
+<P>
+<B>How to Use it</B>: Typically, the first menu item to select
+is &quot;Start,&quot; which displays the &quot;Applications Options&quot;
+dialog box. You can select the operation mode (blocking, non-blocking,
+or asynchronous), the transport protocol (TCP or UDP), and the
+application role (a client or server). If you choose to run as
+a client, you need to enter a destination host or address before
+you press the &quot;Start!&quot; button to initiate execution.
+There are a number of I/O parameters you can change by pressing
+the &quot;Options&quot; button..
+<UL>
+<LI>The &quot;Control&quot; menu item has a pull-down menu that
+allows you to open a new socket without starting a connection
+first. You can also close an existing connection gracefully, or
+abort it by resetting the connection.
+<LI>The &quot;Options&quot; menu item has a pull-down menu with
+commands that change and examine socket options using setsockopt()
+and getsockopt(). You can also access the same application &quot;I/O
+options&quot; dialog available from the &quot;Start&quot; dialog.
+Any option can be changed &quot;on-the-fly&quot; as data is transferred
+during execution.
+<LI>The &quot;Statistics&quot; menu item allows you to reset the
+counter values currently displayed in the main window to zero.
+The &quot;Update&quot; command forces an update of the statistics
+when the application is in a tight loop (i.e. when the timer messages
+that normally initiate update are not available).
+</UL>
+
+<P>
+<B>Known Problems</B>: The OOB implementation needs an application--which
+isn't available here--to receive the OOB data sent, and send some
+OOB data back. The detailed statics (avaliable from the &quot;Statistics&quot;
+menu item), causes the application to fail in the 32-bit version.
+It could benefit greatly from the addition of scripting and logging
+features.  There are some application settings that can have problems
+during execution; for example, reading a constant stream of incoming
+data with a non-blocking socket (from the chargen port, for instance)
+can make the application unresponsive to user input.
+<P>
+Also, running WAL as an echo server can have the same problems that AS_ECHO
+does when run against a client that sends faster than it receives.  See the
+Known Problems section for AS_ECHO for more information.
+<P>
+<B>File List</B>: <BR>
+WAL\ASYNC.C: Asynchronous operation mode routines<BR>
+WAL\BLOCKING.C: Blocking operation mode routines<BR>
+WAL\DEBUG.C:<BR>
+WAL\ERRNO.C <BR>
+WAL\IDWALICO.ICO <BR>
+WAL\NONBLKNG.C: Non-blocking operation mode routines <BR>
+WAL\RESOURCE.H <BR>
+WAL\WAL.MAK Makefile for 16-bit wal.exe <BR>
+WAL\WAL32.MAK Makefile for 32-bit wal32.exe <BR>
+WAL\OOBDATA.C: TCP out-of-band data routines<BR>
+WAL\WAL.DEF <BR>
+WAL\WAL.H <BR>
+WAL\WAL.INI Sample default settings file <BR>
+WAL\WAL.RC <BR>
+WAL\WAL.C <P>
+[<A HREF="#WSNP_TOP">Go to top</A>]
+<HR>
+
+<H3><A NAME="WSASIMPL"><IMG SRC="simpltst.gif" ALIGN="BOTTOM">
+WSASIMPL.DLL</A>: sample DLL over WinSock</H3>
+
+<P>
+This DLL and the simple test program (SIMPLTST.EXE) are desribed
+in Chapter 11, &quot;DLLs over WinSock.&quot;
+<P>
+<B>What it does</B>: The WSASIMPL DLL rovides a simple API for
+elemental network functionality using TCP: connect, send or receive
+data, and disconnect.
+<P>
+<B>What it illustrates</B>: The main purpose of WSASIMPL is to
+illustrate how to create a DLL that runs over WinSock, and prevents
+reentrant messages from being sent to the application calling
+the DLL over WinSock. It uses windows subclassing to capture keyboard
+and mouse messages while blocking network operations are underway.
+<P>
+<B>How to Use it</B>: Here are short descriptions along with the
+prototypes for the functions in the simplified WinSock API that
+WSASIMPL.DLL provides:
+<DL>
+<DT><CODE><B>SOCKET WINAPI ConnectTCP(LPSTR szDestination, LPSTR
+szService);<BR>
+</B></CODE> 
+<DD>ConnectTCP() calls the WinSock WSAStartup() function to register
+the task with the WinSock DLL, gets a socket handle with socket(),
+resolves the destination host name or formats an address using
+the GetAddr() function from the sample WINSOCKX library, and resolves
+the destination service or formats the port number with the WINSOCKX
+GetPort() function. When all these operations succeed, ConnectTCP()
+returns a socket handle; when any step fails the function returns
+INVALID_SOCKET.
+<DT><CODE><B>int WINAPI SendData (SOCKET hSock, LPSTR lpOutBuf,
+int cbTotalToSend);</B></CODE> <BR>
+
+<DD>SendData() sends cbTotalToSend data bytes on the hSock socket
+handle, from the buffer lpOutBuf. When it succeeds, it returns
+the number of bytes sent, and when it fails it returns SOCKET_ERROR.
+<DT><CODE><B>int WINAPI RecvData (SOCKET hSock, LPSTR lpInBuf,
+int cbTotalToRecv, int nTimeout);</B></CODE> <BR>
+
+<DD>RecvData() recieves up to cbTotalToRecv data bytes on the
+hSock socket handle, into the buffer lpInBuf, until the nTimeout
+period (in milliseconds) expires. It returns the number of bytes
+received on success, and SOCKET_ERROR on failure (timeout is an
+error condition).
+<DT><CODE><B>int WINAPI CloseTCP (SOCKET hSock, LPSTR lpInBuf,
+int len);</B></CODE> <BR>
+
+<DD>CloseTCP() is almost the same function as CloseConn() in the
+<A HREF="#WINSOCKX">WINSOCKX.LIB</A> WinSock subroutine library.
+It attempts a graceful close of the TCP connection on socket hSock
+by calling shutdown() with <I>how</I>=1 to stop sends but allow
+receives, then it calls recv() to read data (up to <I>len</I>)
+into the buffer lpInBuf, if provided. When recv() fails with any
+error, or returns 0 to indicate closure from the remote, CloseTCP()
+then calls closesocket() to free the resources associated with
+the socket handle.
+</DL>
+
+<P>
+The SIMPLTST sample application connects to an echo server, sends
+data, and reads it back. The relevant code for this application
+is as follows:
+<PRE>
+    SOCKET hSock;
+    char szHost[MAXHOSTNAME];
+    char achOutBuf[BUFSIZE], achInBuf[BUFSIZE];
+
+    hSock = ConnectTCP((LPSTR)szHost, (LPSTR)&quot;echo&quot;);
+    if (hSock != INVALID_SOCKET) {
+        int nRet;
+        SendData(hSock, achOutBuf, BUFSIZE);
+        RecvData(hSock, achInBuf, BUFSIZE);
+        CloseTCP(hSock, 0, 0);
+    }
+</PRE>
+
+<P>
+<B>Known Problems</B>: WSASIMPL.DLL subclasses the active window
+when ConnectTCP() is called to avoid reentrant messages. We avoid
+problems in our subclassed window procedure by noting receipt
+of a WM_DESTROY message. Also note that because WSASIMPL.DLL uses
+blocking operation mode, it imposes the typical limitations on
+each task (e.g. while any blocking operation is outstanding, other
+WinSock calls from the same task or thread fail with WSAEINPROGRESS).
+<P>
+<B>File List</B>: <BR>
+WSASIMPL\SIMPLTST.DEF <BR>
+WSASIMPL\SIMPLTST.ICO <BR>
+WSASIMPL\SIMPLTST.RC <BR>
+WSASIMPL\SIMPLTST.C <BR>
+WSASIMPL\SIMPLTST.MAK Makefile for 16-bit simpltst.exe <BR>
+WSASIMPL\SIMPLT32.MAK Makefile for 32-bit simplt32.exe <BR>
+WSASIMPL\WSASIMPL.DEF <BR>
+WSASIMPL\WSASIMPL.H <BR>
+WSASIMPL\WSASIMPL.RC <BR>
+WSASIMPL\WSASIMPL.C <BR>
+WSASIMPL\WSASIMPL.MAK Makefile for 16-bit wsasimpl.dll <BR>
+WSASIMPL\WSASMP32.MAK Makefile for 32-bit wsasmp32.dll <P>
+[<A HREF="#WSNP_TOP">Go to top</A>]
+<HR>
+
+<H3><A NAME="WINSOCKX"><IMG SRC="setup.gif" ALIGN="BOTTOM"> WINSOCKX.LIB</A>:
+WinSock subroutine library (static)</H3>
+
+<P>
+We describe each routine in this library in Chapter 7, &quot;Sample
+Application and Library.&quot; Many of the WinSock samples use
+the subroutines in this library. For example, the error message
+box, the routine to retrieve the local host's IP address, a simple
+hostname or IP address string parser, and others.
+<P>
+<B>What it does</B>: The WINSOCKX static library contains a number
+of routines commonly used by WinSock applications. Some are non-network
+functions that perform common mundane application operations--such
+as centering a window, or creating a local file--but most of the
+functions in this library provide high-level WinSock services
+by combining a number of WinSock function calls. For example,
+you can pass either a host name or IP address string to our GetAddr()
+function, and it returns an IP address in network order (it uses
+inet_addr() and gethostbyname() WinSock functions).
+<P>
+<B>What it illustrates</B>: In effect, these reusable functions
+show how to write simpler and more robust WinSock application
+code by using high-level functions.
+<P>
+<B>How to Use it</B>: Here are the function prototypes of the
+most significant and useful routines, along with a short description
+of each:
+<DL>
+<DT><CODE><B>int CloseConn (SOCKET hSock, LPSTR achInBuf, int
+len, HWND hWnd);</B></CODE> <BR>
+
+<DD>This is the standard TCP close routine: shutdown(how=1), recv()
+loop, then closesocket().
+<DT><CODE><B>u_long GetAddr (LPSTR szHost);</B></CODE> <BR>
+
+<DD>The GetAddr() function takes either a host name or IP address
+string in standard Internet dot-notation, and returns a network
+addrss in network order.
+<DT><CODE><B>int GetBuf (SOCKET hSock, int nBigBufSize, int nOptVal);
+<BR>
+</B></CODE>
+<DD>This uses SO_RCVBUF or SO_SNDBUF to get largest buffer possible
+up to the upper limit set by <I>nBigBufSize</I>. Returns buffer
+size retreived from getsockopt() upon return on success, or SOCKET_ERROR
+on failure.
+<DT><CODE><B>LONG GetHostID (void);<BR>
+</B></CODE> 
+<DD>This uses gethostname(), then gethostbyname() to try to retrieve
+the local IP address, and if this fails it then gets a UDP socket,
+connects it, and uses getsockname() to retrieve the local IP address,
+before closing the socket.
+<DT><CODE><B>u_short GetPort (LPSTR szService);<BR>
+</B></CODE> 
+<DD>This function is analogous to our GetAddr(), but takes either
+a service name or port number string, and returns a port number
+in network order.
+<DT><CODE><B>int WSAErrStr (int WSAErr, LPSTR lpErrBuf);</B></CODE>
+<BR>
+
+<DD>WSAErrStr() takes a WinSock error value as an input argument,
+and returns a short error description in the buffer provided.
+<DT><CODE><B>void WSAperror (int WSAErr, LPSTR szFuncName);</B></CODE>
+<BR>
+
+<DD>This function displays a message box that indicates &quot;<I>szFuncName</I>
+failed,&quot; displays the macro name for the <I>WSAErr</I> value,
+along with a short description of the error.
+</DL>
+
+<P>
+<B>Known Problems</B>: No known problems.
+<P>
+<B>File List</B>: <BR>
+WINSOCKX\GLOBALS.C global variables <BR>
+WINSOCKX\WIN_MGR.C (non-network related) windows routines <BR>
+WINSOCKX\WINSOCKX.MAK Makefile for 16-bit winsockx.lib <BR>
+WINSOCKX\WSOCK32X.MAK Makefile for 32-bit wsock32x.lib <BR>
+WINSOCKX\WSA_ERR.C error routines <BR>
+WINSOCKX\WSA_OPTN.C socket option routines <BR>
+WINSOCKX\WSA_ADDR.C address routines <P>
+[<A HREF="#WSNP_TOP">Go to top</A>]
+<HR>
+
+<H2><A NAME="Miscellaneous"><IMG SRC="winsock.gif" ALIGN="BOTTOM">
+Miscellaneous</A></H2>
+
+<P>
+These things speak for themselves.
+<UL>
+<LI><A HREF="wsa_rap.htm">The WinSock Rap</A> 
+<LI><A HREF="lamelist.htm">The Lame List</A> 
+</UL>
+[<A HREF="#WSNP_TOP">Go to top</A>]
+<HR>
+
+</BODY>
+
+</HTML>

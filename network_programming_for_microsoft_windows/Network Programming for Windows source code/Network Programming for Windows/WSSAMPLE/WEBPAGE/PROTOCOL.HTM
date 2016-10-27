@@ -1,0 +1,317 @@
+<HTML>
+<HEAD>
+<TITLE>Protocol Names and Numbers Datbase </TITLE>
+</HEAD>
+
+<BODY>
+
+<H2><IMG SRC="winsock.gif" ALIGN="BOTTOM"> Protocol Names and
+Numbers Database</H2>
+
+<P>
+This file is from <A HREF="http://www.isi.edu/div7/infra/iana.html">Internet Assigned Numbers Authority (IANA)</A>.
+IANA maintains the Assigned Numbers RFC, the most recent of which
+is RFC1700, issued in October, 1994. They maintain the protocol
+names and numbers as needed; this file was last updated 7/11/95.
+<P>
+The entries in this file are in the same format as found in a
+standard Berkeley UNIX /etc/protocols file. There are also links
+between the protocol names, and their respective RFCs (their standard
+documentation).  This file references all the protocols that can
+be contained in the protocol field in a standard IP header.  There
+is at least one other protocol of note (ARP), and RFC 1122, &quot;Host
+Requirements,&quot; has addendums the RFCs for the others referenced
+in this file.
+<UL>
+<LI><A HREF="rfc826.txt">RFC826</A>: Address Resolution Protocol
+(ARP)
+<LI><A HREF="rfc1122.txt">RFC1122</A>: Host Requirements
+</UL>
+<HR>
+
+<H3>PROTOCOL NUMBERS</H3>
+
+<P>
+In the Internet Protocol (IP) [DDN], [<A HREF="rfc791.txt">RFC791</A>]
+there is a field, called Protocol, to identify the next level
+protocol. This is an 8 bit field.
+<PRE>
+Assigned Internet Protocol Numbers
+Decimal    Keyword     Protocol                         References
+-------    -------     --------                         ----------
+     0                 Reserved                              [JBP]
+</PRE>
+
+<P>
+<A HREF="rfc792.txt">ICMP [RFC792]</A>
+<PRE>
+     1     ICMP        Internet Control Message       [RFC792,JBP]
+</PRE>
+
+<P>
+<A HREF="rfc1112.txt">IGMP [RFC1112]</A>
+<PRE>
+     2     IGMP        Internet Group Management     [RFC1112,JBP]
+     3     GGP         Gateway-to-Gateway              [RFC823,MB]
+     4     IP          IP in IP (encapsulation)              [JBP]
+     5     ST          Stream                 [RFC1190,IEN119,JWF]
+</PRE>
+
+<P>
+<A HREF="rfc793.txt">TCP [RFC793]</A>
+<PRE>
+     6     TCP         Transmission Control           [RFC793,JBP]
+     7     UCL         UCL                                   [PK]
+     8     EGP         Exterior Gateway Protocol     [RFC888,DLM1]
+     9     IGP         any private interior gateway          [JBP]
+    10     BBN-RCC-MON BBN RCC Monitoring                    [SGC]
+    11     NVP-II      Network Voice Protocol         [RFC741,SC3]
+    12     PUP         PUP                             [PUP,XEROX]
+    13     ARGUS       ARGUS                                [RWS4]
+    14     EMCON       EMCON                                 [BN7]
+    15     XNET        Cross Net Debugger            [IEN158,JFH2]
+    16     CHAOS       Chaos                                 [NC3]
+</PRE>
+
+<P>
+<A HREF="rfc768.txt">UDP [RFC768]</A>
+<PRE>
+    17     UDP         User Datagram                  [RFC768,JBP]
+    18     MUX         Multiplexing                    [IEN90,JBP]
+    19     DCN-MEAS    DCN Measurement Subsystems           [DLM1]
+    20     HMP         Host Monitoring                [RFC869,RH6]
+    21     PRM         Packet Radio Measurement              [ZSU]
+    22     XNS-IDP     XEROX NS IDP               [ETHERNET,XEROX]
+    23     TRUNK-1     Trunk-1                              [BWB6]
+    24     TRUNK-2     Trunk-2                              [BWB6]
+    25     LEAF-1      Leaf-1                               [BWB6]
+    26     LEAF-2      Leaf-2                               [BWB6]
+    27     RDP         Reliable Data Protocol         [RFC908,RH6]
+    28     IRTP        Internet Reliable Transaction  [RFC938,TXM]
+    29     ISO-TP4     ISO Transport Protocol Class 4 [RFC905,RC77]
+    30     NETBLT      Bulk Data Transfer Protocol    [RFC969,DDC1]
+    31     MFE-NSP     MFE Network Services Protocol  [MFENET,BCH2]
+    32     MERIT-INP   MERIT Internodal Protocol             [HWB]
+    33     SEP         Sequential Exchange Protocol        [JC120]
+    34     3PC         Third Party Connect Protocol         [SAF3]
+    35     IDPR        Inter-Domain Policy Routing Protocol [MXS1]
+
+    36     XTP         XTP                                   [GXC]
+    37     DDP         Datagram Delivery Protocol            [WXC]
+    38     IDPR-CMTP   IDPR Control Message Transport Proto [MXS1]
+    39     TP++        TP++ Transport Protocol               [DXF]
+    40     IL          IL Transport Protocol            [Presotto]
+    41     IPv6        Ipv6                              [Deering]
+
+    42     SDRP        Source Demand Routing Protocol       [DXE1]
+    43     IPv6-Route  Routing Header for IPv6           [Deering]
+    44     IPv6-Frag   Fragment Header for IPv6          [Deering]
+    45     IDRP        Inter-Domain Routing Protocol   [Sue Hares]
+    46     RSVP        Reservation Protocol           [Bob Braden]
+    47     GRE         General Routing Encapsulation     [Tony Li]
+    48     MHRP        Mobile Host Routing Protocol[David Johnson]
+    49     BNA         BNA                          [Gary Salamon]
+    50     IPv6-Crypt  Encryption Header for IPv6        [Deering]
+    51     IPv6-Auth   Authentication Header for IPv6    [Deering]
+    52     I-NLSP      Integrated Net Layer Security  TUBA [GLENN]
+    53     SWIPE       IP with Encryption                    [JI6]
+    54     NARP        NBMA Address Resolution Protocol  [RFC1735]
+    55     MOBILE      IP Mobility                       [Perkins]
+    56     TLSP        Transport Layer Security Protocol   [Oberg]
+                       using Kryptonet key management
+    57     Unassigned                                       [IANA]
+    58     IPv6-ICMP   ICMP for IPv6                     [Deering]
+    59     IPv6-NoNxt  No Next Header for IPv6           [Deering]
+    60     IPv6-Opts   Destination Options for IPv6      [Deering]
+    61                 any host internal protocol            [JBP]
+    62     CFTP        CFTP                            [CFTP,HCF2]
+    63                 any local network                     [JBP]
+    64     SAT-EXPAK   SATNET and Backroom EXPAK             [SHB]
+    65     KRYPTOLAN   Kryptolan                            [PXL1]
+    66     RVD         MIT Remote Virtual Disk Protocol      [MBG]
+    67     IPPC        Internet Pluribus Packet Core         [SHB]
+    68                 any distributed file system           [JBP]
+    69     SAT-MON     SATNET Monitoring                     [SHB]
+    70     VISA        VISA Protocol                        [GXT1]
+    71     IPCV        Internet Packet Core Utility          [SHB]
+    72     CPNX        Computer Protocol Network Executive  [DXM2]
+    73     CPHB        Computer Protocol Heart Beat         [DXM2]
+    74     WSN         Wang Span Network                     [VXD]
+    75     PVP         Packet Video Protocol                 [SC3]
+    76     BR-SAT-MON  Backroom SATNET Monitoring            [SHB]
+    77     SUN-ND      SUN ND PROTOCOL-Temporary             [WM3]
+    78     WB-MON      WIDEBAND Monitoring                   [SHB]
+    79     WB-EXPAK    WIDEBAND EXPAK                        [SHB]
+    80     ISO-IP      ISO Internet Protocol                 [MTR]
+    81     VMTP        VMTP                                 [DRC3]
+    82     SECURE-VMTP SECURE-VMTP                          [DRC3]
+    83     VINES       VINES                                 [BXH]
+    84     TTP         TTP                                   [JXS]
+    85     NSFNET-IGP  NSFNET-IGP                            [HWB]
+    86     DGP         Dissimilar Gateway Protocol     [DGP,ML109]
+    87     TCF         TCF                                  [GAL5]
+    88     IGRP        IGRP                            [CISCO,GXS]
+    89     OSPFIGP     OSPFIGP                      [RFC1583,JTM4]
+    90     Sprite-RPC  Sprite RPC Protocol            [SPRITE,BXW]
+
+    91     LARP        Locus Address Resolution Protocol     [BXH]
+    92     MTP         Multicast Transport Protocol          [SXA]
+    93     AX.25       AX.25 Frames                         [BK29]
+
+    94     IPIP        IP-within-IP Encapsulation Protocol   [JI6]
+    95     MICP        Mobile Internetworking Control Pro.   [JI6]
+    96     SCC-SP      Semaphore Communications Sec. Pro.    [HXH]
+
+    97     ETHERIP     Ethernet-within-IP Encapsulation     [RXH1]
+    98     ENCAP       Encapsulation Header         [RFC1241,RXB3]
+    99                 any private encryption scheme         [JBP]
+   100     GMTP        GMTP                                 [RXB5]
+101-254                Unassigned                            [JBP]
+    255                Reserved                              [JBP]
+REFERENCES
+[CFTP] Forsdick, H., CFTP, Network Message, Bolt Beranek and
+       Newman, January 1982.
+[CISCO] Cisco Systems, Gateway Server Reference Manual,Manual
+        Revision B, January 10, 1988.
+[DDN] Feinler, E., Editor, DDN Protocol Handbook,Network
+      Information Center, SRI International, December 1985.
+[DGP] M/A-COM Government Systems, Dissimilar Gateway Protocol
+      Specification, Draft Version, Contract no. CS901145,
+      November 16, 1987.
+[ETHERNET]  The Ethernet, A Local Area Network: Data Link Layer and
+            Physical Layer Specification, AA-K759B-TK, Digital
+            Equipment Corporation, Maynard, MA.  Also as: The
+            Ethernet - A Local Area Network, Version 1.0,Digital
+            Equipment Corporation, Intel Corporation, Xerox
+            Corporation, September 1980.  And: The Ethernet,A Local
+            Area Network: Data Link Layer and Physical Layer
+            Specifications, Digital, Intel and Xerox, November1982.
+            And: XEROX, The Ethernet, A Local Area Network:Data Link
+            Layer and Physical Layer Specification, X3T51/80-50,
+            Xerox Corporation, Stamford, CT., October 1980.
+[IEN90] Cohen, D. and J. Postel, Multiplexing Protocol,IEN 90,
+        USC/Information Sciences Institute, May 1979.
+[IEN119] Forgie, J., ST - A Proposed Internet Stream Protocol,
+         IEN 119, MIT Lincoln Laboratory, September 1979.
+[IEN158] Haverty, J., XNET Formats for Internet ProtocolVersion 4,
+         IEN 158, October 1980.
+[MFENET] Shuttleworth, B., A Documentary of MFENet, a National
+         Computer Network, UCRL-52317, Lawrence Livermore Labs,
+         Livermore, California, June 1977.
+[PUP] Boggs, D., J. Shoch, E. Taft, and R. Metcalfe, PUP:An
+      Internetwork Architecture, XEROX Palo Alto Research
+Center,
+      CSL-79-10, July 1979; also in IEEE Transactions on
+      Communication, Volume COM-28, Number 4, April 1980.
+[SPRITE] Welch, B., The Sprite Remote Procedure Call System,
+         Technical Report, UCB/Computer Science Dept., 86/302,
+         University of California at Berkeley, June 1986.
+[RFC741] Cohen, D., Specifications for the Network Voice Protocol,
+         RFC 741, ISI/RR 7539, USC/Information Sciences Institute,
+         March 1976.
+[<A HREF="rfc768.txt">RFC768</A>] Postel, J., User Datagram Protocol, STD 6,RFC 768,
+         USC/Information Sciences Institute, August 1980.
+[<A HREF="rfc791.txt">RFC791</A>] Postel, J., Internet Protocol - DARPA Internet Program
+         Protocol Specification, STD 5, RFC 791, DARPA, September
+         1981.
+[<A HREF="rfc792.txt">RFC792</A>] Postel, J., Internet Control Message Protocol - DARPA
+         Internet Program Protocol Specification, STD 5, RFC 792,
+         USC/Information Sciences Institute, September 1981.
+[<A HREF="rfc793.txt">RFC793</A>] Postel, J., Transmission Control Protocol - DARPA
+         Internet Program Protocol Specification, STD 7, RFC 793,
+         USC/Information Sciences Institute, September 1981.
+[RFC823] Hinden, R., and A. Sheltzer, The DARPA Internet Gateway,
+         RFC 823, BBN, September 1982.
+[RFC869] Hinden, R., A Host Monitoring Protocol, RFC 869,
+         Bolt Beranek and Newman, December 1983.
+[RFC888] Seamonson, L., and E. Rosen, STUB Exterior Gateway
+         Protocol, RFC 888, BBN Communications Corporation,
+         January 1984.
+[RFC905] International Standards Organization, ISO Transport Protocol
+         Specification - ISO DP 8073, RFC 905, April 1984.
+[RFC908] Velten, D., R. Hinden, and J. Sax, Reliable Data Protocol,
+         RFC 908, BBN Communications Corporation, July 1984.
+[RFC938] Miller, T., Internet Reliable Transaction Protocol, RFC 938,
+         ACC, February 1985.
+[RFC969] Clark, D., M. Lambert, and L. Zhang, NETBLT: A Bulk Data
+         Transfer Protocol, RFC 969, MIT Laboratory for Computer
+         Science, December 1985.
+[<A HREF="rfc1112.txt">RFC1112</A>] Deering, S., Host Extensions for IP Multicasting,
+          STD 5, RFC 1112, Stanford University, August 1989.
+[RFC1190] Topolcic, C., Editor, Experimental Internet Stream
+          Protocol, Version 2 (ST-II), RFC 1190, CIP Working Group,
+          October 1990.
+[RFC1241] Woodburn, W., and D. Mills,  A Scheme for an Internet
+          Encapsulation Protocol: Version 1, RFC 1241, SAIC,
+          University of Delaware, July 1991.
+[RFC1583] Moy, J., The OSPF Specification, RFC 1583, Proteon,
+          March 1994.
+[RFC1735] Heinanen, J., and R. Govindan,  NBMA Address Resolution
+          Protocol (NARP), RFC 1735, Telecom Finland and USC/ISI,
+          December 1994.
+PEOPLE
+[BCH2] Barry Howard  <Howard@NMFECC.LLNL.GOV>
+[BK29] Brian Kantor  <brian@UCSD.EDU>
+[BN7] <mystery contact >
+[BWB6] Barry Boehm  <boehm@ARPA.MIL>
+[BXH] Brian Horn  <---none--->
+[BXW] Bruce Willins <---none--->
+[Carpenter] Brian Carpenter, <brian@dxcoms.cern.ch>, January 1995.
+[DDC1] David Clark  <ddc@LCS.MIT.EDU>
+[DLM1] David Mills  <Mills@HUEY.UDEL.EDU>
+[DRC3] Dave Cheriton  <cheriton@PESCADERO.STANFORD.EDU>
+[Deering] Steve Deering, <deering@parc.xerox.com>, March 1995.
+[DXE1] Deborah Estrin  <estrin@usc.edu>
+[DXF] Dirk Fromhein  <df@watershed.com>
+[DXM2] David Mittnacht  <---none--->
+[David Johnson] <mystery contact>
+[GAL5] Guillermo A. Loyola  <LOYOLA@IBM.COM>
+[GLENN]  K. Robert Glenn  <glenn@osi.ncsl.nist.gov>
+[GXC] Greg Chesson  <Greg@SGI.COM>
+[GXS] Guenther Schreiner  <snmp-admin@ira.uka.de>
+[GXT1] Gene Tsudik  <tsudik@USC.EDU>
+[HCF2] Harry Forsdick  <Forsdick@BBN.COM>
+[HWB] Hans-Werner Braun  <HWB@MCR.UMICH.EDU>
+[HXH] Howard Hart  <hch@hybrid.com>
+[IANA] Internet Assigned Numbers Authority, <iana@isi.org>,June 1995.
+[JBP]   Jon Postel <postel@isi.edu>
+[Presotto] Dave Presotto  <presotto@plan9.att.com>, July 1995.
+[JC120] <mystery contact>
+[JFH2] Jack Haverty <jhaverty@ORACLE.COM>
+[JI6] John Ioannidis  <ji@CS.COLUMBIA.EDU>
+[JTM4] John Moy  <jmoy@PROTEON.COM>
+[JWF] Jim Forgie  <FORGIE@XN.LL.MIT.EDU>
+[JXS] Jim Stevens  <Stevens@ISI.EDU>
+[KATZ]  Dave Katz <dkatz@cisco.com>
+[MB] Mike Brescia  <Brescia@CCV.BBN.COM>
+[MBG] Michael Greenwald  <Greenwald@SCRC-STONY-BROOK.SYMBOLICS.COM>
+[ML109] Mike Little  <little@MACOM4.ARPA>
+[MTR] Marshall T. Rose  <mrose@dbc.mtview.ca.us>
+[MXS1] Martha Steenstrup  <MSteenst@BBN.COM>
+[NC3] J. Noel Chiappa  <JNC@XX.LCS.MIT.EDU>
+[Oberg] Christer Oberg <chg@bull.se>, October 1994.
+[Perkins] Charlie Perkins <perk@watson.ibm.com>, October 994.
+[PK] Peter Kirstein <Kirstein@NSS.CS.UCL.AC.UK>
+[PXL1] Paul Liu  <---none--->
+[RH6] Robert Hinden  <Hinden@ENG.SUN.COM>
+[RTB3]  Bob Braden <braden@isi.edu>
+[RC77] <mystery contact>
+[RWS4] Robert W. Scheifler  <RWS@XX.LCS.MIT.EDU>
+[RXB3] Robert Woodburn <woody@cseic.saic.com>
+[RXH1] Russ Housley  <Russ_Housley.McLean_CSD@xerox.com>
+[SAF3] Stuart A. Friedberg  <stuart@CS.WISC.EDU>
+[SC3] Steve Casner  <casner@isi.edu>
+[SGC] Steve Chipman  <Chipman@F.BBN.COM>
+[SHB] Steven Blumenthal  <BLUMENTHAL@VAX.BBN.COM>
+[Sue Hares]  Sue Hares <skh@merit.edu>
+[SXA] Susie Armstrong  <Armstrong.wbst128@XEROX.COM>
+[SXD] Steve Deering  <deering@PARC.XEROX.COM>
+[Tony Li] Tony Li  <tli@cisco.com>
+[TXM] Trudy Miller  <Trudy@ACC.COM>
+[VXD] Victor Dafoulas  <---none--->
+[WM3] William Melohn  <Melohn@SUN.COM>
+[WXC] Wesley Craig   <Wesley.Craig@terminator.cc.umich.edu>
+[ZSU] Zaw-Sing Su  <ZSu@TSCA.ISTC.SRI>
+</PRE>
+</BODY>
+</HTML>

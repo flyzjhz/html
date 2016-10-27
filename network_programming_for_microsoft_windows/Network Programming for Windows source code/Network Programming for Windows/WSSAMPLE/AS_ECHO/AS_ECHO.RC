@@ -1,0 +1,233 @@
+//Microsoft App Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "as_echo.h"
+
+/////////////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+#ifdef APSTUDIO_INVOKED
+//////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""as_echo.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+/////////////////////////////////////////////////////////////////////////////////////
+#endif    // APSTUDIO_INVOKED
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+AS_ECHO                 ICON    DISCARDABLE     "AS_ECHO.ICO"
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEFLAGSMASK 0x3L
+#ifdef _DEBUG
+ FILEFLAGS VS_FF_DEBUG
+#else
+ FILEFLAGS 0
+#endif
+#ifdef WIN32
+ FILEOS 0x4L
+#else
+ FILEOS 0x1L
+#endif
+FILETYPE VFT_APP
+FILESUBTYPE 0
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName", "Windows Sockets Network Programming\0"
+            VALUE "FileDescription", "Asynch Echo Server\0"
+            VALUE "FileVersion", "1.00\0"
+#ifdef WIN32
+            VALUE "InternalName", "ASECHO32\0"
+#else
+            VALUE "InternalName", "AS_ECHO\0"
+#endif
+            VALUE "LegalCopyright", "(c) Bob Quinn, 1995\0"
+            VALUE "ProductName", "Windows Sockets Network Programming\0"
+            VALUE "ProductVersion", "1.00\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252 
+    END
+END
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    WSAHOST_NOT_FOUND       "WSAHOST_NOT_FOUND: Host not found"
+    WSATRY_AGAIN            "WSATRY_AGAIN: Non-Authoritative Host not found"
+    WSANO_RECOVERY          "WSANO_RECOVERY: Non-Recoverable errors: FORMERR, REFUSED, NOTIMP"
+    WSANO_DATA              "WSANO_DATA: Valid name, no data record of requested type"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    WSASYSNOTREADY          "WSASYSNOTREADY: Network SubSystem is unavailable"
+    WSAVERNOTSUPPORTED      "WSAVERNOTSUPPORTED: WINSOCK DLL Version out of range"
+    WSANOTINITIALISED       "WSANOTINITIALISED: Successful WSASTARTUP not yet performed"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    WSAEHOSTDOWN            "WSAEHOSTDOWN: Host is down"
+    WSAEHOSTUNREACH         "WSAEHOSTUNREACH: No Route to Host"
+    WSAENOTEMPTY            "WSAENOTEMPTY: Directory not empty"
+    WSAEPROCLIM             "WSAEPROCLIM: Too many processes"
+    WSAEUSERS               "WSAEUSERS: Too many users"
+    WSAEDQUOT               "WSAEDQUOT: Disc Quota Exceeded"
+    WSAESTALE               "WSAESTALE: Stale NFS file handle"
+    WSAEREMOTE              "WSAEREMOTE: Too many levels of remote in path"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    WSAEADDRINUSE           "WSAEADDRINUSE: Address already in use"
+    WSAEADDRNOTAVAIL        "WSAEADDRNOTAVAIL: Can't assign requested address"
+    WSAENETDOWN             "WSAENETDOWN: Network is down"
+    WSAENETUNREACH          "WSAENETUNREACH: Network is unreachable"
+    WSAENETRESET            "WSAENETRESET: Net dropped connection or reset"
+    WSAECONNABORTED         "WSAECONNABORTED: Software caused connection abort"
+    WSAECONNRESET           "WSAECONNRESET: Connection reset by peer"
+    WSAENOBUFS              "WSAENOBUFS: No buffer space available"
+    WSAEISCONN              "WSAEISCONN: Socket is already connected"
+    WSAENOTCONN             "WSAENOTCONN: Socket is not connected"
+    WSAESHUTDOWN            "WSAESHUTDOWN: Can't send after socket shutdown"
+    WSAETOOMANYREFS         "WSAETOOMANYREFS: Too many references, can't splice"
+    WSAETIMEDOUT            "WSAETIMEDOUT: Connection timed out"
+    WSAECONNREFUSED         "WSAECONNREFUSED: Connection refused"
+    WSAELOOP                "WSAELOOP: Too many levels of symbolic links"
+    WSAENAMETOOLONG         "WSAENAMETOOLONG: File name too long"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    WSAEWOULDBLOCK          "WSAEWOULDBLOCK: Operation would block"
+    WSAEINPROGRESS          "WSAEINPROGRESS: Operation now in progress"
+    WSAEALREADY             "WSAEALREADY: Operation already in progress"
+    WSAENOTSOCK             "WSAENOTSOCK: Socket operation on non-socket"
+    WSAEDESTADDRREQ         "WSAEDESTADDRREQ: Destination address required"
+    WSAEMSGSIZE             "WSAEMSGSIZE: Message too long"
+    WSAEPROTOTYPE           "WSAEPROTOTYPE: Protocol wrong type for socket"
+    WSAENOPROTOOPT          "WSAENOPROTOOPT: Bad protocol option"
+    WSAEPROTONOSUPPORT      "WSAEPROTONOSUPPORT: Protocol not supported"
+    WSAESOCKTNOSUPPORT      "WSAESOCKTNOSUPPORT: Socket type not supported"
+    WSAEOPNOTSUPP           "WSAEOPNOTSUPP: Operation not supported on socket"
+    WSAEPFNOSUPPORT         "WSAEPFNNOSUPPORT: Protocol family not supported"
+    WSAEAFNOSUPPORT         "WSAEAFNNOSUPPORT: Address family not supported by protocol family"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    WSAEINVAL               "WSAEINVAL: Invalid argument"
+    WSAEMFILE               "WSAEMFILE: Too many open files"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    WSABASEERR              "[0] No Error"
+    WSAEINTR                "WSAEINTR: Interrupted system call"
+    WSAEBADF                "WSAEBADF: Bad file number"
+    WSAEACCES               "WSACCESS: Permission denied"
+    WSAEFAULT               "WSAEFAULT: Bad address"
+END
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+AS_ECHO DIALOG DISCARDABLE  0, 0, 195, 106
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Asynch Echo Server"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Exit",IDC_EXIT,116,84,35,16
+    PUSHBUTTON      "About",IDC_ABOUT,44,84,34,16
+    CTEXT           "local hostname and address",IDC_LOCAL_HOST,4,7,184,9
+    LTEXT           "Number of connections active:",IDC_STATIC,9,23,103,9
+    LTEXT           "0",IDC_CONN_ACTIVE,116,24,16,8
+    LTEXT           "closed:",IDC_STATIC,139,23,25,9
+    LTEXT           "0",IDC_CONN_TOTAL,171,23,18,9
+    LTEXT           "Total bytes received:",IDC_STATIC,40,36,72,8
+    LTEXT           "0",IDC_BYTE_TOTAL,116,36,57,8
+    CTEXT           "",IDC_DATA_RATE,8,62,180,8
+    GROUPBOX        "Data Rate from last connection",IDC_STATIC,3,48,189,32
+END
+
+IDD_ABOUT DIALOG DISCARDABLE  75, 50, 211, 129
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "About AS_ECHO"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,152,10,50,14
+    LTEXT           "------ Async Echo Server -----  ------ AS_ECHO v1.00 -------       Bob Quinn (c) 1995   ",
+                    IDC_STATIC,48,15,92,25
+    ICON            AS_ECHO,IDC_STATIC,6,9,18,20
+    LTEXT           "< Date and Time Compiled >",IDC_COMPILEDATE,40,45,144,
+                    11
+    GROUPBOX        "WinSock DLL information",IDC_STATIC,8,60,196,66
+    LTEXT           "wVersion:",IDS_DLLVER,16,75,72,7
+    LTEXT           "HiVersion:",IDS_DLLHIVER,124,75,68,8
+    LTEXT           "MaxSockets:",IDS_MAXSOCKS,15,112,67,9
+    LTEXT           "MaxDatagram:",IDS_MAXUDP,122,112,72,9
+    LTEXT           "Description:",IDS_DESCRIP,16,87,180,8
+    LTEXT           "Status:",IDS_STATUS,16,99,180,8
+END
+
+
+#ifndef APSTUDIO_INVOKED
+////////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

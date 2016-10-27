@@ -1,0 +1,11 @@
+;------------------------
+; filename: UATIME32.DEF
+;------------------------
+
+NAME         UATIME32
+
+DESCRIPTION  'UDP Time Client and Server (c) Bob Quinn 1995'
+CODE         PRELOAD MOVEABLE DISCARDABLE
+DATA         PRELOAD MOVEABLE MULTIPLE
+
+HEAPSIZE     4096

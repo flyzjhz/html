@@ -1,0 +1,82 @@
+<HTML>
+<HEAD>
+<TITLE>The Windows Sockets Lame List</TITLE>
+</HEAD>
+
+<BODY>
+
+<H2><IMG SRC="winsock.gif" ALIGN="BOTTOM"> The Windows Sockets
+Lame List <BR>
+(or What's Weak This Week)<BR>
+</H2>
+<P>
+brought to you by the Windows Sockets Vendor Community<br>
+<dl><dt><dd>compiled by Keith Moore</dl>
+<OL>
+<LI>Calling <I>connect()</I> on a non-blocking socket, getting
+WSAEWOULDBLOCK, then immediately calling <I>recv()</I> and expecting
+WSAEWOULDBLOCK before the connection has been established.<B>
+Lame.</B> 
+<LI>Calling <I>select()</I> with three empty FD_SETs and a valid
+TIMEOUT structure as a sleezy delay function. <B>Inexcusably lame.</B>
+
+<LI>Polling with <I>connect()</I> on a non-blocking socket to
+determine when the connection has been established. <B>Dog lame.</B>
+
+<LI>Assuming socket handles are always less than 16. <B>Mired
+in a sweaty mass of lameness.</B> 
+<LI>Polling with <I>select()</I> and a zero timeout in Win16's
+non-preemptive environment.<B> Nauseatingly lame.</B> 
+<LI>Calling <I>WSAAsyncSelect()</I> with a zero Event mask just
+to make the socket non-blocking.<B> Lame. Lame. Lame. Lame. Lame.</B>
+
+<LI>Telnet applications that neither enable OOBINLINE, nor read
+OOB data. <B>Violently lame.</B> 
+<LI>Assuming 0 is an invalid socket handle value. <B>Uncontrollably
+lame.</B> 
+<LI>Applications that don't properly shutdown when the user closes
+the main window while a blocking API is in progress. <B>Totally
+lame.</B> 
+<LI>Out of band data. <B>Intensely lame.</B> 
+<LI>Calling <I>strlen()</I> on a hostent structure's ip address,
+then truncating it to four bytes, thereby overwriting part of
+<I>malloc()'s</I> heap header. <B>In all my years of observing
+lameness, I have seldom seen something this lame.</B> 
+<LI>Polling with <I>recv(MSG_PEEK)</I> to determine when a complete
+message has arrived. <B>Thrashing in a sea of lameness.</B> 
+<LI>Martin Hall's hairline. <B>Well, it's not that bad. Really.
+Certainly less lame than J. Allard's hairline.</B> 
+<LI>Bounding every set of operations with calls to <I>WSAStartup()</I>
+and <I>WSACleanup()</I>. <B>Pushing the lameness envelope.</B>
+
+<LI>Ignoring API errors.<B> Glaringly lame.</B> 
+<LI>Microsoft's Telnet and FTP clients. <B>Indescribably lame.</B>
+
+<LI>Installing an empty blocking hook that just returns FALSE.
+<B>Floundering in an endless desert of lameness.</B> 
+<LI>Client applications that bind to a specific port. <B>Suffocating
+in self lameness.</B> 
+<LI>Nagle challenged applications.<B> Perilously teetering on
+the edge of a vast chasm of lameness.</B> 
+<LI>Assuming stream sockets maintain message frame boundaries.<B>
+Mind bogglingly lame.</B> 
+<LI>16-bit DLLs that call <I>WSACleanup()</I> from their <I>WEP</I>.
+<B>Inconcievably lame.</B> 
+<LI>Single byte <I>send()s</I> and <I>recv()s</I>. <B>Festering
+in a pool of lameness.</B> 
+<LI><I>select()</I>. <B>Self abusively lame.</B> 
+<LI>Applications that call <I>gethostbyname()</I> before calling
+<I>inet_addr()</I>. <B>Words fail to express such all consuming
+lameness.</B> 
+<LI>Win32 applications that install blocking hooks. <B>Grossly
+lame.</B> 
+<LI>Polling with <I>ioctlsocket( FIONREAD )</I> on a stream socket
+until a complete &quot;message&quot; arrives. <B>Exceeds the bounds
+of earthly lameness.</B> 
+</OL>
+
+<P>
+27 Punching inanimate objects. <B>Painfully lame.</B> 
+</BODY>
+
+</HTML>

@@ -1,0 +1,187 @@
+<HTML>
+<HEAD>
+<TITLE>Windows Sockets Network Programming</TITLE>
+</HEAD>
+
+<BODY>
+
+<H1><IMG SRC="winsock.gif" ALIGN="BOTTOM"> Preface</H1>
+<P>
+This is a hypertext version of Preface in the text _Windows Sockets
+Network Programming_, by Bob Quinn and Dave Shute.
+<UL>
+<LI><A HREF="#Organization">Organization</A> 
+<LI><A HREF="#Audience">Audience</A> 
+<LI><A HREF="#SampleApplications">Sample Applications</A> 
+<LI><A HREF="#Acknowledgements">Acknowledgements</A> 
+</UL>
+<P>
+This book describes the Windows Sockets application programming
+interface (API), commonly known as &quot;WinSock.&quot;  This
+is intended to be a companion to the v1.1 Windows Sockets specification,
+not a replacement for it.  The contents provide a roadmap for
+the specification, an orientation resource.  The book describes
+and illustrates every aspect of the Windows Sockets specification,
+from top to bottom.  It deals with optional features as well as
+many features in version 2.0 of the Windows Sockets specification.
+ 
+<P>
+The key focus of the text is to provide a &quot;how to&quot; guide
+for writing supportable and extensible network applications that
+will run efficiently over all Windows Sockets implementations.
+ One of the most frustrating things to hear is, &quot;It's impossible
+to write anything more than a basic 'hello world' that will execute
+over all WinSock implementations.&quot;  This simply is not true.
+ More often than not, when an application runs on one WinSock
+and fails on another, it is because the application developers
+made some incorrect assumptions.  They assumed that WinSock could
+do something that the specification did not explicitly warrant.
+ In other words, it may not have been the fault of the WinSock
+implementor, nor of the WinSock specification.  You can avoid
+this type of application failure, and we show you how.
+<P>
+This book is for anyone who wants to know how to write a successful
+WinSock application.  If you are writing a program from scratch,
+porting an existing one from Berkeley Sockets (or any other network
+API), writing a network DLL, or just updating an application that
+someone else wrote, then this book is for you.  We deal with both
+16-bit Windows platforms (Microsoft Windows 3.1 and Windows for
+Workgroups) and 32-bit platforms (Windows NT 3.1 and 3.5, and
+Windows 95).  We also describe the other platforms that support
+the WinSock API: Platforms with Windows are adding Sockets.
+<H2>Organization</H2>
+
+<P>
+The first half of the book contains a tutorial for network programming.
+ We do not make any assumptions about what you already know. 
+The second half is intended to be an in-depth reference, with
+detailed explanations and code examples.  The appendices provide
+a quick reference.
+<P>
+After we describe Windows Sockets in general terms in Chapter
+1, we provide an overview of network software architectures in
+Chapter 2.  In Chapter 3 we describe the protocols in the TCP/IP
+suite, with a focus on the services available to your network
+applications, and some of their pros and cons.  We begin to provide
+some details about the WinSock programming interface in Chapter
+4, as we describe the framework for all network applications in
+terms of the fundamental network function calls.  Chapter 5 covers
+the different operation modes available, and Chapter 6 discusses
+the state machine implicit in every network application.  That
+essentially ends the tutorial.
+<P>
+In Chapter 7 we present the source code for our largest application,
+an FTP client.  Chapters 8, 9, and 10 are a catalog of detailed
+descriptions of all the WinSock function calls we have not discussed
+up to this point.  Chapter 11 deals with the specifics of creating
+a dynamic link library to run over a WinSock DLL.  Chapter 12
+describes the issues and strategies involved with porting existing
+BSD Sockets source code to 16-bit and/or 32-bit Windows.  
+<P>
+We start to wrap things up and tie up loose ends in Chapter 13,
+which details WinSock application debugging techniques and tools.
+ Chapter 14 provides general advice and many specifics about traps
+and pitfalls to avoid in your WinSock applications.  Chapter 15
+describes the many different operating system platforms that currently
+provide the WinSock API.  Chapter 16 covers the optional features--some
+intentional, and some not--in the WinSock specification and tells
+you when and how to use them.  Finally, Chapter 17 provides a
+detailed tour of all the new features in version 2.0 of the WinSock
+specification.
+<P>
+In Appendix A, we have illustrations and short descriptions of
+the headers for the protocols in the Internet suite (TCP/IP).
+ Appendix B contains a quick reference for the entire WinSock
+API, including its functions, structures, and macros (including
+some that were forgotten).  Appendix C provides a detailed WinSock
+error reference.  Appendix D contains some mechanical details
+for compiling and linking applications, and Appendix E has network
+and bibliographical information sources.
+<H2>Audience </H2>
+
+<P>
+Although we do not assume any prior knowledge of networks, protocols,
+or network programming with sockets or any other network API,
+it does not hurt to have some.  This book is for novice and experienced
+network application developers alike.  This text also includes
+extensive background and illustrative information not found in
+the v1.1 Windows Sockets specification, so even the most advanced
+WinSock application developer can benefit from reading it.
+<P>
+We do assume a knowledge of the C programming language and Microsoft
+Windows APIs (WinAPI or Win32).
+<H2>Sample applications</H2>
+
+<P>
+The sample applications in this book were created with Microsoft
+C version 1.51 (16-bit), and Microsoft C version 2.0 (32-bit).
+ They are also compatible with Borland C version 4.0.  Makefiles
+that support these platforms accompany the source code.  The applications
+have been tested on almost all of the commercial and shareware
+versions of WinSock available, over Ethernet and PPP (point-to-point
+protocol), using both local connections and distant ones.  If
+you identify any problems with these applications, we'd like to
+hear about them.  Please email problem reports to bugs@sockets.com.
+<P>
+You can retrieve updates to the sample applications via the Internet:
+<P>
+ http://www.sockets.com
+<P>
+ ftp://ftp.sockets.com
+<H2>Acknowledgements</H2>
+
+<P>
+Many thanks to many people for their help and participation in
+making this book possible.  Thanks especially to the reader, who
+is the very reason for this book.  May your Windows Sockets applications
+be great ones..
+<P>
+Thanks most of all to Bob Quinn.  He wanted to give birth to this
+book; I only provided the hot water, towels, antiseptic, blankets,
+silver nitrate, topical anesthesia, and appropriate words.
+<P>
+Dave Shute        Reading, MA
+<P>
+dks@world.std.com       May, 1995
+<P>
+There are far too many people that have helped in this endeavor
+for any acknowledgement list to do justice.  Nonetheless, I want
+to mention a few people in particular.  First and foremost, for
+their implicit contribution, is my family.  It will be nice to
+spend time with them again.  Second is my cowriter and friend,
+Dave Shute, whose red pencil is as pricelessly sharp as his wit.
+ 
+<P>
+I'm indebted to Larry Backman, Mike Khalandovsky, and John Keller
+at FTP Software, Inc. for their support and encouragement. Dave
+Barnard, Kerry Hannigan, and Helen Sylvester--FTP Software's crack
+SDK support staff--deserve a special note for their constant stream
+of challenges that did more to teach me about how to program--and
+how <I>not</I> to program--WinSock apps than anything else did.
+<P>
+My coadministrators in the WinSock 2.0 specification clarification
+functionality group, Paul Brooks and Vikas Garg, deserve a lot
+of credit for their untiring efforts to shed light into the dark
+corners of WinSock.  In addition to clarifying many things in
+the spec, they also clarified some things in this book.
+<P>
+Other reviewers of note: Jim DeMarco, Fred Whiteside, Dave Andersen,
+Charlie Tai, Alun Jones, Eli Patashnik, and our consulting editor,
+Alan Feuer.
+<P>
+Thanks to the kind folks at Addison-Wesley: John Wait, Mike Hendrickson,
+Kim Dawley, Marty Rabinowitz, and Katie Duffy.
+<P>
+Last I want to thank Martin Hall, for having initiated the Windows
+Sockets effort, and his coauthors, and contributors, for helping
+him carry it through.  The sure sign of a good idea is one that
+makes you think, &quot;Why didn't I think of that!?&quot;  That's
+WinSock.  It was a great idea, and its immediate success has confirmed
+this obvious fact.
+<P>
+Bob Quinn       Weston, Massachusetts
+<P>
+rcq@ftp.com        May 1995
+</BODY>
+
+</HTML>

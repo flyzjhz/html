@@ -1,0 +1,276 @@
+<HTML>
+<HEAD>
+<TITLE>WinSock Version 2.0: Overview, Status and Pointers</TITLE>
+</HEAD>
+
+<BODY>
+
+<H1><IMG SRC="winsock.gif" ALIGN="BOTTOM"> WinSock 2 Information</H1>
+<P><UL>
+<li><A HREF="#OverView">WinSock 2 Overview</A>
+<li><A HREF="#Architecture">WinSock 2 Architecture</A>
+<li><A HREF="#Docs">WinSock Version 2 Specifications</A>
+<li><A HREF="#NetSites">Web & FTP Sites for WinSock 2 Specifications</A>
+<li><A HREF="#TimeLine">Projected Timeline</A>
+<li><A HREF="#MailList">WinSock 2 Mailing List</A>
+</UL>
+Note: Some of the information contained in this document was culled from 
+the readme file that accompanies the Windows Sockets 2 documentation.
+<HR>
+
+<H2><A NAME="OverView">WinSock 2 Overview</A></H2>
+
+Windows Sockets Version 2.0 is the successor to version 1.1, which
+has been the standard since its release in January of 1993.   WinSock 
+version 1.1 has met, if not exceeded, its authors' original
+intent to provide a powerful and flexible API for creating universal
+TCP/IP applications.  You can create any type of client or server
+TCP/IP application with an implementation of Windows Sockets based
+on the version 1.1 Windows Sockets specification.  You can port
+Berkeley Sockets applications and take advantage of the message-based
+Microsoft Windows programming environment and paradigm.  But that's
+not to say that WinSock cannot provide more.
+<P>
+The authors of Windows Sockets version 1.1 intentionally limited
+its scope to expedite the process and ensure its success.  WinSock
+1.1 deals primarily with TCP/IP because the software vendors involved
+sold TCP/IP network software, but it also conveniently allowed
+them to ignore the difficult issue of how to provide a single
+API for multiple vendors simultaneously.  This focus on TCP/IP
+did not preclude the possibility that WinSock--like its Berkeley
+Sockets Model--could support other protocol suites at some point
+in the future.  The future is now.
+<P>
+Windows Sockets version 2.0  (WinSock 2) formalizes the API for
+a number of other protocol suites-- DecNet, IPX/SPX, and OSI--and
+allows them to coexist simultaneously.  WinSock 2 also adds substantial
+new functionality.  Most importantly, it does all this and still
+retains full backward compatibility with the existing 1.1--some
+of which is clarified further--so all existing WinSock applications
+can continue to run without modification.
+<P>
+WinSock 2 goes beyond simply allowing the coexistence of multiple
+protocol stacks; it also allows the creation of applications that
+are network-protocol independent.  A WinSock 2 application can
+transparently select a protocol based on its service needs.  The
+application can adapt to differences in network names and addresses
+using the mechanisms WinSock 2 provides.
+<P>
+WinSock 2 also clarifies existing ambiguities in the 1.1 WinSock
+specification and adds new extensions that take advantage of operating-system
+features and enhance application performance and efficiency. 
+Finally, WinSock 2 includes a number of new protocol-specific
+extensions.  These extensions--such as the multicast socket options
+described in Chapter 16, are relegated to a separate annex, since
+the main WinSock 2 protocol specification is protocol-independent.
+<P>
+Ideally, the intermediate layer is virtually transparent and does
+little more than maintain the registry of service providers.
+
+<HR>
+<H2><A NAME="Architecture">WinSock 2 Architecture</A></H2>
+
+As we mentioned earlier, the authors of WinSock version 1.1 deliberately
+limited its scope in the name of expediency.  One result of this
+is the simple architecture of WinSock 1.1.  A single WINSOCK.DLL
+(or WSOCK32.DLL) provides the WinSock API, and this DLL &quot;talks&quot;
+to the underlying protocol stack via a proprietary programming
+interface.  This works fairly well since v1.1 WinSock only supports
+one protocol suite--TCP/IP--and most computers running Windows
+have only a single network interface.
+<P>
+However, this architecture limits a system to only one WinSock
+DLL active in the system path at a time.  As a result, it is not
+easy to have more than one WinSock implementation on a machine
+at one time.  There are legitimate reasons to want multiple WinSock
+implementations.  For example, one might want a protocol stack
+from one vendor over the Ethernet connection and a different vendor's
+stack over the Serial Line.
+<P>
+WinSock 2 has an all-new architecture that provides much more
+flexibility.   The new WinSock 2 architecture allows for simultaneous
+support of multiple protocol stacks, interfaces, and service providers.
+ There is still one DLL on top, but there is another layer below,
+and a standard service provider interface, both of which add flexibility.
+
+<P>
+WinSock 2 adopts the Windows Open Systems Architecture (WOSA)
+model, which separates the API from the protocol service provider.
+ In this model the WinSock DLL provides the standard API, and
+each vendor installs its own service provider layer underneath.
+ The API layer &quot;talks&quot; to a service provider via a standardized
+Service Provider Interface (SPI), and it is capable of multiplexing
+between multiple service providers simultaneously.  The following
+sketch illustrates the WinSock 2 architecture.
+<PRE>
+     +---------------+        +----------------+
+     |   WinSock 2   |        |   WinSock 1.1  |
+     |  Application  |        |   Application  |
+     +---------------+        +----------------+
+             |                        |
+             |            +----------------------+ -- WinSock
+             |            | WINSOCK.DLL (16-bit) |    1.1 API
+             |            | WSOCK32.DLL (32-bit) |
+             |            +----------------------+
+             |                        |
+    +---------------------------------------------+ -- WinSock
+    |            WS2-32.DLL (32-bit) --           |    2.0 API
+    +---------------------------------------------+
+                           |
+    +---------------------------------------------+ -- WinSock
+    |+-----------+ +--------------+ +------------+|    2.0 SPI
+    ||  TCP/IP   | | TCP/IP-based | | additional ||
+    || transport | |   namespace  | |   service  ||
+    ||  service  | | service pro- | |  providers ||
+    ||  provider | | vider (DNS)  | | (SPX, etc.)||  
+    |+-----------+ +--------------+ +------------+|
+    +---------------------------------------------+
+</PRE>
+Note that the WinSock 2 specification has two distinct parts:
+the API for application developers, and the SPI for protocol stack
+and namespace service providers.  Notice also that the intermediate
+DLL layers are independent of both the application developers
+and service providers.  These DLLs are provided and maintained
+by Microsoft and Intel.  
+
+<HR>
+<H2><A NAME="Docs">WinSock Version 2 Specifications</A></H2>
+
+The specification for WinSock 2 is actually made up of several
+seperate documents.  Each of these documents are available in the
+3 different formats: MS Word for Windows (.doc), Text (.txt) and
+Postscript (.ps).  They are BIG (250+ pages each), so you are 
+encouraged to print double-sided, if possible.
+<UL>
+<li><B>Windows Sockets 2 API</B>: The application programming interface
+specification; this contains the version 1.1 API, and new WinSock2
+protocol and namespace independent APIs. (filename:WSAPI208, current
+revision 2.0.8, May 19, 1995).
+<li><B>Windows Sockets 2 Name Resolution Extensions</B>: (filename:NAMERES, 
+current draft revision 0.5, July 7, 1995)
+<li><B>Windows Sockets 2 Protocol Specific Annex</B>: Contains information  
+specific to particular transport protocols.  For example, new TCP/IP
+APIs for multicast, new DECNet APIs, and the Socket Security Layer
+API from Netscape (WSANX201, current revision 2.0.1, June 30, 1995).
+<li><B>Windows Sockets 2 SPI</B>: This is the service providers interface
+specification that WinSock implementors must provide.  WinSock
+application developers don't need to reference this since the SPI
+is only utilized by the WinSock DLL itself (filename:WSSPI208, 
+current revision 2.0.8, June 30, 1995).
+</UL>
+
+<HR>
+<H2><A NAME="NetSites">Web & FTP Sites for WinSock 2 Specifications</A></H2>
+
+You can retrieve copies of the current provisional specifications
+for the <B>WinSock 2 API</B>, <B>Protocol Specific Annex</B>, and 
+<B>WinSock 2 SPI</B> from the following World Wide Web sites.
+<P><UL>
+<A HREF="http://www.intel.com/IAL/winsock2">http://www.intel.com/IAL/winsock2</A><br>
+<A HREF="http://www.microsoft.com/pages/developer/winsock/">http://www.microsoft.com/pages/developer/winsock/</A><br>
+<A HREF="http://www.stardust.com">http://www.stardust.com</A><br>
+<A HREF="http://sunsite.unc.edu/winsock">http://sunsite.unc.edu/winsock</A>
+<P></UL>
+...or from the following FTP Sites:
+<P><UL>
+<A HREF="ftp://ftp.intel.com/pub/winsock2">ftp://ftp.intel.com/pub/winsock2</A><br>
+<A HREF="ftp://ftp.microsoft.com">ftp://ftp.microsoft.com</A><br>
+<A HREF="ftp://ftp.stardust.com">ftp://ftp.stardust.com</A><br>
+<A HREF="ftp://sunsite.unc.edu/pub/micro/pc-stuff/ms-windows/winsock">ftp://sunsite.unc.edu/pub/micro/pc-stuff/ms-windows/winsock</A>
+</UL><P>
+The current draft version of the <B>Name Resolution Extensions</B> 
+specification is available via FTP from:
+<P>
+<UL>
+<A HREF="ftp://rhino.microsoft.com/rnr/nameres.zip">ftp://rhino.microsoft.com/rnr/nameres.zip</A>
+</UL>
+
+<HR>
+<H2><A NAME="TimeLine">Projected Timeline</A></H2>
+
+At present, WinSock 2 is essentially only on paper as a specification.  
+There are no WinSock 2 compliant implementations available yet.  The 
+intermediate layer--the WS2-32.DLL--is not yet available.  This DLL 
+constitues the major component in the <B>WinSock 2 Software Development 
+Kit (SDK)</B>.  Once the SDK becomes available, Service Providers can 
+finish their work, and when they make their offerings available, the 
+wider WinSock application development community can do their development
+over the API.
+<P>
+The path to final completion of the WinSock 2 specification includes
+the milestones outlined in the timeline which follows.  Based on current 
+information, these are the steps with date projections, where known, 
+for refinement, testing and final completion of WinSock Version 2.
+<DL>
+<DT>Step 1 - 5/12/95.     
+<DD>WinSock Version 2.0.8 Provisional API Specification Set released
+    SPI spec and protocol-specific annex to be released shortly.
+
+<DT>Step 1.5 - 6/30/95
+<DD>WinSock version 2.0.8 Provisional SPI specification released,
+    First draft of Protocol-Specific Annex also made available for
+    review.
+
+<DT>Step 2 - ????
+<DD>Intel and Microsoft develop SDK components (including master DLL's)
+    SDK's will be made available for the following operating systems:
+             Microsoft Windows 95
+             Microsoft Windows NT
+<UL>             
+ <li> Application vendors explore and start designing WinSock 2
+      capabilities in their software
+
+ <li> Network Technology vendors design WinSock 2 Service Providers
+
+ <li> An errata set is maintained which documents changes to the 
+      provisional specification.
+</UL>
+<DT>Step 3 - Q4 1995. 
+<DD>Intel and Microsoft release BETA WinSock 2 SDK's which
+    contain the WinSock 2 system, and either the errata set or a 
+    new version of the spec with the errata information incorporated.
+
+<DT>Step 4 - Beginning in Q4 1995
+<DD>WinSockathon Bake-off's take place during
+    which  preliminary WinSock 2-enabled apps will be tested with 
+    the WinSock 2 subsystem and WinSock 2 Service Providers.
+    It is anticipated that these will:
+<UL>
+ <li> lead to refinement and clarification of the specifications
+
+ <li> give application and service provider vendors a significant
+      opportunity to debug and progress their software.
+
+ <li> allow Microsoft and Intel to find and fix problems in the
+      WinSock 2 SDK's and subsystem.
+</UL>
+<DT>Step 5 - Q1 1996
+<DD>Target date for final WinSock 2 specification.
+</DL>
+<HR>
+<H2><A NAME="MailList">WinSock 2 Mailing Lists</A></H2>
+
+There is a single mailing list for all suggestions, questions, and
+comments regarding the WinSock 2 specifications.  It is called,
+appropriately, "winsock-2," and maintained at Intel Research Labs.
+<P>
+<DL>
+<DT>To subscribe to winsock-2, send an email message to
+<DD>      <A HREF="mailto:majordomo@mailbag.intel.com">majordomo@mailbag.intel.com</A><br><br>
+<DT>Leave the subject blank, place the following line of text in the body:
+<DD>      <i>subscribe winsock-2 [address]</i>
+</DL>
+<P>
+You need only specify [<i>address</i>] if the address you want subscribed is
+*not* the same as the address from which you are sending the email to
+majordomo.  Majordomo will send mail back to you confirming your
+subscription.
+<P><DD>
+<DT>For information on other commands available from the winsock-2 majordomo
+send the following line of text in the body:
+<DD>     <I> help </I>
+</DL>
+
+</BODY>
+
+</HTML>
